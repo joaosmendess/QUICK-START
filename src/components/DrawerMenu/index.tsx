@@ -4,7 +4,7 @@ import { Drawer, List, ListItemText, ListItemIcon, ListItemButton, Collapse } fr
 import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import GroupIcon from '@mui/icons-material/Group';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 
@@ -21,11 +21,7 @@ const DrawerMenu: React.FC<{ open: boolean; onClose: () => void; setPageTitle: (
     setGroupMenuOpen(!groupMenuOpen);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    window.location.href = '/';
-    onClose();
-  };
+
 
   const handleNavigation = (path: string, title: string) => {
     navigate(path);
@@ -76,12 +72,7 @@ const DrawerMenu: React.FC<{ open: boolean; onClose: () => void; setPageTitle: (
             </ListItemButton>
           </List>
         </Collapse>
-        <ListItemButton onClick={handleLogout}>
-          <ListItemIcon>
-            <ExitToAppIcon />
-          </ListItemIcon>
-          <ListItemText primary="Sair" />
-        </ListItemButton>
+        
       </List>
     </Drawer>
   );
