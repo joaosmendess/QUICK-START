@@ -1,70 +1,78 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Paper, Modal, CircularProgress } from '@mui/material';
-
-import GoogleIcon from '@mui/icons-material/Google';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import SecurityIcon from '@mui/icons-material/Security';
-import { Wrapper, LoginContainer, LoginForm, SSOButton, GoogleButton, FacebookButton, SAMLButton } from './styles';
+import { Wrapper, LoginContainer, LoginForm, SSOButton, SAMLButton } from './styles';
 import logo from '../../assets/logo-white.png';
+import sso from '../../assets/sso-logo.png';
+
 
 const Login = () => {
   const [open, setOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const navigate = useNavigate();
 
-  const handleSSOLogin = () => {
+  // Efeito para capturar o token da URL e armazená-lo no sessionStorage
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    console.log('Captured token:', token); // Log para depuração
+    
+    if (token) {
+      sessionStorage.setItem('token', token); // Armazena o token no sessionStorage
+      console.log('Token stored in sessionStorage:', sessionStorage.getItem('token')); // Log para verificar se o token foi armazenado
+      navigate('/dashboard'); // Redireciona para o dashboard
+    } else if (sessionStorage.getItem('token')) {
+      navigate('/dashboard'); // Redireciona para o dashboard se o token já estiver armazenado
+    }
+  }, []); // Executa o efeito apenas uma vez ao montar o componente
+
+  // Função para lidar com o login via SSO
+  const handleSsoLogin = () => {
     setModalMessage('Estamos redirecionando você...');
     setOpen(true);
     setTimeout(() => {
-      window.location.href = 'http://localhost:5173';
+      const redirectUrl = 'http://localhost:5173/'; // Define a URL do dashboard no projeto principal
+      window.location.href = `http://localhost:5175?redirect_to=${encodeURIComponent(redirectUrl)}`; // Redireciona para a URL do SSO com o parâmetro redirect_to
     }, 2000); // Redireciona após 2 segundos
   };
 
-  const handleGoogleLogin = () => {
-    navigate('/google-login');
+  // Funções para lidar com os logins via Google, Facebook e SAML
+ /* const handleGoogleLogin = () => {
+    navigate('/google-login'); // Redireciona para a página de login do Google
   };
 
   const handleFacebookLogin = () => {
-    navigate('/facebook-login');
-  };
+    navigate('/facebook-login'); // Redireciona para a página de login do Facebook
+  }; */
 
-  const handleSAMLLogin = () => {
-    navigate('/saml-login');
+  const handleExternalSsoLogin = () => {
+    setModalMessage('Estamos redirecionando você...');
+    setOpen(true);
+    setTimeout(() => {
+      const redirectUrl = 'http://localhost:5173/'; // Define a URL do dashboard no projeto principal
+      window.location.href = `http://localhost:5175?redirect_to=${encodeURIComponent(redirectUrl)}&external_login=true`; // Redireciona para a URL do SSO com o parâmetro redirect_to
+    }, 2000); // Redireciona após 2
   };
 
   return (
     <Wrapper>
       <LoginContainer>
         <Box display="flex" alignItems="center" mb={4}>
-          <Typography variant="h5">Escolha uma conta</Typography>
+          <Typography variant="h5">Escolha uma conta</Typography> {/* Título da seção */}
         </Box>
         <LoginForm>
           <SSOButton
             variant="contained"
-            onClick={handleSSOLogin}
-            startIcon={<img src={logo} alt="SSO Logo" style={{ width: 60, height: 30 }} />}
+            onClick={handleSsoLogin}
+            startIcon={<img src={logo} alt="SSO Logo" style={{ width: 60, height: 30 }} />} // Ícone de logo no botão
           >
             Entrar com SSO da OFM
           </SSOButton>
-          <GoogleButton
-            variant="contained"
-            onClick={handleGoogleLogin}
-            startIcon={<GoogleIcon />}
-          >
-            Entrar com Google
-          </GoogleButton>
-          <FacebookButton
-            variant="contained"
-            onClick={handleFacebookLogin}
-            startIcon={<FacebookIcon />}
-          >
-            Entrar com Facebook
-          </FacebookButton>
+        
           <SAMLButton
             variant="contained"
-            onClick={handleSAMLLogin}
-            startIcon={<SecurityIcon />}
+            onClick={handleExternalSsoLogin}
+            startIcon={<img src={sso} alt="SSO " style={{  height: 40 }} />}
           >
             Entrar com SSO da sua empresa
           </SAMLButton>
@@ -72,7 +80,7 @@ const Login = () => {
       </LoginContainer>
       <Modal
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={() => setOpen(false)} // Fecha o modal quando clicado fora dele
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
       >
@@ -81,9 +89,9 @@ const Login = () => {
             Um momento...
           </Typography>
           <Typography id="modal-description" gutterBottom>
-            {modalMessage}
+            {modalMessage} {/* Exibe a mensagem do modal */}
           </Typography>
-          <CircularProgress />
+          <CircularProgress /> {/* Exibe um indicador de carregamento */}
         </Paper>
       </Modal>
     </Wrapper>
