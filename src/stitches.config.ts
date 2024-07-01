@@ -1,4 +1,4 @@
-import { createStitches } from '@stitches/react';
+import { createStitches } from "@stitches/react";
 
 export const {
   styled,
@@ -12,33 +12,32 @@ export const {
 } = createStitches({
   theme: {
     colors: {
-      primary: '#0070f3',
-      secondary: '#1A1A1A',
+      primary: "#0070f3",
+      secondary: "#1A1A1A",
     },
   },
 });
 
-
 const globalStyles = globalCss({
-  '*': {
+  "*": {
     margin: 0,
     padding: 0,
-    boxSizing: 'border-box',
+    boxSizing: "border-box",
   },
   body: {
-    fontFamily: 'Roboto, sans-serif',
-    backgroundColor: '$background',
-    color: '$text',
+    fontFamily: "Roboto, sans-serif",
+    backgroundColor: "$background",
+    color: "$text",
     lineHeight: 1.5,
-    '-webkit-font-smoothing': 'antialiased',
-    '-moz-osx-font-smoothing': 'grayscale',
+    "-webkit-font-smoothing": "antialiased",
+    "-moz-osx-font-smoothing": "grayscale",
   },
   a: {
-    color: 'inherit',
-    textDecoration: 'none',
+    color: "inherit",
+    textDecoration: "none",
   },
-  'html, body, #root': {
-    height: '100%',
+  "html, body, #root": {
+    height: "100%",
   },
 });
 
