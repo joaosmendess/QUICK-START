@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Paper, Modal, CircularProgress } from '@mui/material';
 import { Wrapper, LoginContainer, LoginForm, SSOButton, SAMLButton } from './styles';
-import logo from '../../assets/logo-white.png';
-import sso from '../../assets/sso-logo.png';
+import logo from '../../../assets/logo-white.png'
+import sso from '../../../assets/sso-logo.png';
 
 
 const Login = () => {
@@ -12,7 +12,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   // Efeito para capturar o token da URL e armazená-lo no sessionStorage
-  useEffect(() => {
+   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
     console.log('Captured token:', token); // Log para depuração
