@@ -22,7 +22,7 @@ const Header: React.FC<{ pageTitle: string; toggleDrawer: () => void }> = ({ pag
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem('token');
+    localStorage.removeItem('token');
     window.location.href = '/';
   };
 

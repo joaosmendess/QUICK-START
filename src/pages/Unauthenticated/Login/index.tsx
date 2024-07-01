@@ -11,17 +11,17 @@ const Login = () => {
   const [modalMessage, setModalMessage] = useState('');
   const navigate = useNavigate();
 
-  // Efeito para capturar o token da URL e armazená-lo no sessionStorage
+  // Efeito para capturar o token da URL e armazená-lo no localStorage
    useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
     console.log('Captured token:', token); // Log para depuração
     
     if (token) {
-      sessionStorage.setItem('token', token); // Armazena o token no sessionStorage
-      console.log('Token stored in sessionStorage:', sessionStorage.getItem('token')); // Log para verificar se o token foi armazenado
+      localStorage.setItem('token', token); // Armazena o token no localStorage
+      console.log('Token stored in localStorage:', localStorage.getItem('token')); // Log para verificar se o token foi armazenado
       navigate('/dashboard'); // Redireciona para o dashboard
-    } else if (sessionStorage.getItem('token')) {
+    } else if (localStorage.getItem('token')) {
       navigate('/dashboard'); // Redireciona para o dashboard se o token já estiver armazenado
     }
   }, []); // Executa o efeito apenas uma vez ao montar o componente

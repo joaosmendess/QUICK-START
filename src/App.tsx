@@ -18,7 +18,7 @@ const App: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
-    const token = sessionStorage.getItem('token');
+    const token = localStorage.getItem('token');
     if (token) {
       setIsAuthenticated(true);
     } else {
