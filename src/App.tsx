@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import Dashboard from './pages/Authenticated/Dashboard';
 import Login from './pages/Unauthenticated/Login';
 import ManageUser from './pages/Authenticated/User/ManageUser';
@@ -11,20 +10,12 @@ import { globalStyles } from '../Styles/global';
 import Header from './components/Header';
 import DrawerMenu from './components/DrawerMenu';
 import RouteGuard from './components/RouterGuard';
+import CallbackPage from './pages/Callback';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 const App: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pageTitle, setPageTitle] = useState('Início');
   const [drawerOpen, setDrawerOpen] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
-  }, []);
 
   globalStyles();
 
@@ -34,18 +25,30 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      {isAuthenticated && (
-        <>
-          <Header pageTitle={pageTitle} toggleDrawer={toggleDrawer} />
-          <DrawerMenu open={drawerOpen} onClose={toggleDrawer} setPageTitle={setPageTitle} />
-        </>
-      )}
+      <AppContent pageTitle={pageTitle} setPageTitle={setPageTitle} drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
+    </Router>
+  );
+};
+
+interface AppContentProps {
+  pageTitle: string;
+  setPageTitle: (title: string) => void;
+  drawerOpen: boolean;
+  toggleDrawer: () => void;
+}
+
+const AppContent: React.FC<AppContentProps> = ({ pageTitle, setPageTitle, drawerOpen, toggleDrawer }) => {
+  const navigate = useNavigate();
+
+  return (
+    <AuthProvider navigate={navigate}>
       <Routes>
-        <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/callback" element={<CallbackPage />} />
         <Route 
           path="/dashboard" 
           element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
+            <RouteGuard>
               <Dashboard />
             </RouteGuard>
           } 
@@ -53,7 +56,7 @@ const App: React.FC = () => {
         <Route 
           path="/gerenciar-usuario" 
           element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
+            <RouteGuard>
               <ManageUser />
             </RouteGuard>
           } 
@@ -61,7 +64,7 @@ const App: React.FC = () => {
         <Route 
           path="/listar-usuario" 
           element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
+            <RouteGuard>
               <ListUsers />
             </RouteGuard>
           } 
@@ -69,7 +72,7 @@ const App: React.FC = () => {
         <Route 
           path="/gerenciar-permissoes" 
           element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
+            <RouteGuard>
               <ManagePermissions />
             </RouteGuard>
           } 
@@ -77,15 +80,29 @@ const App: React.FC = () => {
         <Route 
           path="/listar-permissoes" 
           element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
+            <RouteGuard>
               <ListPermissions />
             </RouteGuard>
           } 
         />
-        {/* Add other unauthenticated routes here */}
       </Routes>
-    </Router>
+      <AuthConsumer>
+        {({ isAuthenticated }) => (
+          isAuthenticated && (
+            <>
+              <Header pageTitle={pageTitle} toggleDrawer={toggleDrawer} />
+              <DrawerMenu open={drawerOpen} onClose={toggleDrawer} setPageTitle={setPageTitle} />
+            </>
+          )
+        )}
+      </AuthConsumer>
+    </AuthProvider>
   );
+};
+
+const AuthConsumer: React.FC<{ children: (auth: { isAuthenticated: boolean }) => React.ReactNode }> = ({ children }) => {
+  const auth = useAuth();
+  return <>{children(auth)}</>;
 };
 
 export default App;
