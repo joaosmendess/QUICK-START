@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Paper, Modal, CircularProgress } from '@mui/material';
-import { Wrapper, LoginContainer, LoginForm, SSOButton, SAMLButton } from './styles';
+import { Wrapper, LoginContainer, LoginForm, SSOButton } from './styles';
 import logo from '../../../assets/logo-white.png'
-import sso from '../../../assets/sso-logo.png';
+
 
 
 const Login = () => {
@@ -45,14 +45,14 @@ const Login = () => {
     navigate('/facebook-login'); // Redireciona para a página de login do Facebook
   }; */
 
-  const handleExternalSsoLogin = () => {
+ /* const handleExternalSsoLogin = () => {
     setModalMessage('Estamos redirecionando você...');
     setOpen(true);
     setTimeout(() => {
       const redirectUrl = 'http://localhost:5173/'; // Define a URL do dashboard no projeto principal
       window.location.href = `http://localhost:5175?redirect_to=${encodeURIComponent(redirectUrl)}&external_login=true`; // Redireciona para a URL do SSO com o parâmetro redirect_to
     }, 2000); // Redireciona após 2
-  };
+  };*/
 
   return (
     <Wrapper>
@@ -69,13 +69,7 @@ const Login = () => {
             Entrar com SSO da OFM
           </SSOButton>
         
-          <SAMLButton
-            variant="contained"
-            onClick={handleExternalSsoLogin}
-            startIcon={<img src={sso} alt="SSO " style={{  height: 40 }} />}
-          >
-            Entrar com SSO da sua empresa
-          </SAMLButton>
+        
         </LoginForm>
       </LoginContainer>
       <Modal
