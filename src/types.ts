@@ -15,6 +15,7 @@ export interface User {
   id: number;
   name: string;
   userName: string;
+  permissionGroupId:string;
   status: string;
   created_at: string;
   updated_at: string;
@@ -56,6 +57,7 @@ export interface LoginResponse {
 export interface PermissionGroup {
   id: number;
   name: string;
+  
 
   created_at: string;
   updated_at: string;
@@ -63,12 +65,15 @@ export interface PermissionGroup {
 
 export interface PermissionGroupHasModule {
   id: number;
-  get: number;
-  post: number;
-  put: number;
-  delete: number;
+  name:string;
   modules_id: number;
+  get: boolean;
+  post: boolean;
+  put: boolean;
+  delete: boolean;
   permissions_groups_id: number;
+
+ 
   created_at: string;
   updated_at: string;
 }

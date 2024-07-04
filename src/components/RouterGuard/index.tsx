@@ -1,19 +1,17 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
 
 interface RouteGuardProps {
-  children: JSX.Element;
+  isAuthenticated: boolean;
+  children: React.ReactNode;
 }
 
-const RouteGuard: React.FC<RouteGuardProps> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
-
+const RouteGuard: React.FC<RouteGuardProps> = ({ isAuthenticated, children }) => {
   if (!isAuthenticated) {
     return <Navigate to="/" replace />;
   }
 
-  return children;
+  return <>{children}</>;
 };
 
 export default RouteGuard;

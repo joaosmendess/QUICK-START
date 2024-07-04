@@ -1,12 +1,5 @@
-module.exports = (on, config) => {
-    // Configure plugins here
-    // Por exemplo, você pode adicionar eventos ou comandos personalizados
-    on('task', {
-      log(message) {
-        console.log(message);
-        return null;
-      },
-    });
-     // Retorne a configuração atualizada, se necessário
-    return config;
-  };
+/// <reference types="cypress" />
+
+module.exports = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions) => {
+  // Implementa plugins personalizados aqui
+};

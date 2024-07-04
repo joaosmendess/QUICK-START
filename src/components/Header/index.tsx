@@ -22,7 +22,11 @@ const Header: React.FC<{ pageTitle: string; toggleDrawer: () => void }> = ({ pag
   };
 
   const handleLogout = () => {
+    // Remover todas as chaves relacionadas ao usuário do localStorage
     localStorage.removeItem('token');
+    localStorage.removeItem('name');
+    localStorage.removeItem('userName');
+    // Redirecionar para a página inicial
     window.location.href = '/';
   };
 
