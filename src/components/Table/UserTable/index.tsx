@@ -1,20 +1,21 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Typography } from '@mui/material';
-import { User } from '../../types';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, CircularProgress } from '@mui/material';
+import { User } from '../../../types';
 import UserRow from '../UserRow';
 
 interface UserTableProps {
   users: User[];
-  isMobile: boolean;
   loading: boolean;
   error: string | null;
   handleMenuClick: (event: React.MouseEvent<HTMLButtonElement>, userName: string) => void;
   handleMenuClose: () => void;
+  handleEditClick: (user: User) => void;
   anchorEl: null | HTMLElement;
   selectedUser: null | string;
+  setUsers: React.Dispatch<React.SetStateAction<User[]>>;
 }
 
-const UserTable: React.FC<UserTableProps> = ({ users, isMobile, loading, error, handleMenuClick, handleMenuClose, anchorEl, selectedUser }) => {
+const UserTable: React.FC<UserTableProps> = ({ users, loading, error, handleMenuClick, handleMenuClose, handleEditClick, anchorEl, selectedUser }) => {
   return (
     <>
       {loading ? (
@@ -33,7 +34,6 @@ const UserTable: React.FC<UserTableProps> = ({ users, isMobile, loading, error, 
                   <TableRow>
                     <TableCell>Nome</TableCell>
                     <TableCell>Email</TableCell>
-                    {!isMobile && <TableCell>id</TableCell>}
                     <TableCell>Status</TableCell>
                     <TableCell>Ações</TableCell>
                   </TableRow>
@@ -43,9 +43,9 @@ const UserTable: React.FC<UserTableProps> = ({ users, isMobile, loading, error, 
                     <UserRow
                       key={user.userName}
                       user={user}
-                      isMobile={isMobile}
                       handleMenuClick={handleMenuClick}
                       handleMenuClose={handleMenuClose}
+                      handleEditClick={() => handleEditClick(user)}
                       anchorEl={anchorEl}
                       selectedUser={selectedUser}
                     />

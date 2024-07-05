@@ -11,84 +11,12 @@ const Login = () => {
   const [modalMessage, setModalMessage] = useState('');
   const navigate = useNavigate();
 
-  // Função para decodificar o token JWT
-  const parseJwt = (token: string) => {
-    try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-
-      return JSON.parse(jsonPayload);
-    } catch (error) {
-      console.error('Erro ao decodificar o token JWT:', error);
-      return null;
-    }
-  };
-
-  // Efeito para capturar o token da URL e armazená-lo no localStorage
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('token');
-    console.log('Captured token:', token); // Log para depuração
-
-    if (token) {
-      // Armazena o token no localStorage
-      localStorage.setItem('token', token);
-      console.log('Token stored in localStorage:', localStorage.getItem('token')); // Log para verificar se o token foi armazenado
-
-      // Verificar o tamanho do token
-      if (token.length > tokenThresholdLength) {
-        // Validar o token e obter customerData
-        fetch('http://localhost:8989/api/auth/validate-jwt', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ token })
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.customerData) {
-            const { name, userName } = data.customerData;
-            localStorage.setItem('name', name);
-            localStorage.setItem('userName', userName);
-            console.log('Name and UserName stored in localStorage:', name, userName);
-            navigate('/dashboard'); // Redireciona para o dashboard
-          } else {
-            console.error('Erro ao validar o token:', data.message);
-          }
-        })
-        .catch(error => {
-          console.error('Erro ao validar o token:', error);
-        });
-      } else {
-        // Decodificar o token para obter name e userName
-        const decodedToken = parseJwt(token);
-        if (decodedToken) {
-          const { name, userName } = decodedToken;
-          if (name && userName) {
-            localStorage.setItem('name', name);
-            localStorage.setItem('userName', userName);
-            console.log('Name and UserName stored in localStorage:', name, userName);
-          }
-        }
-
-        navigate('/dashboard'); // Redireciona para o dashboard
-      }
-    } else if (localStorage.getItem('token')) {
-      navigate('/dashboard'); // Redireciona para o dashboard se o token já estiver armazenado
-    }
-  }, [navigate]); // Execute o efeito novamente se navigate mudar
-
-  // Função para lidar com o login via SSO
   const handleSsoLogin = () => {
     setModalMessage('Estamos redirecionando você...');
     setOpen(true);
     setTimeout(() => {
-      const redirectUrl = 'http://localhost:5173/'; // URL do projeto principal
-      window.location.href = `http://localhost:5175/login?redirect_to=${encodeURIComponent(redirectUrl)}`; // Redireciona para o login do SSO com o parâmetro redirect_to
+      const redirectUrl = 'http://localhost:5173/callback'; // Certifique-se de que esta URL corresponda à rota do Callback
+      window.location.href = `http://localhost:5175/login?redirect_to=${encodeURIComponent(redirectUrl)}`;
     }, 2000); // Redireciona após 2 segundos
   };
 

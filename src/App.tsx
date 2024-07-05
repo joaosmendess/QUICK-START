@@ -43,8 +43,7 @@ const App: React.FC = () => {
       )}
       <Routes>
         <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
-        <Route path='/callback' element={<Callback/>} />
-        
+        <Route path="/callback" element={<Callback />} />
         <Route 
           path="/dashboard" 
           element={
@@ -62,7 +61,7 @@ const App: React.FC = () => {
           } 
         />
         <Route 
-          path="/listar-usuario" 
+          path="/listar-usuarios" 
           element={
             <RouteGuard isAuthenticated={isAuthenticated}>
               <ListUsers />

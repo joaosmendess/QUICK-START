@@ -1,22 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Box, Container, Toolbar, Typography } from '@mui/material';
 import dash from '../../../assets/thumbnail2.png';
 
 const Dashboard: React.FC = () => {
-  const navigate = useNavigate();
   const [name, setName] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/');
-    } else {
-      setName(localStorage.getItem('name'));
-      setUserName(localStorage.getItem('userName'));
-    }
-  }, [navigate]);
+    setName(localStorage.getItem('name'));
+    setUserName(localStorage.getItem('userName'));
+  }, []);
 
   return (
     <>

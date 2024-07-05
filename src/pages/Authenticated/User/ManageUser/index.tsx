@@ -78,6 +78,7 @@ const ManageUser: React.FC = () => {
             variant="outlined"
             type="text"
             value={name}
+            id="name"
             onChange={(e) => setName(e.target.value)}
             required
             fullWidth
@@ -88,6 +89,7 @@ const ManageUser: React.FC = () => {
             variant="outlined"
             type="text"
             value={userName}
+            id="userName"
             onChange={(e) => setUserName(e.target.value)}
             required
             fullWidth
@@ -98,15 +100,17 @@ const ManageUser: React.FC = () => {
             variant="outlined"
             type="email"
             value={email}
+            id="email"
             onChange={(e) => setEmail(e.target.value)}
             required
             fullWidth
             margin="normal"
           />
-          <FormControl fullWidth margin="normal">
+         <FormControl fullWidth margin="normal">
             <InputLabel>Grupo de permissão</InputLabel>
             <Select
               value={permissionGroupId}
+              id="permissionGroupId"
               onChange={(e) => setPermissionGroupId(e.target.value as string)}
               required
               label="Grupo de permissão"

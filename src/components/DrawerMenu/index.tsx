@@ -4,7 +4,6 @@ import { Drawer, List, ListItemText, ListItemIcon, ListItemButton, Collapse } fr
 import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import GroupIcon from '@mui/icons-material/Group';
-
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 
@@ -21,8 +20,6 @@ const DrawerMenu: React.FC<{ open: boolean; onClose: () => void; setPageTitle: (
     setGroupMenuOpen(!groupMenuOpen);
   };
 
-
-
   const handleNavigation = (path: string, title: string) => {
     navigate(path);
     setPageTitle(title);
@@ -32,13 +29,13 @@ const DrawerMenu: React.FC<{ open: boolean; onClose: () => void; setPageTitle: (
   return (
     <Drawer anchor="left" open={open} onClose={onClose}>
       <List>
-        <ListItemButton onClick={() => handleNavigation('/dashboard', 'Início')}>
+        <ListItemButton id="dashboard-menu" onClick={() => handleNavigation('/dashboard', 'Início')}>
           <ListItemIcon>
             <HomeIcon />
           </ListItemIcon>
           <ListItemText primary="Início" />
         </ListItemButton>
-        <ListItemButton onClick={handleUserMenuClick}>
+        <ListItemButton id="user-menu" onClick={handleUserMenuClick}>
           <ListItemIcon>
             <PersonIcon />
           </ListItemIcon>
@@ -47,15 +44,15 @@ const DrawerMenu: React.FC<{ open: boolean; onClose: () => void; setPageTitle: (
         </ListItemButton>
         <Collapse in={userMenuOpen} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <ListItemButton onClick={() => handleNavigation('/gerenciar-usuario', 'Gerenciar Usuário')} style={{ paddingLeft: 32 }}>
+            <ListItemButton id="manage-user-menu" onClick={() => handleNavigation('/gerenciar-usuario', 'Gerenciar Usuário')} style={{ paddingLeft: 32 }}>
               <ListItemText primary="Gerenciar usuário" />
             </ListItemButton>
-            <ListItemButton onClick={() => handleNavigation('/listar-usuario', 'Listar Usuários')} style={{ paddingLeft: 32 }}>
+            <ListItemButton id="list-user-menu" onClick={() => handleNavigation('/listar-usuarios', 'Listar usuários')} style={{ paddingLeft: 32 }}>
               <ListItemText primary="Listar usuários" />
             </ListItemButton>
           </List>
         </Collapse>
-        <ListItemButton onClick={handleGroupMenuClick}>
+        <ListItemButton id="group-menu" onClick={handleGroupMenuClick}>
           <ListItemIcon>
             <GroupIcon />
           </ListItemIcon>
@@ -64,15 +61,14 @@ const DrawerMenu: React.FC<{ open: boolean; onClose: () => void; setPageTitle: (
         </ListItemButton>
         <Collapse in={groupMenuOpen} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <ListItemButton onClick={() => handleNavigation('/gerenciar-permissoes', 'Gerenciar Permissões')} style={{ paddingLeft: 32 }}>
+            <ListItemButton id="manage-permissions-menu" onClick={() => handleNavigation('/gerenciar-permissao', 'Gerenciar grupo de permissão')} style={{ paddingLeft: 32 }}>
               <ListItemText primary="Gerenciar grupo de permissão" />
             </ListItemButton>
-            <ListItemButton onClick={() => handleNavigation('/listar-permissoes', 'Listar Permissões')} style={{ paddingLeft: 32 }}>
+            <ListItemButton id="list-permissions-menu" onClick={() => handleNavigation('/listar-permissoes', 'Listar grupos de permissões')} style={{ paddingLeft: 32 }}>
               <ListItemText primary="Listar grupos de permissões" />
             </ListItemButton>
           </List>
         </Collapse>
-        
       </List>
     </Drawer>
   );

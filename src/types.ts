@@ -15,7 +15,7 @@ export interface User {
   id: number;
   name: string;
   userName: string;
-  permissionGroupId:string;
+
   status: string;
   created_at: string;
   updated_at: string;

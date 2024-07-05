@@ -1,18 +1,19 @@
 import React from 'react';
 import { TableRow, TableCell, Box, Avatar, IconButton, Menu, MenuItem } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { User } from '../../types';
+import { User } from '../../../types';
 
 interface UserRowProps {
   user: User;
-  isMobile: boolean;
   handleMenuClick: (event: React.MouseEvent<HTMLButtonElement>, userName: string) => void;
   handleMenuClose: () => void;
+  handleEditClick: (user: User) => void;
+  
   anchorEl: null | HTMLElement;
   selectedUser: null | string;
 }
 
-const UserRow: React.FC<UserRowProps> = ({ user, isMobile, handleMenuClick, handleMenuClose, anchorEl, selectedUser }) => {
+const UserRow: React.FC<UserRowProps> = ({ user, handleMenuClick, handleMenuClose, handleEditClick, anchorEl, selectedUser }) => {
   return (
     <TableRow key={user.userName}>
       <TableCell>
@@ -22,7 +23,6 @@ const UserRow: React.FC<UserRowProps> = ({ user, isMobile, handleMenuClick, hand
         </Box>
       </TableCell>
       <TableCell>{user.userName}</TableCell>
-      {!isMobile && <TableCell>{user.id}</TableCell>}
       <TableCell>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Box sx={{
@@ -37,16 +37,21 @@ const UserRow: React.FC<UserRowProps> = ({ user, isMobile, handleMenuClick, hand
         </Box>
       </TableCell>
       <TableCell>
-        <IconButton onClick={(event) => handleMenuClick(event, user.userName)}>
+        <IconButton onClick={(event) => handleMenuClick(event, user.userName)}  id='menu-tabela'>
+        
           <MoreVertIcon />
+          
         </IconButton>
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl) && selectedUser === user.userName}
           onClose={handleMenuClose}
+         
         >
-          <MenuItem onClick={handleMenuClose}>Editar</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Excluir</MenuItem>
+       
+          <MenuItem onClick={() => handleEditClick(user)}  
+          >Editar</MenuItem>
+  
         </Menu>
       </TableCell>
     </TableRow>

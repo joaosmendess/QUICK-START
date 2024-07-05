@@ -85,6 +85,20 @@ export const getUsers = async (
   return response.data;
 };
 
+export const updateUsers = async (
+  id:number,
+  name: string,
+  userName: string,
+  status:string,
+): Promise<User> => {
+  const response = await api.put(`/users/${id}`, {
+    name, userName,status
+  });
+  return response.data;
+};
+
+
+
 export const getPermissionGroups = async (): Promise<PermissionGroup[]> => {
   const response = await api.get("/permissions-groups");
   return response.data;

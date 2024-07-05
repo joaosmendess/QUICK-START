@@ -19,7 +19,9 @@ const HeaderTable: React.FC<HeaderTableProps> = ({ searchTerm, handleSearchChang
         <TextField
           variant="outlined"
           type="search"
-          placeholder="Search"
+          id="search"
+
+          placeholder="Procurar"
           value={searchTerm}
           onChange={handleSearchChange}
           sx={{
