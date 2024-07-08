@@ -15,16 +15,14 @@ import Callback from './pages/Callback';
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [pageTitle, setPageTitle] = useState('Início');
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
+    setIsAuthenticated(!!token);
+    setIsLoading(false);
   }, []);
 
   globalStyles();
@@ -33,57 +31,70 @@ const App: React.FC = () => {
     setDrawerOpen(!drawerOpen);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('name');
+    localStorage.removeItem('userName');
+
+    setIsAuthenticated(false);
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Ou qualquer componente de carregamento que preferir
+  }
+
   return (
     <Router>
       {isAuthenticated && (
         <>
-          <Header pageTitle={pageTitle} toggleDrawer={toggleDrawer} />
+          <Header pageTitle={pageTitle} toggleDrawer={toggleDrawer} onLogout={handleLogout} />
           <DrawerMenu open={drawerOpen} onClose={toggleDrawer} setPageTitle={setPageTitle} />
         </>
       )}
       <Routes>
         <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
         <Route path="/callback" element={<Callback />} />
-        <Route 
-          path="/dashboard" 
+        <Route
+          path="/dashboard"
           element={
             <RouteGuard isAuthenticated={isAuthenticated}>
               <Dashboard />
             </RouteGuard>
-          } 
+          }
         />
-        <Route 
-          path="/gerenciar-usuario" 
+        <Route
+          path="/gerenciar-usuario"
           element={
             <RouteGuard isAuthenticated={isAuthenticated}>
               <ManageUser />
             </RouteGuard>
-          } 
+          }
         />
-        <Route 
-          path="/listar-usuarios" 
+        <Route
+          path="/listar-usuarios"
           element={
             <RouteGuard isAuthenticated={isAuthenticated}>
               <ListUsers />
             </RouteGuard>
-          } 
+          }
         />
-        <Route 
-          path="/gerenciar-permissoes" 
+        <Route
+          path="/gerenciar-permissao"
           element={
             <RouteGuard isAuthenticated={isAuthenticated}>
               <ManagePermissions />
             </RouteGuard>
-          } 
+          }
         />
-        <Route 
-          path="/listar-permissoes" 
+        <Route
+          path="/listar-permissoes"
           element={
             <RouteGuard isAuthenticated={isAuthenticated}>
               <ListPermissions />
             </RouteGuard>
-          } 
+          }
         />
+        <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/"} />} />
       </Routes>
     </Router>
   );

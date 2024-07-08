@@ -3,6 +3,7 @@ import { AppBar, Toolbar, IconButton, Avatar, Typography, Menu, MenuItem, Box } 
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { styled } from '@stitches/react';
+import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo-white.png';
 
 const StyledAppBar = styled(AppBar, {
@@ -10,8 +11,15 @@ const StyledAppBar = styled(AppBar, {
   color: '#000000',
 });
 
-const Header: React.FC<{ pageTitle: string; toggleDrawer: () => void }> = ({ pageTitle, toggleDrawer }) => {
+interface HeaderProps {
+  pageTitle: string;
+  toggleDrawer: () => void;
+  onLogout: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ pageTitle, toggleDrawer, onLogout }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -22,12 +30,8 @@ const Header: React.FC<{ pageTitle: string; toggleDrawer: () => void }> = ({ pag
   };
 
   const handleLogout = () => {
-    // Remover todas as chaves relacionadas ao usuário do localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('name');
-    localStorage.removeItem('userName');
-    // Redirecionar para a página inicial
-    window.location.href = '/';
+    onLogout();
+    navigate('/');
   };
 
   return (

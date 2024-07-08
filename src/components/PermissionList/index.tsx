@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '../../stitches.config';
 import { TextField, Box, List } from '@mui/material';
-import { getPermissionGroupsHasModules, deletePermissionGroupHasModule } from '../../services/auth';
+import { getPermissionGroups, deletePermissionGroupHasModule } from '../../services/auth';
 import ErrorMessage from '../Messages/ErrorMessage';
 import SuccessMessage from '../Messages/SuccessMessage';
 import PermissionItem from '../PermissionItem';
 import DeleteDialog from '../DeleteDialog';
 import LoadingDialog from '../LoadingDialog';
 import { useNavigate } from 'react-router-dom';
-import { PermissionGroupHasModule } from '../../types';
+import { PermissionGroup } from '../../types'; // Certifique-se de importar o tipo correto
 
 const PermissionListContainer = styled(Box, {
   display: 'flex',
@@ -24,7 +24,7 @@ const PermissionListContainer = styled(Box, {
 });
 
 const PermissionList = () => {
-  const [permissionGroups, setPermissionGroups] = useState<PermissionGroupHasModule[]>([]);
+  const [permissionGroups, setPermissionGroups] = useState<PermissionGroup[]>([]);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -32,12 +32,11 @@ const PermissionList = () => {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [permissionToDelete, setPermissionToDelete] = useState<null | string>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPermissions = async () => {
       try {
-        const fetchedPermissions = await getPermissionGroupsHasModules();
+        const fetchedPermissions = await getPermissionGroups();
         setPermissionGroups(fetchedPermissions);
       } catch (error) {
         setError('Erro ao carregar grupos de permissões');
@@ -74,10 +73,6 @@ const PermissionList = () => {
     }
   };
 
-  const handleEdit = (permissionGroup: PermissionGroupHasModule) => {
-    navigate(`/gerenciar-permissoes/${permissionGroup.id}`);
-  };
-
   return (
     <PermissionListContainer>
       <TextField
@@ -96,10 +91,8 @@ const PermissionList = () => {
           {permissionGroups.map((permissionGroup) => (
             <PermissionItem
               key={permissionGroup.id}
-           
               permissionGroup={permissionGroup}
               onDelete={() => handleDelete(permissionGroup.id.toString())}
-              onEdit={() => handleEdit(permissionGroup)}
             />
           ))}
         </List>

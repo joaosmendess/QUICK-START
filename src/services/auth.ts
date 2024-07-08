@@ -13,7 +13,6 @@ import {
 
 
 
-import { useAuth } from '../context/AuthContext';
 
 const api = axios.create({
   baseURL: 'http://localhost:8989/api',
@@ -35,15 +34,13 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response.status === 401) {
-      const { logout } = useAuth();
-      logout();
+    if (error.response && error.response.status === 401) {
+      localStorage.clear(); // Remove todos os itens do localStorage
+      window.location.href = '/'; // Redireciona para a página de login
     }
     return Promise.reject(error);
   }
 );
-
-
 
 
 

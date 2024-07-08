@@ -6,10 +6,10 @@ import { PermissionGroup } from '../../types';
 interface PermissionItemProps {
   permissionGroup: PermissionGroup;
   onDelete: () => void;
-  onEdit: () => void;
+  
 }
 
-const PermissionItem: React.FC<PermissionItemProps> = ({ permissionGroup, onDelete, onEdit }) => {
+const PermissionItem: React.FC<PermissionItemProps> = ({ permissionGroup, onDelete }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -20,10 +20,7 @@ const PermissionItem: React.FC<PermissionItemProps> = ({ permissionGroup, onDele
     setAnchorEl(null);
   };
 
-  const handleEdit = () => {
-    onEdit();
-    handleMenuClose();
-  };
+ 
 
   const handleDelete = () => {
     onDelete();
@@ -38,8 +35,8 @@ const PermissionItem: React.FC<PermissionItemProps> = ({ permissionGroup, onDele
           <MoreVertIcon />
         </IconButton>
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-          <MenuItem onClick={handleEdit}>Editar</MenuItem>
-          <MenuItem onClick={handleDelete}>Deletar</MenuItem>
+         
+          <MenuItem onClick={handleDelete}>Remover</MenuItem>
         </Menu>
       </ListItemSecondaryAction>
     </ListItem>

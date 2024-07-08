@@ -5,7 +5,7 @@ describe('Gerenciamento de Usuários', () => {
   const userEmail = `${userName}@example.com`;
 
   before(() => {
-    const redirectTo = 'http://localhost:5173/';
+    const redirectTo = 'http://localhost:5173/callback';
     cy.login('joao.mendes', 'password123', redirectTo);
   });
 

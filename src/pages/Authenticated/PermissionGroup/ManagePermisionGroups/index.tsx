@@ -181,7 +181,7 @@ const PermissionForm: React.FC = () => {
             fullWidth
             disabled={loading}
           >
-            Continuar
+            Salvar
           </SaveButton>
         </form>
       </TabPanel>
