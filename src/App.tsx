@@ -12,6 +12,12 @@ import Header from './components/Header';
 import DrawerMenu from './components/DrawerMenu';
 import RouteGuard from './components/RouterGuard';
 import Callback from './pages/Callback';
+import ManageApplication from './pages/Authenticated/ApplicationPermission/ManageApplication';
+import ListApplication from './pages/Authenticated/ApplicationPermission/ListApplication';
+import ManageModule from './pages/Authenticated/Modules/ManageModule';
+import ModuleList from './pages/Authenticated/Modules/ListModule';
+import ManageCompany from './pages/Authenticated/Company/ManageCompany';
+import ListCompany from './pages/Authenticated/Company/ListCompany';
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -91,6 +97,54 @@ const App: React.FC = () => {
           element={
             <RouteGuard isAuthenticated={isAuthenticated}>
               <ListPermissions />
+            </RouteGuard>
+          }
+        />
+           <Route
+          path="/gerenciar-empresa"
+          element={
+            <RouteGuard isAuthenticated={isAuthenticated}>
+              <ManageCompany/>
+            </RouteGuard>
+          }
+        />
+   <Route
+          path="/listar-empresas"
+          element={
+            <RouteGuard isAuthenticated={isAuthenticated}>
+              <ListCompany />
+            </RouteGuard>
+          }
+        />
+
+        <Route
+          path="/gerenciar-aplicacao"
+          element={
+            <RouteGuard isAuthenticated={isAuthenticated}>
+              <ManageApplication />
+            </RouteGuard>
+          }
+        />   <Route
+        path="/listar-aplicacoes"
+        element={
+          <RouteGuard isAuthenticated={isAuthenticated}>
+            <ListApplication />
+          </RouteGuard>
+        }
+      />
+         <Route
+          path="/gerenciar-modulo"
+          element={
+            <RouteGuard isAuthenticated={isAuthenticated}>
+              <ManageModule />
+            </RouteGuard>
+          }
+        />
+           <Route
+          path="/listar-modulos"
+          element={
+            <RouteGuard isAuthenticated={isAuthenticated}>
+              <ModuleList />
             </RouteGuard>
           }
         />

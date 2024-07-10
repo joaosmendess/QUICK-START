@@ -45,7 +45,7 @@ const Login = () => {
     setModalMessage('Estamos redirecionando você...');
     setOpen(true);
     setTimeout(() => {
-      const redirectUrl = 'http://localhost:5173/callback';
+      const redirectUrl = 'http://localhost:8080/callback';
       window.location.href = `http://localhost:5175/login?redirect_to=${encodeURIComponent(redirectUrl)}`;
     }, 2000);
   };

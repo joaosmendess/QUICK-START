@@ -24,6 +24,7 @@ import Success from '../../../../components/Messages/SuccessMessage';
 
 const SaveButton = styled(Button, {
   marginTop: '1rem',
+  backgroundColor: '#6a0dad'
 });
 
 interface Permission {
@@ -177,7 +178,7 @@ const PermissionForm: React.FC = () => {
           <SaveButton
             type="submit"
             variant="contained"
-            color="primary"
+            color="secondary"
             fullWidth
             disabled={loading}
           >
@@ -255,7 +256,7 @@ const PermissionForm: React.FC = () => {
           <SaveButton
             type="submit"
             variant="contained"
-            color="primary"
+            color="secondary"
             fullWidth
             disabled={loading}
           >

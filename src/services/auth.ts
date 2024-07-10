@@ -8,6 +8,7 @@ import {
   PermissionGroupHasModule,
   UserHasPermission,
   Application,
+  Company,
 } from "../types";
 
 
@@ -94,7 +95,18 @@ export const updateUsers = async (
   return response.data;
 };
 
-
+export const getCompany = async (page: number): Promise<{ data: Company[]; total: number; last_page: number }> => {
+  const response = await api.get(`/company?page=${page}`);
+  return {
+    data: response.data.data,
+    total: response.data.total,
+    last_page: response.data.last_page,
+  };
+};
+export const createCompany = async (name: string, cnpj: string): Promise<Company> => {
+  const response = await api.post(`/company`, { name, cnpj });
+  return response.data;
+};
 
 export const getPermissionGroups = async (): Promise<PermissionGroup[]> => {
   const response = await api.get("/permissions-groups");

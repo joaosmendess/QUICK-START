@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo-white.png';
 
 const StyledAppBar = styled(AppBar, {
-  backgroundColor: '#ffffff',
   color: '#000000',
 });
 
@@ -35,7 +34,13 @@ const Header: React.FC<HeaderProps> = ({ pageTitle, toggleDrawer, onLogout }) =>
   };
 
   return (
-    <StyledAppBar position="fixed">
+    <AppBar
+      position="fixed"
+      sx={{
+        backgroundImage: 'linear-gradient(to right, #202020, #3E3D45)',
+        color: '#ffffff',
+      }}
+    >
       <Toolbar sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer}>
@@ -58,7 +63,7 @@ const Header: React.FC<HeaderProps> = ({ pageTitle, toggleDrawer, onLogout }) =>
           </Menu>
         </Box>
       </Toolbar>
-    </StyledAppBar>
+    </AppBar>
   );
 };
 

@@ -45,7 +45,7 @@ const Callback = () => {
             localStorage.setItem('userName', data.customerData.userName);
 
             console.log('Token validado e armazenado:', data.token);
-         window.location.href =`http://localhost:5173/dashboard`
+         window.location.href =`/dashboard`
           } else {
             console.error('Token não retornado na resposta:', data);
             navigate('/login', { replace: true });
@@ -75,7 +75,7 @@ const Callback = () => {
           localStorage.setItem('name', name);
           localStorage.setItem('userName', userName);
 
-          window.location.href =`http://localhost:5173/dashboard`
+          window.location.href =`/dashboard`
 
         } else {
           console.error('Dados necessários não encontrados no token decodificado');

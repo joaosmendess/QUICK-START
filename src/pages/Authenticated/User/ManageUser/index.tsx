@@ -19,6 +19,8 @@ const FormContainer = styled(Box, {
 
 const SaveButton = styled(Button, {
   marginTop: '1rem',
+  backgroundColor: '#6a0dad'
+
 });
 
 const ManageUser: React.FC = () => {
@@ -44,7 +46,7 @@ const ManageUser: React.FC = () => {
     };
     fetchData();
   }, []);
-
+ 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -121,7 +123,7 @@ const ManageUser: React.FC = () => {
               ))}
             </Select>
           </FormControl>
-          <SaveButton type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
+          <SaveButton type="submit" variant="contained" color="secondary" fullWidth disabled={loading}>
             {loading ? <CircularProgress size={24} /> : 'Salvar'}
           </SaveButton>
         </form>

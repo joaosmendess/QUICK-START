@@ -97,3 +97,15 @@ export interface Application {
   productionUrl: string;
   empresa_id: number;
 }
+
+export interface BaseItem {
+  id: number;
+  name: string;
+}
+
+export interface Company {
+  id:number;
+  name:string;
+  cnpj: string;
+  created_at:string
+}
