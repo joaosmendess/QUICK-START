@@ -25,6 +25,7 @@
     "react-lottie": "^1.2.4",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.24.0",
+    "recharts": "^2.12.7",
     "stitches": "^1.2.11"
   },
   "devDependencies": {

@@ -117,8 +117,8 @@ const DrawerMenu: React.FC<{ open: boolean; onClose: () => void; setPageTitle: (
         </ListItemButton>
         <Collapse in={aplicacoesMenuOpen} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <ListItemButton id="manage-applications-menu" onClick={() => handleNavigation('/gerenciar-aplicacao', 'Gerenciar Aplicações')} style={{ paddingLeft: 32 }}>
-              <ListItemText primary="Gerenciar Aplicações" />
+            <ListItemButton id="manage-applications-menu" onClick={() => handleNavigation('/gerenciar-aplicacao', 'Gerenciar Aplicação')} style={{ paddingLeft: 32 }}>
+              <ListItemText primary="Gerenciar Aplicação" />
             </ListItemButton>
             <ListItemButton id="list-applications-menu" onClick={() => handleNavigation('/listar-aplicacoes', 'Listar Aplicações')} style={{ paddingLeft: 32 }}>
               <ListItemText primary="Listar Aplicações" />
@@ -135,8 +135,8 @@ const DrawerMenu: React.FC<{ open: boolean; onClose: () => void; setPageTitle: (
         </ListItemButton>
         <Collapse in={modulosMenuOpen} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <ListItemButton id="manage-modules-menu" onClick={() => handleNavigation('/gerenciar-modulo', 'Gerenciar Módulos')} style={{ paddingLeft: 32 }}>
-              <ListItemText primary="Gerenciar Módulos" />
+            <ListItemButton id="manage-modules-menu" onClick={() => handleNavigation('/gerenciar-modulo', 'Gerenciar Módulo')} style={{ paddingLeft: 32 }}>
+              <ListItemText primary="Gerenciar Módulo" />
             </ListItemButton>
             <ListItemButton id="list-modules-menu" onClick={() => handleNavigation('/listar-modulos', 'Listar Módulos')} style={{ paddingLeft: 32 }}>
               <ListItemText primary="Listar Módulos" />

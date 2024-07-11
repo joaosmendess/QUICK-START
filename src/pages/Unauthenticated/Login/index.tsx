@@ -1,113 +1,175 @@
-import { useState } from 'react';
-import { Box, Typography, Paper, Modal, CircularProgress } from '@mui/material';
-import styled from '@emotion/styled';
-import background from '../../../assets/richard-horvath-cPccYbPrF-A-unsplash.jpg'; // Adicione seu fundo aqui
+import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { LinearProgress, Alert, useMediaQuery, useTheme, Box, IconButton, InputAdornment, Typography } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { login } from '../../../services/auth';
+import LoginHeader from '../../../components/LoginHeader';
+import logo from '../../../assets/key.png';
+import animated from '../../../assets/olShi6AW2pQj75e9EX (1).mp4';
+import background from '../../../assets/richard-horvath-cPccYbPrF-A-unsplash.jpg';
 
-import logo from '../../../assets/logo-white.png';
-import animationData from '../../../assets/olShi6AW2pQj75e9EX (1).mp4';
-import { 
-  FormContainer, 
-  LeftContainer, 
-  RightContainer, 
-  ImageContainer, 
-  HeaderContainer, 
-  ButtonContainer, 
-  SSOButton as StyledSSOButton, 
-  DividerStyled 
+import {
+  FormContainer,
+  HeaderContainer,
+  ButtonContainer,
+  LoginButton,
+  SSOButton,
+  InputField,
+  Form,
+  ImageContainer,
+  LeftContainer,
+  RightContainer,
+  Divider,
 } from './styles';
 
-const Wrapper = styled(Box)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background: url(${background}) no-repeat center center;
-  background-size: cover;
-`;
+const Login: React.FC = () => {
+  const [userName, setUserName] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-const StyledPaper = styled(Paper)`
-  padding: 2rem;
-  text-align: center;
-  max-width: 400px;
-  margin: auto;
-  margin-top: 20vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border-radius: 12px;
-`;
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
 
-const Login = () => {
-  const [open, setOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
 
-  const handleSsoLogin = () => {
-    setModalMessage('Estamos redirecionando você...');
-    setOpen(true);
-    setTimeout(() => {
-      const redirectUrl = 'http://localhost:8080/callback';
-      window.location.href = `http://localhost:5175/login?redirect_to=${encodeURIComponent(redirectUrl)}`;
-    }, 2000);
+    try {
+      const response = await login(userName, password);
+      if (response && response.token) {
+        // Armazenar o token, nome e nome de usuário no localStorage
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('name', response.customerData.name);
+        localStorage.setItem('userName', response.customerData.userName);
+
+        // Redirecionar para o dashboard
+        window.location.href = '/dashboard';
+      } else {
+        setError('Falha no login. Verifique suas credenciais.');
+      }
+    } catch (err) {
+      setError('Falha no login. Verifique suas credenciais.');
+    } finally {
+      setLoading(false);
+    }
   };
 
+  const handleSSOPageNavigation = () => {
+    navigate('/verify-sso');
+  };
 
- 
+  const handleClickShowPassword = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
 
   return (
-    <Wrapper>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    
+       
+        backgroundImage: `url(${background})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        height:'100vh'
+        
+       
+      }}
+    >
       <FormContainer>
-        <LeftContainer>
-          <ImageContainer>
-          <video width="100%" height="auto" autoPlay loop muted>
-              <source src={animationData} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </ImageContainer>
-        </LeftContainer>
-        <DividerStyled />
+        {loading && <LinearProgress sx={{ width: '100%', position: 'absolute', top: 0 }} />}
+        {!isMobile && !isTablet && (
+          <LeftContainer>
+            <ImageContainer>
+              <video width="100%" height="auto" autoPlay loop muted>
+                <source src={animated} type="video/mp4" />
+                Seu navegador nao suporta tag de video
+              </video>
+            </ImageContainer>
+          </LeftContainer>
+        )}
+        {!isMobile && !isTablet && <Divider />}
         <RightContainer>
           <HeaderContainer>
-            <Typography variant="h4" gutterBottom>
-              Bem-vindo!
-            </Typography>
-            <Typography variant="body1" color="textSecondary">
-              Faça login para acessar sua conta.
-            </Typography>
+            <LoginHeader />
           </HeaderContainer>
-          <ButtonContainer>
-            <StyledSSOButton
-              variant="contained"
-              onClick={handleSsoLogin}
-              startIcon={<img src={logo} alt="SSO Logo" style={{ height: 30 }} />}
-            >
-              Entrar com SSO da OFM
-            </StyledSSOButton>
-            <Typography variant="body2" color="textSecondary" align="center" style={{ marginTop: '1rem' }}>
-              Agora você pode entrar com o SSO da OFM, trazendo mais inovação e segurança para nossos clientes.
-              <br />
-             
-             
-            </Typography>
-          </ButtonContainer>
+          <Form onSubmit={handleLogin}>
+            <InputField
+              id="userName"
+              label="Usuário"
+              variant="outlined"
+              type="text"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              required
+              margin="normal"
+            />
+            <InputField
+              id="password"
+              label="Senha"
+              variant="outlined"
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              margin="normal"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            {error && (
+              <Alert severity="error" sx={{ marginBottom: '1rem', opacity: error ? 1 : 0, transition: 'opacity 0.5s ease-in-out' }}>
+                {error}
+              </Alert>
+            )}
+            <ButtonContainer>
+              <LoginButton
+                id="loginButton"
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={!userName || !password || loading}
+              >
+                Entrar
+              </LoginButton>
+              <Typography variant="body2" color="textSecondary" align="center" sx={{ marginY: 1 }}>
+                ou
+              </Typography>
+              <SSOButton
+                variant="contained"
+                color="primary"
+                startIcon={<img src={logo} alt="SSO Logo" style={{ height: 30, marginLeft: 10 }} />}
+                onClick={handleSSOPageNavigation}
+              >
+                entrar com SSO externo
+              </SSOButton>
+            </ButtonContainer>
+          </Form>
         </RightContainer>
       </FormContainer>
-      <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
-      >
-        <StyledPaper elevation={3}>
-          <Typography id="modal-title" variant="h6" gutterBottom>
-            Um momento...
-          </Typography>
-          <Typography id="modal-description" gutterBottom>
-            {modalMessage}
-          </Typography>
-          <CircularProgress />
-        </StyledPaper>
-      </Modal>
-    </Wrapper>
+    </Box>
   );
 };
 

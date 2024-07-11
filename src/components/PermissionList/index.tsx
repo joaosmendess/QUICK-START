@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '../../stitches.config';
-import { TextField, Box, List } from '@mui/material';
+import { TextField, Box, List, Toolbar } from '@mui/material';
 import { getPermissionGroups, deletePermissionGroupHasModule } from '../../services/auth';
 import ErrorMessage from '../Messages/ErrorMessage';
 import SuccessMessage from '../Messages/SuccessMessage';
 import PermissionItem from '../PermissionItem';
 import DeleteDialog from '../DeleteDialog';
 import LoadingDialog from '../LoadingDialog';
-import { useNavigate } from 'react-router-dom';
 import { PermissionGroup } from '../../types'; // Certifique-se de importar o tipo correto
 
 const PermissionListContainer = styled(Box, {
@@ -25,6 +24,7 @@ const PermissionListContainer = styled(Box, {
 
 const PermissionList = () => {
   const [permissionGroups, setPermissionGroups] = useState<PermissionGroup[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -75,6 +75,7 @@ const PermissionList = () => {
 
   return (
     <PermissionListContainer>
+      <Toolbar/>
       <TextField
         label="Pesquise por nome"
         variant="outlined"

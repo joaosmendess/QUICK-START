@@ -104,8 +104,8 @@ export const getCompany = async (page: number): Promise<{ data: Company[]; total
     //sd
   };
 };
-export const createCompany = async (name: string, cnpj: string): Promise<Company> => {
-  const response = await api.post(`/company`, { name, cnpj });
+export const createCompany = async (name: string, cnpj: string,  clientId:string, clientSecret:string, ssoName:string, tenantId:string): Promise<Company> => {
+  const response = await api.post(`/company`, { name, cnpj, clientId,clientSecret, ssoName, tenantId });
   return response.data;
 };
 
@@ -247,5 +247,20 @@ export const getApplications = async (): Promise<Application[]> => {
   const response = await api.get("/applications");
   return response.data;
 };
+
+export const createApplication = async (application: Application): Promise<Application> => {
+  const response = await api.post('/applications', application);
+  return response.data;
+};
+
+export const softDeleteApplication = async (id: number): Promise<void> => {
+  await api.delete(`/applications/${id}`);
+};
+
+export const updateApplication = async (application: Application): Promise<Application> => {
+  const response = await api.put(`/applications/${application.id}`, application);
+  return response.data;
+};
+
 
 export default api;

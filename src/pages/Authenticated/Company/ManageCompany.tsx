@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Container, TextField, Button, Toolbar, LinearProgress } from '@mui/material';
+import { Container, TextField, Button, Toolbar, LinearProgress, Grid, Tabs, Tab, Box } from '@mui/material';
 import { styled } from '@stitches/react';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+
 import { createCompany } from '../../../services/auth';
-import { Company } from '../../../types';
 import Error from '../../../components/Messages/ErrorMessage';
 import Success from '../../../components/Messages/SuccessMessage';
 
@@ -31,8 +30,13 @@ const cleanCNPJ = (value: string) => {
 };
 
 const ManageCompany: React.FC = () => {
+  const [tabIndex, setTabIndex] = useState(0);
   const [name, setName] = useState('');
   const [cnpj, setCnpj] = useState('');
+  const [clientId, setClientId] = useState('');
+  const [clientSecret, setClientSecret] = useState('');
+  const [tenantId, setTenantId] = useState('');
+  const [ssoName, setSsoName] = useState('');
   const [message, setMessage] = useState<string | null>(null);
   const [severity, setSeverity] = useState<'success' | 'error' | null>(null);
   const [loading, setLoading] = useState(false);
@@ -45,12 +49,16 @@ const ManageCompany: React.FC = () => {
     setLoading(true);
     try {
       const cleanedCnpj = cleanCNPJ(cnpj);
-      const newCompany = await createCompany(name, cleanedCnpj);
+      const newCompany = await createCompany(name, cleanedCnpj, clientId, clientSecret, ssoName, tenantId);
       console.log('Empresa criada com sucesso:', newCompany);
       setMessage('Empresa criada com sucesso!');
       setSeverity('success');
       setName('');
       setCnpj('');
+      setClientId('');
+      setClientSecret('');
+      setTenantId('');
+      setSsoName('');
     } catch (error) {
       console.error('Erro ao criar empresa:', error);
       setMessage('Erro ao criar empresa');
@@ -60,47 +68,106 @@ const ManageCompany: React.FC = () => {
     }
   };
 
+  const handleTabChange = (event: React.ChangeEvent<object>, newValue: number) => {
+    setTabIndex(newValue);
+  };
+
   return (
     <>
-    <Toolbar/>
+      <Toolbar />
       {loading && <LinearProgress />}
-     
       <FormContainer maxWidth="xs">
         {severity === 'error' && <Error message={message as string} />}
         {severity === 'success' && <Success message={message as string} />}
-        <TextField
-          label="Nome"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Ex.: Nome da Empresa"
-          variant="outlined"
-          required
-          sx={{ marginBottom: 2, width: '400px' }}
-        />
-        <TextField
-          label="CNPJ"
-          value={cnpj}
-          onChange={handleCnpjChange}
-          placeholder="Ex.: 00.000.000/0000-00"
-          variant="outlined"
-          required
-          sx={{ marginBottom: 2, width: '400px' }}
-        />
-        <Button
-          startIcon={<AddCircleIcon />}
-          sx={{ alignSelf: 'flex-start', marginTop: 2 }}
-          onClick={handleSubmit}
-        >
-          Adicionar Aplicação
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ marginTop: 2 }}
-          onClick={handleSubmit}
-        >
-          Salvar
-        </Button>
+        <Tabs value={tabIndex} onChange={handleTabChange} centered>
+          <Tab label="Dados Principais" />
+          <Tab label="Dados SSO Externo" />
+        </Tabs>
+        <Box mt={2} width="100%">
+          {tabIndex === 0 && (
+            <Grid container spacing={2} justifyContent="center">
+              <Grid item xs={12}>
+                <TextField
+                  label="Nome"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Ex.: Nome da Empresa"
+                  variant="outlined"
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="CNPJ"
+                  value={cnpj}
+                  onChange={handleCnpjChange}
+                  placeholder="Ex.: 00.000.000/0000-00"
+                  variant="outlined"
+                  required
+                  fullWidth
+                />
+              </Grid>
+            </Grid>
+          )}
+          {tabIndex === 1 && (
+            <Grid container spacing={2} justifyContent="center">
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Client ID"
+                  value={clientId}
+                  onChange={(e) => setClientId(e.target.value)}
+                  placeholder="Client ID"
+                  variant="outlined"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Client Secret"
+                  value={clientSecret}
+                  onChange={(e) => setClientSecret(e.target.value)}
+                  placeholder="Client Secret"
+                  variant="outlined"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Tenant ID"
+                  value={tenantId}
+                  onChange={(e) => setTenantId(e.target.value)}
+                  placeholder="Tenant ID"
+                  variant="outlined"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Nome do SSO"
+                  value={ssoName}
+                  onChange={(e) => setSsoName(e.target.value)}
+                  placeholder="Nome do SSO"
+                  variant="outlined"
+                  fullWidth
+                />
+              </Grid>
+            </Grid>
+          )}
+        </Box>
+        <Grid container spacing={1} justifyContent="center" mt={2}>
+        
+          <Grid item xs={12} md={6}>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={handleSubmit}
+            >
+              Salvar
+            </Button>
+          </Grid>
+        </Grid>
       </FormContainer>
     </>
   );
