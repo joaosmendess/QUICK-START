@@ -153,6 +153,7 @@ const PermissionForm: React.FC = () => {
   return (
     <>
     <Toolbar/>
+    <Toolbar/>
     <Box sx={{ maxWidth: '600px', margin: 'auto', mt: 4 }}>
       <LoadingDialog open={initialLoading} message="Carregando informações, por favor aguarde..." />
       {error && <Error message={error} />}
@@ -178,7 +179,7 @@ const PermissionForm: React.FC = () => {
           <SaveButton
             type="submit"
             variant="contained"
-            color="secondary"
+            color="primary"
             fullWidth
             disabled={loading}
           >
@@ -256,7 +257,7 @@ const PermissionForm: React.FC = () => {
           <SaveButton
             type="submit"
             variant="contained"
-            color="secondary"
+            color="primary"
             fullWidth
             disabled={loading}
           >

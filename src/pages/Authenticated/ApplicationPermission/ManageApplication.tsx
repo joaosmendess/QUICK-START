@@ -1,12 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Container, TextField, Typography, Box,  Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Toolbar } from '@mui/material';
-
+import React, { useRef, useState } from 'react';
+import { Container, TextField, Typography, Box, Button, Toolbar, LinearProgress } from '@mui/material';
 import { styled } from '@stitches/react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import axios from 'axios';
-import { useNavigate, useLocation } from 'react-router-dom';
-
+import { createApplication } from '../../../services/auth'; // Altere para o caminho correto
+import Success from '../../../components/Messages/SuccessMessage'; // Ajuste o caminho conforme necessário
+import Error from '../../../components/Messages/ErrorMessage'; // Ajuste o caminho conforme necessário
 
 const FormContainer = styled(Container, {
   marginTop: '20px',
@@ -15,134 +14,68 @@ const FormContainer = styled(Container, {
   gap: '20px',
 });
 
-const MAX_DESCRIPTION_LENGTH = 255;
+const stripHtmlTags = (html: string): string => {
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  return div.textContent || div.innerText || '';
+};
 
 const ManageApplication: React.FC = () => {
-  const [id, setId] = useState<string | null>(null);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [developUrl, setDevelopUrl] = useState('');
   const [homologUrl, setHomologUrl] = useState('');
   const [productionUrl, setProductionUrl] = useState('');
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-  const [severity, setSeverity] = useState<'success' | 'error'>('success');
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [errors, setErrors] = useState<any>({});
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const quillRef = useRef(null);
 
-  const quillRef = useRef<ReactQuill | null>(null);
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    if (location.state && location.state.application) {
-      const app = location.state.application;
-      setId(app.id);
-      setName(app.name);
-      setDescription(app.description);
-      setDevelopUrl(app.developUrl);
-      setHomologUrl(app.homologUrl);
-      setProductionUrl(app.productionUrl);
-    }
-  }, [location.state]);
-
-  const checkNameExists = async (name: string) => {
-    try {
-      const response = await axios.get('http://localhost:8989/api/applications');
-      return response.data.some((application: any) => application.name === name && application.id !== id);
-    } catch (error) {
-      console.error('Error checking name:', error);
-      return false;
-    }
-  };
-
-  const handleSave = async () => {
-    if (!name || !description || !developUrl || !homologUrl || !productionUrl) {
-      setMessage('Todos os campos obrigatórios devem ser preenchidos.');
-      setSeverity('error');
-      setNotificationOpen(true);
-      return;
-    }
-
-    const nameExists = await checkNameExists(name);
-    if (nameExists) {
-      setMessage(`O nome ${name} já está em uso`);
-      setSeverity('error');
-      setNotificationOpen(true);
-      return;
-    }
-
+  const handleSubmit = async () => {
     setLoading(true);
-    setMessage(null);
+    setErrors({});
+    setSuccessMessage(null);
+    setErrorMessage(null);
+    try {
+      const formattedDescription = stripHtmlTags(description);
+      const newApplication = {
+        name,
+        description: formattedDescription,
+        developUrl,
+        homologUrl,
+        productionUrl,
+        empresa_id: 1, // Ajuste conforme necessário
+      };
 
-    const formData = {
-      name,
-      description,
-      developUrl,
-      homologUrl,
-      productionUrl,
-    };
-
-    const request = id
-      ? axios.put(`http://localhost:8989/api/applications/${id}`, formData)
-      : axios.post('http://localhost:8989/api/applications', formData);
-
-    request
-      .then((response) => {
-        setLoading(false);
-        setDialogOpen(true);
-        setMessage('Operação concluída com sucesso');
-        setSeverity('success');
-        setNotificationOpen(true);
-      })
-      .catch((error) => {
-        setLoading(false);
-        handleError(error);
-      });
-  };
-
-  const handleError = (error: any) => {
-    if (error.response) {
-      setMessage(`Erro: ${error.response.data.message || error.message}`);
-    } else {
-      setMessage(`Erro: ${error.message}`);
+      await createApplication(newApplication);
+      setSuccessMessage('Aplicação criada com sucesso!');
+      // Adicione lógica adicional, como limpar o formulário
+      setName('');
+      setDescription('');
+      setDevelopUrl('');
+      setHomologUrl('');
+      setProductionUrl('');
+    } catch (error: any) {
+      if (error.response && error.response.data && error.response.data.errors) {
+        setErrors(error.response.data.errors);
+        setErrorMessage('Erro ao criar aplicação.');
+      } else {
+        console.error('Erro ao criar aplicação:', error);
+        setErrorMessage('Erro desconhecido ao criar aplicação.');
+      }
+    } finally {
+      setLoading(false);
     }
-    setSeverity('error');
-    setNotificationOpen(true);
-  };
-
-  const stripHtmlTags = (html: string) => {
-    const doc = new DOMParser().parseFromString(html, 'text/html');
-    return doc.body.textContent || '';
-  };
-
-  const handleDescriptionChange = (value: string) => {
-    const textContent = stripHtmlTags(value);
-    if (textContent.length <= MAX_DESCRIPTION_LENGTH) {
-      setDescription(value);
-    } else if (textContent.length > MAX_DESCRIPTION_LENGTH) {
-      setDescription((prevDescription) => {
-        const strippedPrevDescription = stripHtmlTags(prevDescription);
-        if (strippedPrevDescription.length >= MAX_DESCRIPTION_LENGTH) {
-          return prevDescription;
-        }
-        return value;
-      });
-    }
-  };
-
-  const descriptionLength = stripHtmlTags(description).length;
-
-  const handleCloseNotification = () => {
-    setNotificationOpen(false);
   };
 
   return (
-    <div>
-<Toolbar/>
-
+    <>
+      <Toolbar />
+      {loading && <LinearProgress />}
+      {successMessage && <Success message={successMessage} />}
+      {errorMessage && <Error message={errorMessage} />}
       <FormContainer maxWidth="md">
-   
         <TextField
           label="Nome"
           placeholder="Ex.: SGC"
@@ -151,21 +84,25 @@ const ManageApplication: React.FC = () => {
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
+          error={!!errors.name}
+          helperText={errors.name ? errors.name[0] : ''}
           sx={{ marginBottom: 2 }}
         />
         <Box sx={{ marginBottom: 2 }}>
           <ReactQuill
             ref={quillRef}
-            placeholder="Descrição (máximo de 255 caracteres)"
             value={description}
-            onChange={handleDescriptionChange}
+            onChange={setDescription}
+            placeholder="Descrição (máximo de 255 caracteres)"
           />
-          <Typography
-            variant="caption"
-            sx={{ color: descriptionLength > MAX_DESCRIPTION_LENGTH ? 'red' : 'inherit' }}
-          >
-            {descriptionLength}/{MAX_DESCRIPTION_LENGTH}
+          <Typography variant="caption">
+            {description.length}/255 caracteres
           </Typography>
+          {errors.description && (
+            <Typography color="error" variant="caption">
+              {errors.description[0]}
+            </Typography>
+          )}
         </Box>
         <TextField
           label="URL de desenvolvimento"
@@ -174,6 +111,8 @@ const ManageApplication: React.FC = () => {
           required
           value={developUrl}
           onChange={(e) => setDevelopUrl(e.target.value)}
+          error={!!errors.developUrl}
+          helperText={errors.developUrl ? errors.developUrl[0] : ''}
           sx={{ marginBottom: 2 }}
         />
         <TextField
@@ -183,6 +122,8 @@ const ManageApplication: React.FC = () => {
           required
           value={homologUrl}
           onChange={(e) => setHomologUrl(e.target.value)}
+          error={!!errors.homologUrl}
+          helperText={errors.homologUrl ? errors.homologUrl[0] : ''}
           sx={{ marginBottom: 2 }}
         />
         <TextField
@@ -192,26 +133,20 @@ const ManageApplication: React.FC = () => {
           required
           value={productionUrl}
           onChange={(e) => setProductionUrl(e.target.value)}
+          error={!!errors.productionUrl}
+          helperText={errors.productionUrl ? errors.productionUrl[0] : ''}
           sx={{ marginBottom: 2 }}
         />
-        <Button variant="contained" color="primary">
-          salvar
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+          disabled={loading || !name || !description || !developUrl || !homologUrl || !productionUrl}
+        >
+          Salvar
         </Button>
       </FormContainer>
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-        <DialogTitle color="primary">Operação concluída</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            A aplicação foi {id ? 'editada' : 'salva'} com sucesso.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => navigate('/aplicacao-permissao/lista')}>Ver na listagem</Button>
-          <Button onClick={() => setDialogOpen(false)}>Continuar na página</Button>
-        </DialogActions>
-      </Dialog>
-
-    </div>
+    </>
   );
 };
 

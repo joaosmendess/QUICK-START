@@ -15,6 +15,7 @@ export interface User {
   id: number;
   name: string;
   userName: string;
+  empresa_id?:number;
 
   status: string;
   created_at: string;
@@ -89,7 +90,7 @@ export interface UserHasPermission {
 }
 
 export interface Application {
-  id: string;
+  id?:number;
   name: string;
   description: string;
   developUrl: string;
@@ -104,8 +105,12 @@ export interface BaseItem {
 }
 
 export interface Company {
-  id:number;
-  name:string;
-  cnpj: string;
-  created_at:string
+ id:number;
+ name:string;
+ cnpj: string;
+ created_at:string;
+ clientId:string;
+ clientSecret:string;
+ tenantId:string;
+ ssoNam:string;
 }

@@ -123,7 +123,7 @@ const ManageUser: React.FC = () => {
               ))}
             </Select>
           </FormControl>
-          <SaveButton type="submit" variant="contained" color="secondary" fullWidth disabled={loading}>
+          <SaveButton type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
             {loading ? <CircularProgress size={24} /> : 'Salvar'}
           </SaveButton>
         </form>
