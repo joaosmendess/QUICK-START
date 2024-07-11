@@ -8,15 +8,20 @@ import {
   PermissionGroupHasModule,
   UserHasPermission,
   Application,
+  Company,
 } from "../types";
 
+
+
+
+
 const api = axios.create({
-  baseURL: "http://10.1.1.151:8989/api",
+  baseURL: 'http://localhost:8989/api',
 });
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -31,12 +36,14 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      localStorage.removeItem("token");
-      window.location.href = "/login?expired=true";
+      localStorage.clear(); // Remove todos os itens do localStorage
+      window.location.href = '/'; // Redireciona para a página de login
     }
     return Promise.reject(error);
   }
 );
+
+
 
 export const login = async (
   userName: string,
@@ -52,27 +59,57 @@ export const login = async (
 export const createUser = async (
   name: string,
   userName: string,
-  permissionGroup: string
+  invitationEmail: string,
+  permissionsGroupsId: number
 ) => {
-  const response = await api.post("/users", {
+  const response = await api.post('/auth/register', {
     name,
     userName,
-    permissionGroup,
+    invitationEmail,
+    permissionsGroupsId,
   });
   return response.data;
 };
 
-export const fetchUsers = async (
+
+export const getUsers = async (
   name?: string,
-  userName?: string
+  userName?: string,
+  status?:string,
 ): Promise<User[]> => {
   const response = await api.get("/users", {
-    params: { name, userName },
+    params: { name, userName, status },
   });
   return response.data;
 };
 
-export const fetchPermissionGroups = async (): Promise<PermissionGroup[]> => {
+export const updateUsers = async (
+  id:number,
+  name: string,
+  userName: string,
+  status:string,
+): Promise<User> => {
+  const response = await api.put(`/users/${id}`, {
+    name, userName,status
+  });
+  return response.data;
+};
+
+export const getCompany = async (page: number): Promise<{ data: Company[]; total: number; last_page: number }> => {
+  const response = await api.get(`/company?page=${page}`);
+  return {
+    data: response.data.data,
+    total: response.data.total,
+    last_page: response.data.last_page, 
+    //sd
+  };
+};
+export const createCompany = async (name: string, cnpj: string,  clientId:string, clientSecret:string, ssoName:string, tenantId:string): Promise<Company> => {
+  const response = await api.post(`/company`, { name, cnpj, clientId,clientSecret, ssoName, tenantId });
+  return response.data;
+};
+
+export const getPermissionGroups = async (): Promise<PermissionGroup[]> => {
   const response = await api.get("/permissions-groups");
   return response.data;
 };
@@ -87,7 +124,7 @@ export const updateUserPermissionGroup = async (
   return response.data;
 };
 
-export const fetchModules = async (): Promise<Module[]> => {
+export const getModules = async (): Promise<Module[]> => {
   const response = await api.get("/modules");
   return response.data;
 };
@@ -152,7 +189,7 @@ export const verifyToken = async (token: string): Promise<boolean> => {
 
 // Ajustar para buscar dados específicos
 
-export const fetchPermissionGroupsHasModule = async (
+export const getPermissionGroupsHasModule = async (
   groupId: number
 ): Promise<PermissionGroupHasModule> => {
   const response = await api.get<PermissionGroupHasModule>(
@@ -161,7 +198,7 @@ export const fetchPermissionGroupsHasModule = async (
   return response.data;
 };
 
-export const fetchUserHasPermissions = async (): Promise<
+export const getUserHasPermissions = async (): Promise<
   UserHasPermission[]
 > => {
   const response = await api.get("/user-has-permissions");
@@ -172,14 +209,22 @@ export const createPermissionGroupHasModule = async (
   permissions: PermissionGroupHasModule
 ) => {
   const response = await api.post("/permissions-groups-has-modules", {
-    get: permissions.get === 1,
-    post: permissions.post === 0,
-    put: permissions.put === 0,
-    delete: permissions.delete === 0,
+    get: permissions.get ,
+    name: permissions.name,
+    post: permissions.post ,
+    put: permissions.put ,
+    delete: permissions.delete ,
     modules_id: permissions.modules_id,
-    permissions_groups_id: permissions.permissions_groups_id,
   });
   return response.data;
+};
+export const getPermissionGroupsHasModules = async (): Promise<PermissionGroupHasModule[]> => {
+  const response = await api.get<PermissionGroupHasModule[]>("/permissions-groups-has-modules");
+  return response.data;
+};
+
+export const deletePermissionGroupHasModule = async (id: number): Promise<void> => {
+  await api.delete(`/permissions-groups-has-modules/${id}`);
 };
 export const updatePermissionGroupHasModule = async (
   permissions: PermissionGroupHasModule
@@ -187,20 +232,35 @@ export const updatePermissionGroupHasModule = async (
   const response = await api.put(
     `/permissions-groups-has-modules/${permissions.id}`,
     {
-      get: permissions.get === 1,
-      post: permissions.post === 1,
-      put: permissions.put === 1,
-      delete: permissions.delete === 1,
+      get: permissions.get ,
+      post: permissions.post ,
+      put: permissions.put ,
+      delete: permissions.delete ,
       modules_id: permissions.modules_id,
-      permissions_groups_id: permissions.permissions_groups_id,
+     
     }
   );
   return response.data;
 };
 
-export const fetchApplications = async (): Promise<Application[]> => {
+export const getApplications = async (): Promise<Application[]> => {
   const response = await api.get("/applications");
   return response.data;
 };
+
+export const createApplication = async (application: Application): Promise<Application> => {
+  const response = await api.post('/applications', application);
+  return response.data;
+};
+
+export const softDeleteApplication = async (id: number): Promise<void> => {
+  await api.delete(`/applications/${id}`);
+};
+
+export const updateApplication = async (application: Application): Promise<Application> => {
+  const response = await api.put(`/applications/${application.id}`, application);
+  return response.data;
+};
+
 
 export default api;

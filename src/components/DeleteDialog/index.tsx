@@ -1,5 +1,13 @@
 import React from 'react';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, CircularProgress } from '@mui/material';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+  CircularProgress
+} from '@mui/material';
 
 interface DeleteDialogProps {
   open: boolean;
@@ -10,22 +18,17 @@ interface DeleteDialogProps {
 
 const DeleteDialog: React.FC<DeleteDialogProps> = ({ open, onClose, onConfirm, loading }) => {
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-    >
+    <Dialog open={open} onClose={onClose}>
       <DialogTitle>Confirmar Exclusão</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Tem certeza que deseja excluir esta permissão?
+          Tem certeza de que deseja excluir? Esta ação não pode ser desfeita.
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary">
-          Cancelar
-        </Button>
-        <Button onClick={onConfirm} color="primary" disabled={loading} autoFocus>
-          {loading ? <CircularProgress size={24} /> : 'Confirmar'}
+        <Button onClick={onClose} disabled={loading}>Cancelar</Button>
+        <Button onClick={onConfirm} color="primary" disabled={loading}>
+          {loading ? <CircularProgress size={24} /> : 'Excluir'}
         </Button>
       </DialogActions>
     </Dialog>

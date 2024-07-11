@@ -3,15 +3,22 @@ import { AppBar, Toolbar, IconButton, Avatar, Typography, Menu, MenuItem, Box } 
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { styled } from '@stitches/react';
+import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo-white.png';
 
 const StyledAppBar = styled(AppBar, {
-  backgroundColor: '#ffffff',
   color: '#000000',
 });
 
-const Header: React.FC<{ pageTitle: string; toggleDrawer: () => void }> = ({ pageTitle, toggleDrawer }) => {
+interface HeaderProps {
+  pageTitle: string;
+  toggleDrawer: () => void;
+  onLogout: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ pageTitle, toggleDrawer, onLogout }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -22,12 +29,18 @@ const Header: React.FC<{ pageTitle: string; toggleDrawer: () => void }> = ({ pag
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    window.location.href = '/';
+    onLogout();
+    navigate('/');
   };
 
   return (
-    <StyledAppBar position="fixed">
+    <AppBar
+      position="fixed"
+      sx={{
+        backgroundImage: 'linear-gradient(to right, #202020, #3E3D45)',
+        color: '#ffffff',
+      }}
+    >
       <Toolbar sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer}>
@@ -50,7 +63,7 @@ const Header: React.FC<{ pageTitle: string; toggleDrawer: () => void }> = ({ pag
           </Menu>
         </Box>
       </Toolbar>
-    </StyledAppBar>
+    </AppBar>
   );
 };
 

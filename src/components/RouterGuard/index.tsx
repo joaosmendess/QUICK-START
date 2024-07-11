@@ -8,7 +8,7 @@ interface RouteGuardProps {
 
 const RouteGuard: React.FC<RouteGuardProps> = ({ isAuthenticated, children }) => {
   if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/" />;
   }
 
   return <>{children}</>;

@@ -15,6 +15,8 @@ export interface User {
   id: number;
   name: string;
   userName: string;
+  empresa_id?:number;
+
   status: string;
   created_at: string;
   updated_at: string;
@@ -56,6 +58,7 @@ export interface LoginResponse {
 export interface PermissionGroup {
   id: number;
   name: string;
+  
 
   created_at: string;
   updated_at: string;
@@ -63,12 +66,15 @@ export interface PermissionGroup {
 
 export interface PermissionGroupHasModule {
   id: number;
-  get: number;
-  post: number;
-  put: number;
-  delete: number;
+  name:string;
   modules_id: number;
+  get: boolean;
+  post: boolean;
+  put: boolean;
+  delete: boolean;
   permissions_groups_id: number;
+
+ 
   created_at: string;
   updated_at: string;
 }
@@ -84,11 +90,27 @@ export interface UserHasPermission {
 }
 
 export interface Application {
-  id: string;
+  id?:number;
   name: string;
   description: string;
   developUrl: string;
   homologUrl: string;
   productionUrl: string;
   empresa_id: number;
+}
+
+export interface BaseItem {
+  id: number;
+  name: string;
+}
+
+export interface Company {
+ id:number;
+ name:string;
+ cnpj: string;
+ created_at:string;
+ clientId:string;
+ clientSecret:string;
+ tenantId:string;
+ ssoNam:string;
 }
