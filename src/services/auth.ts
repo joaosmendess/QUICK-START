@@ -100,7 +100,8 @@ export const getCompany = async (page: number): Promise<{ data: Company[]; total
   return {
     data: response.data.data,
     total: response.data.total,
-    last_page: response.data.last_page,
+    last_page: response.data.last_page, 
+    //sd
   };
 };
 export const createCompany = async (name: string, cnpj: string): Promise<Company> => {
