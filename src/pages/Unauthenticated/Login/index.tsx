@@ -1,11 +1,11 @@
-import { useNavigate } from 'react-router-dom';
+
 import React, { useState } from 'react';
-import { LinearProgress, Alert, useMediaQuery, useTheme, Box, IconButton, InputAdornment, Typography } from '@mui/material';
+import { LinearProgress, Alert, useMediaQuery, useTheme, Box, IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { login } from '../../../services/auth';
 import LoginHeader from '../../../components/LoginHeader';
-import logo from '../../../assets/key.png';
-import animated from '../../../assets/olShi6AW2pQj75e9EX (1).mp4';
+
+import animated from '../../../assets/layout de web design.mp4';
 import background from '../../../assets/richard-horvath-cPccYbPrF-A-unsplash.jpg';
 
 import {
@@ -13,7 +13,7 @@ import {
   HeaderContainer,
   ButtonContainer,
   LoginButton,
-  SSOButton,
+  
   InputField,
   Form,
   ImageContainer,
@@ -29,7 +29,7 @@ const Login: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));
@@ -59,9 +59,6 @@ const Login: React.FC = () => {
     }
   };
 
-  const handleSSOPageNavigation = () => {
-    navigate('/verify-sso');
-  };
 
   const handleClickShowPassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -106,7 +103,7 @@ const Login: React.FC = () => {
           </HeaderContainer>
           <Form onSubmit={handleLogin}>
             <InputField
-              id="userName"
+              id="input-username"
               label="Usuário"
               variant="outlined"
               type="text"
@@ -116,7 +113,7 @@ const Login: React.FC = () => {
               margin="normal"
             />
             <InputField
-              id="password"
+              id="input-password"
               label="Senha"
               variant="outlined"
               type={showPassword ? 'text' : 'password'}
@@ -146,7 +143,7 @@ const Login: React.FC = () => {
             )}
             <ButtonContainer>
               <LoginButton
-                id="loginButton"
+                id="button-login"
                 type="submit"
                 variant="contained"
                 color="primary"
@@ -154,17 +151,7 @@ const Login: React.FC = () => {
               >
                 Entrar
               </LoginButton>
-              <Typography variant="body2" color="textSecondary" align="center" sx={{ marginY: 1 }}>
-                ou
-              </Typography>
-              <SSOButton
-                variant="contained"
-                color="primary"
-                startIcon={<img src={logo} alt="SSO Logo" style={{ height: 30, marginLeft: 10 }} />}
-                onClick={handleSSOPageNavigation}
-              >
-                entrar com SSO externo
-              </SSOButton>
+           
             </ButtonContainer>
           </Form>
         </RightContainer>

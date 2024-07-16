@@ -78,8 +78,10 @@ const ManageApplication: React.FC = () => {
       <FormContainer maxWidth="md">
         <TextField
           label="Nome"
+          id='input-name'
           placeholder="Ex.: SGC"
           variant="outlined"
+
           fullWidth
           required
           value={name}
@@ -91,6 +93,7 @@ const ManageApplication: React.FC = () => {
         <Box sx={{ marginBottom: 2 }}>
           <ReactQuill
             ref={quillRef}
+            id='input-description'
             value={description}
             onChange={setDescription}
             placeholder="Descrição (máximo de 255 caracteres)"
@@ -106,7 +109,9 @@ const ManageApplication: React.FC = () => {
         </Box>
         <TextField
           label="URL de desenvolvimento"
+          id='input-url-desenvolvimento'
           variant="outlined"
+
           fullWidth
           required
           value={developUrl}
@@ -117,6 +122,7 @@ const ManageApplication: React.FC = () => {
         />
         <TextField
           label="URL de homologação"
+          id='input-url-homologação'
           variant="outlined"
           fullWidth
           required
@@ -128,6 +134,7 @@ const ManageApplication: React.FC = () => {
         />
         <TextField
           label="URL de produção"
+          id='input-url-produção'
           variant="outlined"
           fullWidth
           required
@@ -139,6 +146,7 @@ const ManageApplication: React.FC = () => {
         />
         <Button
           variant="contained"
+          id='button-manage-application'
           color="primary"
           onClick={handleSubmit}
           disabled={loading || !name || !description || !developUrl || !homologUrl || !productionUrl}

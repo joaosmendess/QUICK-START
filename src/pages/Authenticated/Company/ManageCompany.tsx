@@ -89,6 +89,7 @@ const ManageCompany: React.FC = () => {
               <Grid item xs={12}>
                 <TextField
                   label="Nome"
+                  id='input-name'
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Ex.: Nome da Empresa"
@@ -100,6 +101,7 @@ const ManageCompany: React.FC = () => {
               <Grid item xs={12}>
                 <TextField
                   label="CNPJ"
+                  id='input-cnpj'
                   value={cnpj}
                   onChange={handleCnpjChange}
                   placeholder="Ex.: 00.000.000/0000-00"
@@ -163,6 +165,7 @@ const ManageCompany: React.FC = () => {
               color="primary"
               fullWidth
               onClick={handleSubmit}
+              id='button-manager-company'
             >
               Salvar
             </Button>

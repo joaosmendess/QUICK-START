@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Toolbar, SelectChangeEvent, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
+import { Box, Toolbar, SelectChangeEvent, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Select, MenuItem } from '@mui/material';
 import { getUsers, updateUsers } from '../../../../services/auth';
 import { User } from '../../../../types';
 import HeaderTable from '../../../../components/HeaderTable';
@@ -141,23 +141,21 @@ const ListUsers: React.FC = () => {
               id="userName"
               onChange={e => setEditUser({ ...editUser, userName: e.target.value })}
             />
-            <TextField
+            <Select
               margin="dense"
               label="Status"
               fullWidth
               value={editUser.status}
               id="status"
               onChange={e => setEditUser({ ...editUser, status: e.target.value })}
-            />
+            >
+              <MenuItem value="Ativo">Ativo</MenuItem>
+              <MenuItem value="Inativo">Inativo</MenuItem>
+            </Select>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleEditClose} id='fechar-modal'  >Cancelar</Button>
-            <Button onClick={handleEditSave}
-            id='salvar-usuario'
-            
-            >
-              Salvar
-            </Button>
+            <Button onClick={handleEditClose} id='fechar-modal'>Cancelar</Button>
+            <Button onClick={handleEditSave} id='salvar-usuario'>Salvar</Button>
           </DialogActions>
         </Dialog>
       )}

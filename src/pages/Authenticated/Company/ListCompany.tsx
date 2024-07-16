@@ -34,7 +34,7 @@ const ListCompany: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data, total, last_page } = await getCompany(page);
+        const { data,  last_page } = await getCompany(page);
         setCompanies(data.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()));
         setTotalPages(last_page);
       } catch (error) {

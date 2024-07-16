@@ -98,6 +98,7 @@ const ManageModule: React.FC = () => {
           <>
             <TextField
               label="Nome"
+              id='input-name'
               variant="outlined"
               fullWidth
               margin="normal"
@@ -106,6 +107,7 @@ const ManageModule: React.FC = () => {
             />
             <TextField
               label="Aplicativo relacionado"
+              id='select-application'
               variant="outlined"
               fullWidth
               margin="normal"

@@ -16,7 +16,7 @@ import {
 
 
 const api = axios.create({
-  baseURL: 'http://localhost:8989/api',
+  baseURL: 'http://10.1.1.151:8000/api',
 });
 
 api.interceptors.request.use(
@@ -60,13 +60,17 @@ export const createUser = async (
   name: string,
   userName: string,
   invitationEmail: string,
-  permissionsGroupsId: number
+  //permissionsGroupsId: number,
+  empresa_id: number,
+  password: string,
 ) => {
-  const response = await api.post('/auth/register', {
+  const response = await api.post('/register', {
     name,
     userName,
     invitationEmail,
-    permissionsGroupsId,
+    //permissionsGroupsId,
+    empresa_id,
+    password,
   });
   return response.data;
 };

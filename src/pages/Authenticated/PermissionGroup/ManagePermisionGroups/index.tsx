@@ -167,6 +167,7 @@ const PermissionForm: React.FC = () => {
         <form onSubmit={handleSaveGroupName}>
           <TextField
             label="Nome do grupo"
+            id='input-group-name'
             variant="outlined"
             type="text"
             value={groupName}
@@ -178,10 +179,12 @@ const PermissionForm: React.FC = () => {
             />
           <SaveButton
             type="submit"
+            id='button-manage-permission-group'
             variant="contained"
             color="primary"
             fullWidth
             disabled={loading}
+
           >
             Salvar
           </SaveButton>
@@ -194,6 +197,7 @@ const PermissionForm: React.FC = () => {
             <InputLabel>Módulo</InputLabel>
             <Select
               label="Módulo"
+              id='select-module'
               value={currentPermissions.modules_id || ''}
               onChange={handleModuleChange}
               required
@@ -213,6 +217,7 @@ const PermissionForm: React.FC = () => {
               control={
                 <Checkbox
                   checked={currentPermissions.get}
+                  id='checkbox-get'
                   onChange={handlePermissionChange}
                   name="get"
                   disabled={true}
@@ -224,6 +229,7 @@ const PermissionForm: React.FC = () => {
               control={
                 <Checkbox
                   checked={currentPermissions.post}
+                  id='checkbox-post'
                   onChange={handlePermissionChange}
                   name="post"
                   disabled={loading}
@@ -235,6 +241,7 @@ const PermissionForm: React.FC = () => {
               control={
                 <Checkbox
                 checked={currentPermissions.put}
+                id='checkbox-put'
                 onChange={handlePermissionChange}
                 name="put"
                   disabled={loading}
@@ -246,6 +253,7 @@ const PermissionForm: React.FC = () => {
               control={
                 <Checkbox
                   checked={currentPermissions.delete}
+                  id='checkbox-delete'
                   onChange={handlePermissionChange}
                   name="delete"
                   disabled={loading}
@@ -256,6 +264,7 @@ const PermissionForm: React.FC = () => {
           </Box>
           <SaveButton
             type="submit"
+            id='button-manage-permission-group'
             variant="contained"
             color="primary"
             fullWidth
