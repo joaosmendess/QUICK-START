@@ -18,6 +18,8 @@ import ManageModule from './pages/Authenticated/Modules/ManageModule';
 import ModuleList from './pages/Authenticated/Modules/ListModule';
 import ManageCompany from './pages/Authenticated/Company/ManageCompany';
 import ListCompany from './pages/Authenticated/Company/ListCompany';
+import ManageSsoUser from './pages/Authenticated/SsoUser/ManageSsoUser';
+import ListSsoUser from './pages/Authenticated/SsoUser/ListSsoUser';
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -100,15 +102,15 @@ const App: React.FC = () => {
             </RouteGuard>
           }
         />
-           <Route
+        <Route
           path="/gerenciar-empresa"
           element={
             <RouteGuard isAuthenticated={isAuthenticated}>
-              <ManageCompany/>
+              <ManageCompany />
             </RouteGuard>
           }
         />
-   <Route
+        <Route
           path="/listar-empresas"
           element={
             <RouteGuard isAuthenticated={isAuthenticated}>
@@ -116,7 +118,6 @@ const App: React.FC = () => {
             </RouteGuard>
           }
         />
-
         <Route
           path="/gerenciar-aplicacao"
           element={
@@ -124,15 +125,16 @@ const App: React.FC = () => {
               <ManageApplication />
             </RouteGuard>
           }
-        />   <Route
-        path="/listar-aplicacoes"
-        element={
-          <RouteGuard isAuthenticated={isAuthenticated}>
-            <ListApplication />
-          </RouteGuard>
-        }
-      />
-         <Route
+        />
+        <Route
+          path="/listar-aplicacoes"
+          element={
+            <RouteGuard isAuthenticated={isAuthenticated}>
+              <ListApplication />
+            </RouteGuard>
+          }
+        />
+        <Route
           path="/gerenciar-modulo"
           element={
             <RouteGuard isAuthenticated={isAuthenticated}>
@@ -140,11 +142,27 @@ const App: React.FC = () => {
             </RouteGuard>
           }
         />
-           <Route
+        <Route
           path="/listar-modulos"
           element={
             <RouteGuard isAuthenticated={isAuthenticated}>
               <ModuleList />
+            </RouteGuard>
+          }
+        />
+        <Route
+          path="/gerenciar-usuario-sso"
+          element={
+            <RouteGuard isAuthenticated={isAuthenticated}>
+              <ManageSsoUser />
+            </RouteGuard>
+          }
+        />
+        <Route
+          path="/listar-usuarios-sso"
+          element={
+            <RouteGuard isAuthenticated={isAuthenticated}>
+              <ListSsoUser />
             </RouteGuard>
           }
         />

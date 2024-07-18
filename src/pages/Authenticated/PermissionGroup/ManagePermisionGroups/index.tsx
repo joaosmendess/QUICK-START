@@ -14,11 +14,11 @@ import {
   SelectChangeEvent,
   Toolbar,
 } from '@mui/material';
-import { styled } from '@stitches/react'; 
+import { styled } from '@stitches/react';
 import TabPanel from '../../../../components/PermissionTab';
 import LoadingDialog from '../../../../components/LoadingDialog';
-import { Module } from '../../../../types';
-import { getModules, createPermissionGroupHasModule } from '../../../../services/auth';
+import { Module, PermissionGroupHasModule } from '../../../../types';
+import { getModules, createPermissionGroupHasModule } from '../../../../services/moduleService';
 import Error from '../../../../components/Messages/ErrorMessage';
 import Success from '../../../../components/Messages/SuccessMessage';
 
@@ -40,7 +40,7 @@ interface Permission {
   updated_at: string;
 }
 
-const PermissionForm: React.FC = () => {
+const ManageApplication: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
   const [groupName, setGroupName] = useState('');
   const [currentPermissions, setCurrentPermissions] = useState<Permission>({
@@ -94,17 +94,17 @@ const PermissionForm: React.FC = () => {
     setSuccess(null);
     try {
       if (groupName) {
-        const newPermissionGroupHasModule = {
-          modules_id: currentPermissions.modules_id,
-          get: currentPermissions.get,
-          post: currentPermissions.post,
-          put: currentPermissions.put,
-          delete: currentPermissions.delete,
+        const newPermissionGroupHasModule: PermissionGroupHasModule = {
+          name: groupName, // Incluindo o nome do grupo
+          modulesId: currentPermissions.modules_id,
+          get: currentPermissions.get ? 1 : 0,
+          post: currentPermissions.post ? 1 : 0,
+          put: currentPermissions.put ? 1 : 0,
+          delete: currentPermissions.delete ? 1 : 0,
           id: 0, // ID is generated on the backend
           created_at: '',
           updated_at: '',
-          name: groupName,
-          permissions_groups_id: 0, // Placeholder, update based on API response
+          permissionsGroupsId: 0, // Placeholder, update based on API response
         };
         await createPermissionGroupHasModule(newPermissionGroupHasModule);
         setSuccess('Permissões criadas com sucesso!');
@@ -152,131 +152,130 @@ const PermissionForm: React.FC = () => {
 
   return (
     <>
-    <Toolbar/>
-    <Toolbar/>
-    <Box sx={{ maxWidth: '600px', margin: 'auto', mt: 4 }}>
-      <LoadingDialog open={initialLoading} message="Carregando informações, por favor aguarde..." />
-      {error && <Error message={error} />}
-      {success && <Success message={success} />}
-      <Tabs value={tabValue} onChange={handleTabChange} centered>
-        <Tab label="Principais" />
-        <Tab label="Módulos" />
-      </Tabs>
+      <Toolbar />
+      <Toolbar />
+      <Box sx={{ maxWidth: '600px', margin: 'auto', mt: 4 }}>
+        <LoadingDialog open={initialLoading} message="Carregando informações, por favor aguarde..." />
+        {error && <Error message={error} />}
+        {success && <Success message={success} />}
+        <Tabs value={tabValue} onChange={handleTabChange} centered>
+          <Tab label="Principais" />
+          <Tab label="Módulos" />
+        </Tabs>
 
-      <TabPanel value={tabValue} index={0}>
-        <form onSubmit={handleSaveGroupName}>
-          <TextField
-            label="Nome do grupo"
-            id='input-group-name'
-            variant="outlined"
-            type="text"
-            value={groupName}
-            onChange={(e) => setGroupName(e.target.value)}
-            required
-            fullWidth
-            margin="normal"
-            disabled={loading}
-            />
-          <SaveButton
-            type="submit"
-            id='button-manage-permission-group'
-            variant="contained"
-            color="primary"
-            fullWidth
-            disabled={loading}
-
-          >
-            Salvar
-          </SaveButton>
-        </form>
-      </TabPanel>
-
-      <TabPanel value={tabValue} index={1}>
-        <form onSubmit={handleSavePermissions}>
-          <FormControl fullWidth margin="normal" disabled={loading}>
-            <InputLabel>Módulo</InputLabel>
-            <Select
-              label="Módulo"
-              id='select-module'
-              value={currentPermissions.modules_id || ''}
-              onChange={handleModuleChange}
+        <TabPanel value={tabValue} index={0}>
+          <form onSubmit={handleSaveGroupName}>
+            <TextField
+              label="Nome do grupo"
+              id="input-group-name"
+              variant="outlined"
+              type="text"
+              value={groupName}
+              onChange={(e) => setGroupName(e.target.value)}
               required
-              >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              {modules.map((module) => (
-                <MenuItem key={module.id} value={module.id}>
-                  {module.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <Box display="flex" flexDirection="column" alignItems="start" width="100%">
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={currentPermissions.get}
-                  id='checkbox-get'
-                  onChange={handlePermissionChange}
-                  name="get"
-                  disabled={true}
-                />
-              }
-              label="Ler"
-              />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={currentPermissions.post}
-                  id='checkbox-post'
-                  onChange={handlePermissionChange}
-                  name="post"
-                  disabled={loading}
-                />
-              }
-              label="Criar"
-              />
-            <FormControlLabel
-              control={
-                <Checkbox
-                checked={currentPermissions.put}
-                id='checkbox-put'
-                onChange={handlePermissionChange}
-                name="put"
-                  disabled={loading}
-                />
-              }
-              label="Editar"
-              />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={currentPermissions.delete}
-                  id='checkbox-delete'
-                  onChange={handlePermissionChange}
-                  name="delete"
-                  disabled={loading}
-                />
-              }
-              label="Apagar"
+              fullWidth
+              margin="normal"
+              disabled={loading}
             />
-          </Box>
-          <SaveButton
-            type="submit"
-            id='button-manage-permission-group'
-            variant="contained"
-            color="primary"
-            fullWidth
-            disabled={loading}
-          >
-            Salvar
-          </SaveButton>
-        </form>
-      </TabPanel>
-    </Box>
-            </>
+            <SaveButton
+              type="submit"
+              id="button-manage-permission-group"
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={loading}
+            >
+              Salvar
+            </SaveButton>
+          </form>
+        </TabPanel>
+
+        <TabPanel value={tabValue} index={1}>
+          <form onSubmit={handleSavePermissions}>
+            <FormControl fullWidth margin="normal" disabled={loading}>
+              <InputLabel>Módulo</InputLabel>
+              <Select
+                label="Módulo"
+                id="select-module"
+                value={currentPermissions.modules_id || ''}
+                onChange={handleModuleChange}
+                required
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {modules.map((module) => (
+                  <MenuItem key={module.id} value={module.id}>
+                    {module.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Box display="flex" flexDirection="column" alignItems="start" width="100%">
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={currentPermissions.get}
+                    id="checkbox-get"
+                    onChange={handlePermissionChange}
+                    name="get"
+                    disabled={true}
+                  />
+                }
+                label="Ler"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={currentPermissions.post}
+                    id="checkbox-post"
+                    onChange={handlePermissionChange}
+                    name="post"
+                    disabled={loading}
+                  />
+                }
+                label="Criar"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={currentPermissions.put}
+                    id="checkbox-put"
+                    onChange={handlePermissionChange}
+                    name="put"
+                    disabled={loading}
+                  />
+                }
+                label="Editar"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={currentPermissions.delete}
+                    id="checkbox-delete"
+                    onChange={handlePermissionChange}
+                    name="delete"
+                    disabled={loading}
+                  />
+                }
+                label="Apagar"
+              />
+            </Box>
+            <SaveButton
+              type="submit"
+              id="button-manage-permission-group"
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={loading}
+            >
+              Salvar
+            </SaveButton>
+          </form>
+        </TabPanel>
+      </Box>
+    </>
   );
 };
 
-export default PermissionForm;
+export default ManageApplication;

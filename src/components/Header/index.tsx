@@ -53,10 +53,17 @@ const Header: React.FC<HeaderProps> = ({ pageTitle, toggleDrawer, onLogout }) =>
           <IconButton color="inherit">
             <NotificationsIcon />
           </IconButton>
-          <IconButton color="inherit" onClick={handleMenuOpen}>
+          <IconButton 
+          color="inherit" 
+          id='menu-profile'
+          onClick={handleMenuOpen}>
             <Avatar src="/path-to-avatar.jpg" />
           </IconButton>
-          <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+          <Menu 
+          anchorEl={anchorEl}
+          id='menu-logout'
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}>
             <MenuItem onClick={handleLogout}>Sair</MenuItem>
           </Menu>
         </Box>

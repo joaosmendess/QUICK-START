@@ -1,8 +1,8 @@
-
 import React, { useState } from 'react';
+
 import { LinearProgress, Alert, useMediaQuery, useTheme, Box, IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { login } from '../../../services/auth';
+import { login } from '../../../services/authService';
 import LoginHeader from '../../../components/LoginHeader';
 
 import animated from '../../../assets/layout de web design.mp4';
@@ -13,7 +13,6 @@ import {
   HeaderContainer,
   ButtonContainer,
   LoginButton,
-  
   InputField,
   Form,
   ImageContainer,
@@ -23,13 +22,13 @@ import {
 } from './styles';
 
 const Login: React.FC = () => {
-  const [userName, setUserName] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-
+  
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));
@@ -40,15 +39,11 @@ const Login: React.FC = () => {
     setError(null);
 
     try {
-      const response = await login(userName, password);
+      const response = await login(username, password, 'ofm');
       if (response && response.token) {
-        // Armazenar o token, nome e nome de usuário no localStorage
         localStorage.setItem('token', response.token);
-        localStorage.setItem('name', response.customerData.name);
-        localStorage.setItem('userName', response.customerData.userName);
-
-        // Redirecionar para o dashboard
-        window.location.href = '/dashboard';
+        localStorage.setItem('customerData', JSON.stringify(response.customerData));
+        window.location.href = '/dashboard'
       } else {
         setError('Falha no login. Verifique suas credenciais.');
       }
@@ -58,7 +53,6 @@ const Login: React.FC = () => {
       setLoading(false);
     }
   };
-
 
   const handleClickShowPassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -74,14 +68,10 @@ const Login: React.FC = () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-    
-       
         backgroundImage: `url(${background})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        height:'100vh'
-        
-       
+        height: '100vh'
       }}
     >
       <FormContainer>
@@ -91,7 +81,7 @@ const Login: React.FC = () => {
             <ImageContainer>
               <video width="100%" height="auto" autoPlay loop muted>
                 <source src={animated} type="video/mp4" />
-                Seu navegador nao suporta tag de video
+                Seu navegador não suporta tag de vídeo
               </video>
             </ImageContainer>
           </LeftContainer>
@@ -107,8 +97,8 @@ const Login: React.FC = () => {
               label="Usuário"
               variant="outlined"
               type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
               margin="normal"
             />
@@ -147,11 +137,10 @@ const Login: React.FC = () => {
                 type="submit"
                 variant="contained"
                 color="primary"
-                disabled={!userName || !password || loading}
+                disabled={!username || !password || loading}
               >
                 Entrar
               </LoginButton>
-           
             </ButtonContainer>
           </Form>
         </RightContainer>

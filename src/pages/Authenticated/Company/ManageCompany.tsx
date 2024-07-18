@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Container, TextField, Button, Toolbar, LinearProgress, Grid, Tabs, Tab, Box } from '@mui/material';
 import { styled } from '@stitches/react';
 
-import { createCompany } from '../../../services/auth';
+import { createCompany } from '../../../services/companyService';
 import Error from '../../../components/Messages/ErrorMessage';
 import Success from '../../../components/Messages/SuccessMessage';
 
@@ -32,11 +32,13 @@ const cleanCNPJ = (value: string) => {
 const ManageCompany: React.FC = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [name, setName] = useState('');
+  const [tag, setTag] = useState('');
   const [cnpj, setCnpj] = useState('');
   const [clientId, setClientId] = useState('');
   const [clientSecret, setClientSecret] = useState('');
   const [tenantId, setTenantId] = useState('');
   const [ssoName, setSsoName] = useState('');
+  const [redirectUrl, setRedirectUrl] = useState('');
   const [message, setMessage] = useState<string | null>(null);
   const [severity, setSeverity] = useState<'success' | 'error' | null>(null);
   const [loading, setLoading] = useState(false);
@@ -49,16 +51,18 @@ const ManageCompany: React.FC = () => {
     setLoading(true);
     try {
       const cleanedCnpj = cleanCNPJ(cnpj);
-      const newCompany = await createCompany(name, cleanedCnpj, clientId, clientSecret, ssoName, tenantId);
+      const newCompany = await createCompany(name, tag, cleanedCnpj, ssoName, clientId, clientSecret, tenantId, redirectUrl);
       console.log('Empresa criada com sucesso:', newCompany);
       setMessage('Empresa criada com sucesso!');
       setSeverity('success');
       setName('');
+      setTag('');
       setCnpj('');
       setClientId('');
       setClientSecret('');
       setTenantId('');
       setSsoName('');
+      setRedirectUrl('');
     } catch (error) {
       console.error('Erro ao criar empresa:', error);
       setMessage('Erro ao criar empresa');
@@ -100,11 +104,35 @@ const ManageCompany: React.FC = () => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  label="Tag"
+                  id='input-tag'
+                  value={tag}
+                  onChange={(e) => setTag(e.target.value)}
+                  placeholder="Ex.: tag da empresa"
+                  variant="outlined"
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
                   label="CNPJ"
                   id='input-cnpj'
                   value={cnpj}
                   onChange={handleCnpjChange}
                   placeholder="Ex.: 00.000.000/0000-00"
+                  variant="outlined"
+                  required
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="URL de Redirecionamento"
+                  id='input-redirect-url'
+                  value={redirectUrl}
+                  onChange={(e) => setRedirectUrl(e.target.value)}
+                  placeholder="Ex.: https://exemplo.com/redirect"
                   variant="outlined"
                   required
                   fullWidth
@@ -158,7 +186,6 @@ const ManageCompany: React.FC = () => {
           )}
         </Box>
         <Grid container spacing={1} justifyContent="center" mt={2}>
-        
           <Grid item xs={12} md={6}>
             <Button
               variant="contained"

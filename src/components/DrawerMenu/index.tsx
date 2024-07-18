@@ -7,6 +7,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import BusinessIcon from '@mui/icons-material/Business';
 import AppsIcon from '@mui/icons-material/Apps';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 
@@ -17,6 +18,7 @@ const DrawerMenu: React.FC<{ open: boolean; onClose: () => void; setPageTitle: (
   const [empresaMenuOpen, setEmpresaMenuOpen] = useState(false);
   const [aplicacoesMenuOpen, setAplicacoesMenuOpen] = useState(false);
   const [modulosMenuOpen, setModulosMenuOpen] = useState(false);
+  const [ssoUserMenuOpen, setSsoUserMenuOpen] = useState(false);
 
   const handleUserMenuClick = () => {
     setUserMenuOpen(!userMenuOpen);
@@ -36,6 +38,10 @@ const DrawerMenu: React.FC<{ open: boolean; onClose: () => void; setPageTitle: (
 
   const handleModulosMenuClick = () => {
     setModulosMenuOpen(!modulosMenuOpen);
+  };
+
+  const handleSsoUserMenuClick = () => {
+    setSsoUserMenuOpen(!ssoUserMenuOpen);
   };
 
   const handleNavigation = (path: string, title: string) => {
@@ -81,10 +87,10 @@ const DrawerMenu: React.FC<{ open: boolean; onClose: () => void; setPageTitle: (
         </ListItemButton>
         <Collapse in={groupMenuOpen} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <ListItemButton id="menu-manage-permision" onClick={() => handleNavigation('/gerenciar-permissao', 'Gerenciar grupo de permissão')} style={{ paddingLeft: 32 }}>
+            <ListItemButton id="menu-manage-permission" onClick={() => handleNavigation('/gerenciar-permissao', 'Gerenciar grupo de permissão')} style={{ paddingLeft: 32 }}>
               <ListItemText primary="Gerenciar grupo de permissão" />
             </ListItemButton>
-            <ListItemButton id="menu-list-permisions" onClick={() => handleNavigation('/listar-permissoes', 'Listar grupos de permissões')} style={{ paddingLeft: 32 }}>
+            <ListItemButton id="menu-list-permissions" onClick={() => handleNavigation('/listar-permissoes', 'Listar grupos de permissões')} style={{ paddingLeft: 32 }}>
               <ListItemText primary="Listar grupos de permissões" />
             </ListItemButton>
           </List>
@@ -140,6 +146,24 @@ const DrawerMenu: React.FC<{ open: boolean; onClose: () => void; setPageTitle: (
             </ListItemButton>
             <ListItemButton id="menu-list-modules" onClick={() => handleNavigation('/listar-modulos', 'Listar Módulos')} style={{ paddingLeft: 32 }}>
               <ListItemText primary="Listar Módulos" />
+            </ListItemButton>
+          </List>
+        </Collapse>
+
+        <ListItemButton id="menu-sso-user" onClick={handleSsoUserMenuClick}>
+          <ListItemIcon>
+            <AccountCircleIcon />
+          </ListItemIcon>
+          <ListItemText primary="Usuário SSO" />
+          {ssoUserMenuOpen ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={ssoUserMenuOpen} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItemButton id="menu-manage-sso-user" onClick={() => handleNavigation('/gerenciar-usuario-sso', 'Gerenciar Usuário do SSO')} style={{ paddingLeft: 32 }}>
+              <ListItemText primary="Gerenciar Usuário do SSO" />
+            </ListItemButton>
+            <ListItemButton id="menu-list-sso-users" onClick={() => handleNavigation('/listar-usuarios-sso', 'Listar Usuários do SSO')} style={{ paddingLeft: 32 }}>
+              <ListItemText primary="Listar Usuários do SSO" />
             </ListItemButton>
           </List>
         </Collapse>

@@ -80,9 +80,12 @@ export const getUsers = async (
   name?: string,
   userName?: string,
   status?:string,
+  invitationEmail?:string,
+  companyId?:string,
+
 ): Promise<User[]> => {
   const response = await api.get("/users", {
-    params: { name, userName, status },
+    params: { name, userName, status, invitationEmail, companyId },
   });
   return response.data;
 };
@@ -90,17 +93,19 @@ export const getUsers = async (
 export const updateUsers = async (
   id:number,
   name: string,
-  userName: string,
+  username: string,
   status:string,
+  invitationEmail:string,
+  companyId:number,
 ): Promise<User> => {
   const response = await api.put(`/users/${id}`, {
-    name, userName,status
+    name, username, status, companyId, invitationEmail 
   });
   return response.data;
 };
 
 export const getCompany = async (page: number): Promise<{ data: Company[]; total: number; last_page: number }> => {
-  const response = await api.get(`/company?page=${page}`);
+  const response = await api.get(`/companies?page=${page}`);
   return {
     data: response.data.data,
     total: response.data.total,
@@ -109,7 +114,7 @@ export const getCompany = async (page: number): Promise<{ data: Company[]; total
   };
 };
 export const createCompany = async (name: string, cnpj: string,  clientId:string, clientSecret:string, ssoName:string, tenantId:string): Promise<Company> => {
-  const response = await api.post(`/company`, { name, cnpj, clientId,clientSecret, ssoName, tenantId });
+  const response = await api.post(`/companies`, { name, cnpj, clientId,clientSecret, ssoName, tenantId });
   return response.data;
 };
 
@@ -218,7 +223,7 @@ export const createPermissionGroupHasModule = async (
     post: permissions.post ,
     put: permissions.put ,
     delete: permissions.delete ,
-    modules_id: permissions.modules_id,
+    modules_id: permissions.modulesId,
   });
   return response.data;
 };
@@ -240,7 +245,7 @@ export const updatePermissionGroupHasModule = async (
       post: permissions.post ,
       put: permissions.put ,
       delete: permissions.delete ,
-      modules_id: permissions.modules_id,
+      modules_id: permissions.modulesId,
      
     }
   );

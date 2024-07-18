@@ -41,7 +41,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, loading, error, handleMenu
                 <TableBody>
                   {users.map((user) => (
                     <UserRow
-                      key={user.userName}
+                      key={user.username}
                       user={user}
                       handleMenuClick={handleMenuClick}
                       handleMenuClose={handleMenuClose}

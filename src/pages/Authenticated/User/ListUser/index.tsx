@@ -1,5 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Toolbar, SelectChangeEvent, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Select, MenuItem } from '@mui/material';
+import {
+  Box,
+  Toolbar,
+  SelectChangeEvent,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+  Select,
+  MenuItem
+} from '@mui/material';
 import { getUsers, updateUsers } from '../../../../services/auth';
 import { User } from '../../../../types';
 import HeaderTable from '../../../../components/HeaderTable';
@@ -48,7 +61,7 @@ const ListUsers: React.FC = () => {
     setFilteredUsers(
       sortedUsers.filter((user) =>
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.userName.toLowerCase().includes(searchTerm.toLowerCase())
+        user.username.toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
   }, [searchTerm, users, sortBy]);
@@ -72,9 +85,16 @@ const ListUsers: React.FC = () => {
   };
 
   const handleEditClick = (user: User) => {
-    setEditUser(user);
+    // Certifique-se de que companyId é definido
+    const companyId = user.companyId || 0; // Defina um valor padrão se necessário
+  
+    setEditUser({
+      ...user,
+      invitationEmail: user.invitationEmail || '',
+      companyId: companyId, // Certifique-se de que companyId é passado corretamente
+      status: user.status || 'Ativo'
+    });
   };
-
   const handleEditClose = () => {
     setEditUser(null);
   };
@@ -82,21 +102,37 @@ const ListUsers: React.FC = () => {
   const handleEditSave = async () => {
     if (editUser) {
       try {
-        const updatedUser = await updateUsers(editUser.id, editUser.name, editUser.userName, editUser.status);
-        setUsers(prevUsers => prevUsers.map(user => user.id === updatedUser.id ? updatedUser : user));
+        const updatedUser = await updateUsers(
+          editUser.id,
+          editUser.name,
+          editUser.username,
+          editUser.status,
+          editUser.invitationEmail,
+          editUser.companyId
+        );
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user.id === updatedUser.id ? updatedUser : user
+          )
+        );
         setSuccessMessage('Usuário atualizado com sucesso!');
       } catch (error) {
         console.error('Erro ao atualizar usuário', error);
       } finally {
-        setEditUser(null);
+        setEditUser(null); // Limpar o estado de editUser após salvar ou falhar
       }
+    } else {
+      console.error('Nenhum usuário selecionado para edição');
     }
   };
+  
 
   return (
     <>
       <Toolbar />
-      <Box sx={{ width: '100%', maxWidth: 1200, margin: '0 auto', padding: '1rem' }}>
+      <Box
+        sx={{ width: '100%', maxWidth: 1200, margin: '0 auto', padding: '1rem' }}
+      >
         {successMessage && <Success message={successMessage} />}
         <HeaderTable
           searchTerm={searchTerm}
@@ -129,33 +165,63 @@ const ListUsers: React.FC = () => {
               margin="dense"
               label="Nome"
               fullWidth
-              value={editUser.name}
-              id="name"
-              onChange={e => setEditUser({ ...editUser, name: e.target.value })}
+              value={editUser.name || ''}
+              id="input-name"
+              onChange={(e) =>
+                setEditUser({ ...editUser, name: e.target.value })
+              }
             />
             <TextField
               margin="dense"
               label="Usuário"
               fullWidth
-              value={editUser.userName}
-              id="userName"
-              onChange={e => setEditUser({ ...editUser, userName: e.target.value })}
+              value={editUser.username || ''}
+              id="input-username"
+              onChange={(e) =>
+                setEditUser({ ...editUser, username: e.target.value })
+              }
+            />
+            <TextField
+              margin="dense"
+              label="Email de Convite"
+              fullWidth
+              value={editUser.invitationEmail || ''}
+              id="input-email"
+              onChange={(e) =>
+                setEditUser({ ...editUser, invitationEmail: e.target.value })
+              }
+            />
+            <TextField
+              margin="dense"
+              label="ID da Empresa"
+              fullWidth
+              value={editUser.companyId}
+              id="input-company"
+              onChange={(e) =>
+                setEditUser({ ...editUser, companyId: parseInt(e.target.value) })
+              }
             />
             <Select
               margin="dense"
               label="Status"
               fullWidth
-              value={editUser.status}
-              id="status"
-              onChange={e => setEditUser({ ...editUser, status: e.target.value })}
+              value={editUser.status || 'Ativo'}
+              id="input-status"
+              onChange={(e) =>
+                setEditUser({ ...editUser, status: e.target.value })
+              }
             >
               <MenuItem value="Ativo">Ativo</MenuItem>
               <MenuItem value="Inativo">Inativo</MenuItem>
             </Select>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleEditClose} id='fechar-modal'>Cancelar</Button>
-            <Button onClick={handleEditSave} id='salvar-usuario'>Salvar</Button>
+            <Button onClick={handleEditClose} id="button-close-modal">
+              Cancelar
+            </Button>
+            <Button onClick={handleEditSave} id="button-save-edit-user">
+              Salvar
+            </Button>
           </DialogActions>
         </Dialog>
       )}

@@ -3,9 +3,9 @@ import { Container, TextField, Typography, Box, Button, Toolbar, LinearProgress 
 import { styled } from '@stitches/react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { createApplication } from '../../../services/auth'; // Altere para o caminho correto
-import Success from '../../../components/Messages/SuccessMessage'; // Ajuste o caminho conforme necessário
-import Error from '../../../components/Messages/ErrorMessage'; // Ajuste o caminho conforme necessário
+import { createApplication } from '../../../services/auth';
+import Success from '../../../components/Messages/SuccessMessage';
+import Error from '../../../components/Messages/ErrorMessage';
 
 const FormContainer = styled(Container, {
   marginTop: '20px',
@@ -26,6 +26,7 @@ const ManageApplication: React.FC = () => {
   const [developUrl, setDevelopUrl] = useState('');
   const [homologUrl, setHomologUrl] = useState('');
   const [productionUrl, setProductionUrl] = useState('');
+  const [logo, setLogo] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<any>({});
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -45,7 +46,8 @@ const ManageApplication: React.FC = () => {
         developUrl,
         homologUrl,
         productionUrl,
-        empresa_id: 1, // Ajuste conforme necessário
+        companyId: 1, // Ajuste conforme necessário
+        logo,
       };
 
       await createApplication(newApplication);
@@ -56,6 +58,7 @@ const ManageApplication: React.FC = () => {
       setDevelopUrl('');
       setHomologUrl('');
       setProductionUrl('');
+      setLogo('');
     } catch (error: any) {
       if (error.response && error.response.data && error.response.data.errors) {
         setErrors(error.response.data.errors);
@@ -81,7 +84,6 @@ const ManageApplication: React.FC = () => {
           id='input-name'
           placeholder="Ex.: SGC"
           variant="outlined"
-
           fullWidth
           required
           value={name}
@@ -109,9 +111,8 @@ const ManageApplication: React.FC = () => {
         </Box>
         <TextField
           label="URL de desenvolvimento"
-          id='input-url-desenvolvimento'
+          id='input-development-url'
           variant="outlined"
-
           fullWidth
           required
           value={developUrl}
@@ -122,7 +123,7 @@ const ManageApplication: React.FC = () => {
         />
         <TextField
           label="URL de homologação"
-          id='input-url-homologação'
+          id='input-homologation-url'
           variant="outlined"
           fullWidth
           required
@@ -134,7 +135,7 @@ const ManageApplication: React.FC = () => {
         />
         <TextField
           label="URL de produção"
-          id='input-url-produção'
+          id='input-production-url'
           variant="outlined"
           fullWidth
           required
@@ -144,12 +145,24 @@ const ManageApplication: React.FC = () => {
           helperText={errors.productionUrl ? errors.productionUrl[0] : ''}
           sx={{ marginBottom: 2 }}
         />
+        <TextField
+          label="Logo"
+          id='input-logo'
+          variant="outlined"
+          fullWidth
+          required
+          value={logo}
+          onChange={(e) => setLogo(e.target.value)}
+          error={!!errors.logo}
+          helperText={errors.logo ? errors.logo[0] : ''}
+          sx={{ marginBottom: 2 }}
+        />
         <Button
           variant="contained"
           id='button-manage-application'
           color="primary"
           onClick={handleSubmit}
-          disabled={loading || !name || !description || !developUrl || !homologUrl || !productionUrl}
+          disabled={loading || !name || !description || !developUrl || !homologUrl || !productionUrl || !logo}
         >
           Salvar
         </Button>
