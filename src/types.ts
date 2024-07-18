@@ -143,7 +143,7 @@ export interface Module {
 
 // Application related types
 export interface Application {
-  id?: string; // Tornar opcional, pois não é necessário para criação
+  id?: number; // Tornar opcional, pois não é necessário para criação
   name: string;
   description: string;
   developUrl: string;

@@ -158,6 +158,7 @@ const ListApplication: React.FC = () => {
                 <Typography variant="body2">URL de Desenvolvimento: {application.developUrl}</Typography>
                 <Typography variant="body2">URL de Homologação: {application.homologUrl}</Typography>
                 <Typography variant="body2">URL de Produção: {application.productionUrl}</Typography>
+                <Typography variant="body2">Logo: {application.logo}</Typography>
               </Box>
               <IconButton onClick={(e) => handleMenuClick(e, application)}>
                 <MoreVertIcon />

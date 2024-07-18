@@ -13,8 +13,6 @@ import {
 
 
 
-
-
 const api = axios.create({
   baseURL: 'http://10.1.1.151:8000/api',
 });
@@ -267,6 +265,10 @@ export const softDeleteApplication = async (id: number): Promise<void> => {
 };
 
 export const updateApplication = async (application: Application): Promise<Application> => {
+  if (!application.id) {
+    throw new Error("Application ID is required for update.");
+  }
+
   const response = await api.put(`/applications/${application.id}`, application);
   return response.data;
 };
