@@ -158,4 +158,5 @@ export interface RegisterData {
   invitationEmail: string;
   password: string;
   companyId: number;
+  status:string;
 }

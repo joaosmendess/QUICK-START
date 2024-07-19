@@ -1,18 +1,13 @@
-import React, { useRef, useState } from 'react';
-import { Container, TextField, Typography, Box, Button, Toolbar, LinearProgress } from '@mui/material';
-import { styled } from '@stitches/react';
+import React, { useRef, useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { TextField, Typography, Box, Toolbar, LinearProgress } from '@mui/material';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { createApplication } from '../../../services/auth';
+import { createApplication, getApplicationById, updateApplication } from '../../../services/applicationService';
 import Success from '../../../components/Messages/SuccessMessage';
 import Error from '../../../components/Messages/ErrorMessage';
-
-const FormContainer = styled(Container, {
-  marginTop: '20px',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '20px',
-});
+import FormContainer from '../../../components/FormContainer';
+import FormButton from '../../../components/FormButton';
 
 const stripHtmlTags = (html: string): string => {
   const div = document.createElement('div');
@@ -21,6 +16,8 @@ const stripHtmlTags = (html: string): string => {
 };
 
 const ManageApplication: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [developUrl, setDevelopUrl] = useState('');
@@ -32,6 +29,29 @@ const ManageApplication: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const quillRef = useRef(null);
+
+  useEffect(() => {
+    const fetchApplication = async () => {
+      if (id) {
+        setLoading(true);
+        try {
+          const data = await getApplicationById(parseInt(id));
+          setName(data.name);
+          setDescription(data.description);
+          setDevelopUrl(data.developUrl);
+          setHomologUrl(data.homologUrl);
+          setProductionUrl(data.productionUrl);
+          setLogo(data.logo);
+        } catch (error) {
+          setErrorMessage('Erro ao carregar aplicação.');
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchApplication();
+  }, [id]);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -50,22 +70,23 @@ const ManageApplication: React.FC = () => {
         logo,
       };
 
-      await createApplication(newApplication);
-      setSuccessMessage('Aplicação criada com sucesso!');
-      // Adicione lógica adicional, como limpar o formulário
-      setName('');
-      setDescription('');
-      setDevelopUrl('');
-      setHomologUrl('');
-      setProductionUrl('');
-      setLogo('');
+      if (id) {
+        await updateApplication({ ...newApplication, id: parseInt(id) });
+        setSuccessMessage('Aplicação atualizada com sucesso!');
+      } else {
+        await createApplication(newApplication);
+        setSuccessMessage('Aplicação criada com sucesso!');
+      }
+
+      // Redirecionar para a lista de aplicações
+      navigate('/listar-aplicacoes');
     } catch (error: any) {
       if (error.response && error.response.data && error.response.data.errors) {
         setErrors(error.response.data.errors);
-        setErrorMessage('Erro ao criar aplicação.');
+        setErrorMessage('Erro ao salvar aplicação.');
       } else {
-        console.error('Erro ao criar aplicação:', error);
-        setErrorMessage('Erro desconhecido ao criar aplicação.');
+        console.error('Erro ao salvar aplicação:', error);
+        setErrorMessage('Erro desconhecido ao salvar aplicação.');
       }
     } finally {
       setLoading(false);
@@ -78,7 +99,7 @@ const ManageApplication: React.FC = () => {
       {loading && <LinearProgress />}
       {successMessage && <Success message={successMessage} />}
       {errorMessage && <Error message={errorMessage} />}
-      <FormContainer maxWidth="md">
+      <FormContainer>
         <TextField
           label="Nome"
           id='input-name'
@@ -92,7 +113,7 @@ const ManageApplication: React.FC = () => {
           helperText={errors.name ? errors.name[0] : ''}
           sx={{ marginBottom: 2 }}
         />
-        <Box sx={{ marginBottom: 2 }}>
+        <Box sx={{ width: '100%', marginBottom: 2 }}>
           <ReactQuill
             ref={quillRef}
             id='input-description'
@@ -157,15 +178,13 @@ const ManageApplication: React.FC = () => {
           helperText={errors.logo ? errors.logo[0] : ''}
           sx={{ marginBottom: 2 }}
         />
-        <Button
-          variant="contained"
-          id='button-manage-application'
-          color="primary"
+        <FormButton
+          loading={loading}
           onClick={handleSubmit}
-          disabled={loading || !name || !description || !developUrl || !homologUrl || !productionUrl || !logo}
+          disabled={!name || !description || !developUrl || !homologUrl || !productionUrl || !logo}
         >
-          Salvar
-        </Button>
+          {id ? 'Editar' : 'Salvar'}
+        </FormButton>
       </FormContainer>
     </>
   );

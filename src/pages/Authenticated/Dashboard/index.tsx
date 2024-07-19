@@ -10,7 +10,7 @@ import DashboardCharts from '../../../components/DashboardCharts';
 interface User {
   id: number;
   name: string;
-  userName: string;
+  username: string;
   empresa_id?: number;
   status: string;
   created_at: string;
@@ -36,7 +36,7 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     setName(localStorage.getItem('name'));
-    setUsername(localStorage.getItem('userName'));
+    setUsername(localStorage.getItem('username'));
 
     const fetchData = async () => {
       const users = await getUsers();

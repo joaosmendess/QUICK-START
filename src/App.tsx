@@ -79,6 +79,14 @@ const App: React.FC = () => {
           }
         />
         <Route
+          path="/gerenciar-usuario/:id"
+          element={
+            <RouteGuard isAuthenticated={isAuthenticated}>
+              <ManageUser />
+            </RouteGuard>
+          }
+        />
+        <Route
           path="/listar-usuarios"
           element={
             <RouteGuard isAuthenticated={isAuthenticated}>
@@ -88,6 +96,14 @@ const App: React.FC = () => {
         />
         <Route
           path="/gerenciar-permissao"
+          element={
+            <RouteGuard isAuthenticated={isAuthenticated}>
+              <ManagePermissions />
+            </RouteGuard>
+          }
+        />
+        <Route
+          path="/gerenciar-permissao/:id"
           element={
             <RouteGuard isAuthenticated={isAuthenticated}>
               <ManagePermissions />
@@ -111,6 +127,14 @@ const App: React.FC = () => {
           }
         />
         <Route
+          path="/gerenciar-empresa/:id"
+          element={
+            <RouteGuard isAuthenticated={isAuthenticated}>
+              <ManageCompany />
+            </RouteGuard>
+          }
+        />
+        <Route
           path="/listar-empresas"
           element={
             <RouteGuard isAuthenticated={isAuthenticated}>
@@ -120,6 +144,14 @@ const App: React.FC = () => {
         />
         <Route
           path="/gerenciar-aplicacao"
+          element={
+            <RouteGuard isAuthenticated={isAuthenticated}>
+              <ManageApplication />
+            </RouteGuard>
+          }
+        />
+        <Route
+          path="/gerenciar-aplicacao/:id"
           element={
             <RouteGuard isAuthenticated={isAuthenticated}>
               <ManageApplication />
@@ -143,6 +175,14 @@ const App: React.FC = () => {
           }
         />
         <Route
+          path="/gerenciar-modulo/:id"
+          element={
+            <RouteGuard isAuthenticated={isAuthenticated}>
+              <ManageModule />
+            </RouteGuard>
+          }
+        />
+        <Route
           path="/listar-modulos"
           element={
             <RouteGuard isAuthenticated={isAuthenticated}>
@@ -152,6 +192,14 @@ const App: React.FC = () => {
         />
         <Route
           path="/gerenciar-usuario-sso"
+          element={
+            <RouteGuard isAuthenticated={isAuthenticated}>
+              <ManageSsoUser />
+            </RouteGuard>
+          }
+        />
+        <Route
+          path="/gerenciar-usuario-sso/:id"
           element={
             <RouteGuard isAuthenticated={isAuthenticated}>
               <ManageSsoUser />

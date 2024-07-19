@@ -13,7 +13,19 @@ export const globalStyles = globalCss({
   "html, body, #root": {
     height: "100%",
   },
-  
+  // Estilos globais para o contêiner dos formulários
+  ".form-container": {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '16px',
+    gap: '16px',
+    maxWidth: '600px',
+    margin: 'auto',
+    '@media (max-width: 600px)': {
+      padding: '16px',
+    },
+  },
 });
 
 globalStyles();

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   TextField,
-  Button,
   Box,
   FormControl,
   InputLabel,
@@ -11,21 +10,17 @@ import {
   FormControlLabel,
   Tabs,
   Tab,
-  SelectChangeEvent,
   Toolbar,
+  SelectChangeEvent,
 } from '@mui/material';
-import { styled } from '@stitches/react';
 import TabPanel from '../../../../components/PermissionTab';
 import LoadingDialog from '../../../../components/LoadingDialog';
 import { Module, PermissionGroupHasModule } from '../../../../types';
 import { getModules, createPermissionGroupHasModule } from '../../../../services/moduleService';
 import Error from '../../../../components/Messages/ErrorMessage';
 import Success from '../../../../components/Messages/SuccessMessage';
-
-const SaveButton = styled(Button, {
-  marginTop: '1rem',
-  backgroundColor: '#6a0dad'
-});
+import FormContainer from '../../../../components/FormContainer';
+import FormButton from '../../../../components/FormButton';
 
 interface Permission {
   id: number;
@@ -40,7 +35,7 @@ interface Permission {
   updated_at: string;
 }
 
-const ManageApplication: React.FC = () => {
+const ManagePermissionGroup: React.FC = () => {
   const [tabValue, setTabValue] = useState(0);
   const [groupName, setGroupName] = useState('');
   const [currentPermissions, setCurrentPermissions] = useState<Permission>({
@@ -82,6 +77,10 @@ const ManageApplication: React.FC = () => {
 
   const handleSaveGroupName = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!groupName) {
+      setError('O nome do grupo é obrigatório');
+      return;
+    }
     setError(null);
     setSuccess('Nome do grupo salvo com sucesso!');
     setTabValue(1);
@@ -89,27 +88,29 @@ const ManageApplication: React.FC = () => {
 
   const handleSavePermissions = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!groupName) {
+      setError('O nome do grupo é obrigatório');
+      return;
+    }
     setLoading(true);
     setError(null);
     setSuccess(null);
     try {
-      if (groupName) {
-        const newPermissionGroupHasModule: PermissionGroupHasModule = {
-          name: groupName, // Incluindo o nome do grupo
-          modulesId: currentPermissions.modules_id,
-          get: currentPermissions.get ? 1 : 0,
-          post: currentPermissions.post ? 1 : 0,
-          put: currentPermissions.put ? 1 : 0,
-          delete: currentPermissions.delete ? 1 : 0,
-          id: 0, // ID is generated on the backend
-          created_at: '',
-          updated_at: '',
-          permissionsGroupsId: 0, // Placeholder, update based on API response
-        };
-        await createPermissionGroupHasModule(newPermissionGroupHasModule);
-        setSuccess('Permissões criadas com sucesso!');
-        resetForm();
-      }
+      const newPermissionGroupHasModule: PermissionGroupHasModule = {
+        name: groupName,
+        modulesId: currentPermissions.modules_id,
+        get: currentPermissions.get ? 1 : 0,
+        post: currentPermissions.post ? 1 : 0,
+        put: currentPermissions.put ? 1 : 0,
+        delete: currentPermissions.delete ? 1 : 0,
+        id: 0, 
+        created_at: '',
+        updated_at: '',
+        permissionsGroupsId: 0, 
+      };
+      await createPermissionGroupHasModule(newPermissionGroupHasModule);
+      setSuccess('Permissões criadas com sucesso!');
+      resetForm();
     } catch (error) {
       console.error('Erro ao salvar permissões', error);
       setError('Erro ao salvar permissões');
@@ -154,7 +155,7 @@ const ManageApplication: React.FC = () => {
     <>
       <Toolbar />
       <Toolbar />
-      <Box sx={{ maxWidth: '600px', margin: 'auto', mt: 4 }}>
+      <FormContainer>
         <LoadingDialog open={initialLoading} message="Carregando informações, por favor aguarde..." />
         {error && <Error message={error} />}
         {success && <Success message={success} />}
@@ -177,16 +178,17 @@ const ManageApplication: React.FC = () => {
               margin="normal"
               disabled={loading}
             />
-            <SaveButton
-              type="submit"
-              id="button-manage-permission-group"
-              variant="contained"
-              color="primary"
-              fullWidth
-              disabled={loading}
-            >
-              Salvar
-            </SaveButton>
+            <Box display="flex" justifyContent="center" width="100%">
+              <FormButton
+                type="submit"
+                id="button-manage-permission-group"
+                loading={loading}
+                onClick={handleSaveGroupName}
+                disabled={loading}
+              >
+                Salvar
+              </FormButton>
+            </Box>
           </form>
         </TabPanel>
 
@@ -261,21 +263,22 @@ const ManageApplication: React.FC = () => {
                 label="Apagar"
               />
             </Box>
-            <SaveButton
-              type="submit"
-              id="button-manage-permission-group"
-              variant="contained"
-              color="primary"
-              fullWidth
-              disabled={loading}
-            >
-              Salvar
-            </SaveButton>
+            <Box display="flex" justifyContent="center" width="100%">
+              <FormButton
+                type="submit"
+                id="button-manage-permission-group"
+                loading={loading}
+                onClick={handleSavePermissions}
+                disabled={loading}
+              >
+                Salvar
+              </FormButton>
+            </Box>
           </form>
         </TabPanel>
-      </Box>
+      </FormContainer>
     </>
   );
 };
 
-export default ManageApplication;
+export default ManagePermissionGroup;

@@ -7,7 +7,7 @@ import SuccessMessage from '../Messages/SuccessMessage';
 import PermissionItem from '../PermissionItem';
 import DeleteDialog from '../DeleteDialog';
 import LoadingDialog from '../LoadingDialog';
-import { PermissionGroup } from '../../types'; // Certifique-se de importar o tipo correto
+import { PermissionGroup } from '../../types';
 
 const PermissionListContainer = styled(Box, {
   display: 'flex',
@@ -22,10 +22,8 @@ const PermissionListContainer = styled(Box, {
   },
 });
 
-const PermissionList = () => {
+const PermissionList: React.FC = () => {
   const [permissionGroups, setPermissionGroups] = useState<PermissionGroup[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -75,7 +73,7 @@ const PermissionList = () => {
 
   return (
     <PermissionListContainer>
-      <Toolbar/>
+      <Toolbar />
       <TextField
         label="Pesquise por nome"
         variant="outlined"
@@ -104,7 +102,7 @@ const PermissionList = () => {
         onConfirm={handleConfirmDelete}
         loading={deleteLoading}
       />
-      <LoadingDialog open={loading || deleteLoading} message="Por favor, aguarde..." />
+      <LoadingDialog open={deleteLoading} message="Por favor, aguarde..." />
     </PermissionListContainer>
   );
 };

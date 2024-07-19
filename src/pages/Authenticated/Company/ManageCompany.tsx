@@ -1,19 +1,12 @@
-import React, { useState } from 'react';
-import { Container, TextField, Button, Toolbar, LinearProgress, Grid, Tabs, Tab, Box } from '@mui/material';
-import { styled } from '@stitches/react';
+import React, { useState, useEffect } from 'react';
+import { TextField, Toolbar, LinearProgress, Grid, Tabs, Tab, Box } from '@mui/material';
+import { useParams } from 'react-router-dom';
 
-import { createCompany } from '../../../services/companyService';
+import { createCompany, getCompanyById, updateCompany } from '../../../services/companyService';
 import Error from '../../../components/Messages/ErrorMessage';
 import Success from '../../../components/Messages/SuccessMessage';
-
-const FormContainer = styled(Container, {
-  marginTop: '20px',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '20px',
-  justifyContent: 'center',
-  alignItems: 'center'
-});
+import FormContainer from '../../../components/FormContainer'; // Certifique-se de importar o FormContainer
+import FormButton from '../../../components/FormButton'; // Certifique-se de importar o FormButton
 
 const formatCNPJ = (value: string) => {
   return value
@@ -30,6 +23,7 @@ const cleanCNPJ = (value: string) => {
 };
 
 const ManageCompany: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const [tabIndex, setTabIndex] = useState(0);
   const [name, setName] = useState('');
   const [tag, setTag] = useState('');
@@ -43,6 +37,33 @@ const ManageCompany: React.FC = () => {
   const [severity, setSeverity] = useState<'success' | 'error' | null>(null);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (id) {
+      fetchCompanyData(id);
+    }
+  }, [id]);
+
+  const fetchCompanyData = async (companyId: string) => {
+    setLoading(true);
+    try {
+      const company = await getCompanyById(Number(companyId));
+      setName(company.name);
+      setTag(company.tag);
+      setCnpj(formatCNPJ(company.cnpj));
+      setClientId(company.clientId || '');
+      setClientSecret(company.clientSecret || '');
+      setTenantId(company.tenantId || '');
+      setSsoName(company.ssoName || '');
+      setRedirectUrl(company.redirectUrl || '');
+    } catch (error) {
+      console.error('Erro ao buscar dados da empresa:', error);
+      setMessage('Erro ao buscar dados da empresa');
+      setSeverity('error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleCnpjChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCnpj(formatCNPJ(e.target.value));
   };
@@ -51,21 +72,19 @@ const ManageCompany: React.FC = () => {
     setLoading(true);
     try {
       const cleanedCnpj = cleanCNPJ(cnpj);
-      const newCompany = await createCompany(name, tag, cleanedCnpj, ssoName, clientId, clientSecret, tenantId, redirectUrl);
-      console.log('Empresa criada com sucesso:', newCompany);
-      setMessage('Empresa criada com sucesso!');
+      const companyData = { name, tag, cnpj: cleanedCnpj, ssoName, clientId, clientSecret, tenantId, redirectUrl };
+
+      if (id) {
+        await updateCompany(Number(id), companyData);
+        setMessage('Empresa atualizada com sucesso!');
+      } else {
+        await createCompany(name, tag, cleanedCnpj, ssoName, clientId, clientSecret, tenantId, redirectUrl);
+        setMessage('Empresa criada com sucesso!');
+      }
       setSeverity('success');
-      setName('');
-      setTag('');
-      setCnpj('');
-      setClientId('');
-      setClientSecret('');
-      setTenantId('');
-      setSsoName('');
-      setRedirectUrl('');
     } catch (error) {
-      console.error('Erro ao criar empresa:', error);
-      setMessage('Erro ao criar empresa');
+      console.error('Erro ao salvar empresa:', error);
+      setMessage('Erro ao salvar empresa');
       setSeverity('error');
     } finally {
       setLoading(false);
@@ -80,7 +99,7 @@ const ManageCompany: React.FC = () => {
     <>
       <Toolbar />
       {loading && <LinearProgress />}
-      <FormContainer maxWidth="xs">
+      <FormContainer>
         {severity === 'error' && <Error message={message as string} />}
         {severity === 'success' && <Success message={message as string} />}
         <Tabs value={tabIndex} onChange={handleTabChange} centered>
@@ -186,16 +205,14 @@ const ManageCompany: React.FC = () => {
           )}
         </Box>
         <Grid container spacing={1} justifyContent="center" mt={2}>
-          <Grid item xs={12} md={6}>
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
+          <Grid item xs={0} md={3}>
+            <FormButton
+              loading={loading}
               onClick={handleSubmit}
-              id='button-manager-company'
+              disabled={!name || !tag || !cnpj || !redirectUrl}
             >
               Salvar
-            </Button>
+            </FormButton>
           </Grid>
         </Grid>
       </FormContainer>

@@ -18,6 +18,7 @@ import { User } from '../../../../types';
 import HeaderTable from '../../../../components/HeaderTable';
 import UserTable from '../../../../components/Table/UserTable';
 import Success from '../../../../components/Messages/SuccessMessage';
+import { useNavigate } from 'react-router-dom';
 
 const ListUsers: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -30,6 +31,7 @@ const ListUsers: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState('newest');
   const [editUser, setEditUser] = useState<null | User>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -85,16 +87,9 @@ const ListUsers: React.FC = () => {
   };
 
   const handleEditClick = (user: User) => {
-    // Certifique-se de que companyId é definido
-    const companyId = user.companyId || 0; // Defina um valor padrão se necessário
-  
-    setEditUser({
-      ...user,
-      invitationEmail: user.invitationEmail || '',
-      companyId: companyId, // Certifique-se de que companyId é passado corretamente
-      status: user.status || 'Ativo'
-    });
+    navigate(`/gerenciar-usuario/${user.id}`);
   };
+
   const handleEditClose = () => {
     setEditUser(null);
   };
@@ -125,7 +120,6 @@ const ListUsers: React.FC = () => {
       console.error('Nenhum usuário selecionado para edição');
     }
   };
-  
 
   return (
     <>

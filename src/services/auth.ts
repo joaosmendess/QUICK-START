@@ -76,14 +76,14 @@ export const createUser = async (
 
 export const getUsers = async (
   name?: string,
-  userName?: string,
+  username?: string,
   status?:string,
   invitationEmail?:string,
   companyId?:string,
 
 ): Promise<User[]> => {
   const response = await api.get("/users", {
-    params: { name, userName, status, invitationEmail, companyId },
+    params: { name, username, status, invitationEmail, companyId },
   });
   return response.data;
 };

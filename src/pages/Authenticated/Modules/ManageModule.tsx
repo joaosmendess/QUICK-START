@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Container, TextField, Box, CircularProgress, MenuItem, Button, Toolbar } from '@mui/material';
-import { styled } from '@stitches/react';
+import { TextField, Box, CircularProgress, MenuItem, Toolbar } from '@mui/material';
 import { getApplications, createModule, updateModule } from '../../../services/auth';
 import SuccessMessage from '../../../components/Messages/SuccessMessage';
 import DeleteMessage from '../../../components/Messages/ErrorMessage';
 import { useLocation } from 'react-router-dom';
-
-const FormContainer = styled(Container, {
-  marginTop: '20px',
-  
-  borderRadius: '8px',
-});
+import FormContainer from '../../../components/FormContainer'; // Certifique-se de importar o FormContainer
+import FormButton from '../../../components/FormButton'; // Certifique-se de importar o FormButton
 
 interface Application {
- 
   id: string;
   name: string;
   description: string;
@@ -66,7 +60,7 @@ const ManageModule: React.FC = () => {
 
     try {
       if (id) {
-        await updateModule(id, name, Number(applications_id)); // Passando todos os argumentos necessários
+        await updateModule(id, name, Number(applications_id));
         setMessage('Módulo atualizado com sucesso');
       } else {
         await createModule(name, Number(applications_id));
@@ -82,14 +76,17 @@ const ManageModule: React.FC = () => {
     }
   };
 
-  const handleCloseNotification = () => {
-    setNotificationOpen(false);
-  };
 
   return (
     <div>
-      <Toolbar/>
-      <FormContainer maxWidth="md">
+      <Toolbar />
+      <FormContainer>
+        {severity === 'success' && message && (
+          <SuccessMessage message={message} />
+        )}
+        {severity === 'error' && message && (
+          <DeleteMessage message={message} />
+        )}
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 4 }}>
             <CircularProgress />
@@ -121,16 +118,10 @@ const ManageModule: React.FC = () => {
                 </MenuItem>
               ))}
             </TextField>
-            <Button variant="contained" color="primary" onClick={handleSave} disabled={saving}>
-              {saving ? <CircularProgress size={24} /> : 'Salvar'}
-            </Button>
+            <FormButton loading={saving} onClick={handleSave}>
+              Salvar
+            </FormButton>
           </>
-        )}
-        {severity === 'success' && message && (
-          <SuccessMessage message={message} />
-        )}
-        {severity === 'error' && message && (
-          <DeleteMessage message={message} />
         )}
       </FormContainer>
     </div>
@@ -138,4 +129,3 @@ const ManageModule: React.FC = () => {
 };
 
 export default ManageModule;
-

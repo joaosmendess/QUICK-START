@@ -8,7 +8,8 @@ export const register = async (data: RegisterData) => {
     username: data.username,
     invitationEmail: data.invitationEmail,
     password: data.password,
-    company_id: data.companyId,
+    companyId: data.companyId,
+    status: data.status
   });
   return response.data;
-};
+}; 
