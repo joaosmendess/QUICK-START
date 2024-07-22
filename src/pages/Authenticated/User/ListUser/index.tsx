@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Toolbar, SelectChangeEvent, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
-import { getUsers, updateUsers } from '../../../../services/auth';
+import { getUsers, updateUsers, deleteUser } from '../../../../services/auth';
 import { User } from '../../../../types';
 import HeaderTable from '../../../../components/HeaderTable';
 import UserTable from '../../../../components/Table/UserTable';
@@ -17,6 +17,7 @@ const ListUsers: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState('newest');
   const [editUser, setEditUser] = useState<null | User>(null);
+  const [deleteUserId, setDeleteUserId] = useState<null | number>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -93,6 +94,28 @@ const ListUsers: React.FC = () => {
     }
   };
 
+  const handleDeleteClick = (userId: number) => {
+    setDeleteUserId(userId);
+  };
+
+  const handleDeleteClose = () => {
+    setDeleteUserId(null);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (deleteUserId) {
+      try {
+        await deleteUser(deleteUserId);
+        setUsers(prevUsers => prevUsers.filter(user => user.id !== deleteUserId));
+        setSuccessMessage('Usuário deletado com sucesso!');
+      } catch (error) {
+        console.error('Erro ao deletar usuário', error);
+      } finally {
+        setDeleteUserId(null);
+      }
+    }
+  };
+
   return (
     <>
       <Toolbar />
@@ -112,8 +135,8 @@ const ListUsers: React.FC = () => {
           handleMenuClose={handleMenuClose}
           anchorEl={anchorEl}
           selectedUser={selectedUser}
-          setUsers={setUsers}
           handleEditClick={handleEditClick}
+          handleDeleteClick={handleDeleteClick}
         />
       </Box>
 
@@ -151,13 +174,23 @@ const ListUsers: React.FC = () => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleEditClose} id='fechar-modal'  >Cancelar</Button>
-            <Button onClick={handleEditSave}
-            id='salvar-usuario'
-            
-            >
-              Salvar
-            </Button>
+            <Button onClick={handleEditClose} id="fechar-modal">Cancelar</Button>
+            <Button onClick={handleEditSave} id="salvar-usuario">Salvar</Button>
+          </DialogActions>
+        </Dialog>
+      )}
+
+      {deleteUserId && (
+        <Dialog open={Boolean(deleteUserId)} onClose={handleDeleteClose}>
+          <DialogTitle>Deletar Usuário</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Tem certeza que deseja deletar este usuário? Esta ação não pode ser desfeita.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteClose} id="fechar-modal-delete">Cancelar</Button>
+            <Button onClick={handleDeleteConfirm} id="confirmar-delete">Deletar</Button>
           </DialogActions>
         </Dialog>
       )}

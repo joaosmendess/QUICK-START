@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import { AppBar, Toolbar, IconButton, Avatar, Typography, Menu, MenuItem, Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { styled } from '@stitches/react';
+
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo-white.png';
 
-const StyledAppBar = styled(AppBar, {
-  color: '#000000',
-});
+
 
 interface HeaderProps {
   pageTitle: string;
@@ -55,11 +53,24 @@ const Header: React.FC<HeaderProps> = ({ pageTitle, toggleDrawer, onLogout }) =>
           <IconButton color="inherit">
             <NotificationsIcon />
           </IconButton>
-          <IconButton color="inherit" onClick={handleMenuOpen}>
+          <IconButton 
+          color="inherit" 
+          id='menu-profile'
+          onClick={handleMenuOpen}>
             <Avatar src="/path-to-avatar.jpg" />
           </IconButton>
-          <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-            <MenuItem onClick={handleLogout}>Sair</MenuItem>
+          <Menu 
+          anchorEl={anchorEl}
+          id='menu-logout'
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}>
+            <MenuItem
+            onClick={handleLogout}
+              
+            >
+            
+              Sair
+              </MenuItem>
           </Menu>
         </Box>
       </Toolbar>

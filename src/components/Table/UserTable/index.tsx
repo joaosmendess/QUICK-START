@@ -1,7 +1,7 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, CircularProgress } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, CircularProgress, IconButton, Menu, MenuItem } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { User } from '../../../types';
-import UserRow from '../UserRow';
 
 interface UserTableProps {
   users: User[];
@@ -10,12 +10,22 @@ interface UserTableProps {
   handleMenuClick: (event: React.MouseEvent<HTMLButtonElement>, userName: string) => void;
   handleMenuClose: () => void;
   handleEditClick: (user: User) => void;
+  handleDeleteClick: (userId: number) => void;
   anchorEl: null | HTMLElement;
   selectedUser: null | string;
-  setUsers: React.Dispatch<React.SetStateAction<User[]>>;
 }
 
-const UserTable: React.FC<UserTableProps> = ({ users, loading, error, handleMenuClick, handleMenuClose, handleEditClick, anchorEl, selectedUser }) => {
+const UserTable: React.FC<UserTableProps> = ({
+  users,
+  loading,
+  error,
+  handleMenuClick,
+  handleMenuClose,
+  handleEditClick,
+  handleDeleteClick,
+  anchorEl,
+  selectedUser,
+}) => {
   return (
     <>
       {loading ? (
@@ -40,15 +50,36 @@ const UserTable: React.FC<UserTableProps> = ({ users, loading, error, handleMenu
                 </TableHead>
                 <TableBody>
                   {users.map((user) => (
-                    <UserRow
-                      key={user.userName}
-                      user={user}
-                      handleMenuClick={handleMenuClick}
-                      handleMenuClose={handleMenuClose}
-                      handleEditClick={() => handleEditClick(user)}
-                      anchorEl={anchorEl}
-                      selectedUser={selectedUser}
-                    />
+                    <TableRow key={user.id}>
+                      <TableCell>{user.name}</TableCell>
+                      <TableCell>{user.userName}</TableCell>
+                      <TableCell>{user.status}</TableCell>
+                      <TableCell>
+                        <IconButton
+                          aria-label="more"
+                          aria-controls="long-menu"
+                          aria-haspopup="true"
+                          onClick={(event) => handleMenuClick(event, user.userName)}
+                          id={`menu-button-${user.id}`}
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+                        <Menu
+                          id="long-menu"
+                          anchorEl={anchorEl}
+                          keepMounted
+                          open={Boolean(anchorEl) && selectedUser === user.userName}
+                          onClose={handleMenuClose}
+                        >
+                          <MenuItem onClick={() => handleEditClick(user)} id={`edit-button-${user.id}`}>
+                            Editar
+                          </MenuItem>
+                          <MenuItem onClick={() => handleDeleteClick(user.id)} id={`delete-button-${user.id}`}>
+                            Deletar
+                          </MenuItem>
+                        </Menu>
+                      </TableCell>
+                    </TableRow>
                   ))}
                 </TableBody>
               </Table>

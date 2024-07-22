@@ -16,7 +16,7 @@ import {
 
 
 const api = axios.create({
-  baseURL: 'http://localhost:8989/api',
+  baseURL: 'http://10.1.1.151:8000/api',
 });
 
 api.interceptors.request.use(
@@ -46,12 +46,14 @@ api.interceptors.response.use(
 
 
 export const login = async (
-  userName: string,
-  password: string
+  username: string,
+  password: string,
+  tag:string,
 ): Promise<LoginResponse> => {
   const response = await api.post<LoginResponse>("/auth/login", {
-    userName,
+    username,
     password,
+    tag
   });
   return response.data;
 };
@@ -104,6 +106,17 @@ export const getCompany = async (page: number): Promise<{ data: Company[]; total
     //sd
   };
 };
+// src/services/auth.ts
+export const deleteUser = async (userId: number) => {
+  try {
+    const response = await api.delete(`/users/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao deletar usuário', error);
+    throw error;
+  }
+};
+
 export const createCompany = async (name: string, cnpj: string,  clientId:string, clientSecret:string, ssoName:string, tenantId:string): Promise<Company> => {
   const response = await api.post(`/company`, { name, cnpj, clientId,clientSecret, ssoName, tenantId });
   return response.data;

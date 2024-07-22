@@ -77,10 +77,10 @@ const ManageUser: React.FC = () => {
         <form onSubmit={handleSave}>
           <TextField
             label="Nome"
+            id="input-name"
             variant="outlined"
             type="text"
             value={name}
-            id="name"
             onChange={(e) => setName(e.target.value)}
             required
             fullWidth
@@ -88,10 +88,10 @@ const ManageUser: React.FC = () => {
           />
           <TextField
             label="Usuário"
+            id="input-username"
             variant="outlined"
             type="text"
             value={userName}
-            id="userName"
             onChange={(e) => setUserName(e.target.value)}
             required
             fullWidth
@@ -99,10 +99,10 @@ const ManageUser: React.FC = () => {
           />
           <TextField
             label="Email"
+            id="input-email"
             variant="outlined"
             type="email"
             value={email}
-            id="email"
             onChange={(e) => setEmail(e.target.value)}
             required
             fullWidth
@@ -112,7 +112,7 @@ const ManageUser: React.FC = () => {
             <InputLabel>Grupo de permissão</InputLabel>
             <Select
               value={permissionGroupId}
-              id="permissionGroupId"
+              id="select-permission-group"
               onChange={(e) => setPermissionGroupId(e.target.value as string)}
               required
               label="Grupo de permissão"
@@ -123,7 +123,12 @@ const ManageUser: React.FC = () => {
               ))}
             </Select>
           </FormControl>
-          <SaveButton type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
+          <SaveButton 
+          type="submit"
+          id='button-manage-user'
+          variant="contained"
+          color="primary"
+          fullWidth disabled={loading}>
             {loading ? <CircularProgress size={24} /> : 'Salvar'}
           </SaveButton>
         </form>

@@ -34,7 +34,7 @@ export interface LoginResponse {
   token: string;
   customerData: {
     name: string;
-    userName: string;
+    username: string;
     empresa: string;
     permissions: Array<{
       application: {
@@ -43,6 +43,7 @@ export interface LoginResponse {
         developUrl: string;
         homologUrl: string;
         productionUrl: string;
+        tag: string;
       };
       modules: Array<{
         name: string;
