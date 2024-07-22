@@ -61,10 +61,15 @@ const Header: React.FC<HeaderProps> = ({ pageTitle, toggleDrawer, onLogout }) =>
           </IconButton>
           <Menu 
           anchorEl={anchorEl}
-          id='menu-logout'
+          
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}>
-            <MenuItem onClick={handleLogout}>Sair</MenuItem>
+            <MenuItem 
+            onClick={handleLogout}
+            id='menu-logout'
+            >
+              Sair
+              </MenuItem>
           </Menu>
         </Box>
       </Toolbar>

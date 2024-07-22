@@ -38,22 +38,24 @@ export const getCompanyById = async (id: number): Promise<Company> => {
  * @param {string} name - Nome da empresa.
  * @param {string} tag - Tag da empresa.
  * @param {string} cnpj - CNPJ da empresa.
+ * @param {number[]} applicationIds - IDs das aplicações associadas.
+ * @param {string} redirectUrl - URL de redirecionamento (opcional).
  * @param {string} ssoName - Nome do SSO (opcional).
  * @param {string} clientId - ID do cliente (opcional).
  * @param {string} clientSecret - Segredo do cliente (opcional).
  * @param {string} tenantId - ID do inquilino (opcional).
- * @param {string} redirectUrl - URL de redirecionamento (opcional).
  * @returns {Promise<Company>} - Empresa criada.
  */
 export const createCompany = async (
   name: string,
   tag: string,
   cnpj: string,
+  applicationIds: number[],
+  redirectUrl: string,
   ssoName?: string,
   clientId?: string,
   clientSecret?: string,
-  tenantId?: string,
-  redirectUrl?: string
+  tenantId?: string
 ): Promise<Company> => {
   const response = await api.post('/companies', {
     name,
@@ -63,7 +65,8 @@ export const createCompany = async (
     clientId,
     clientSecret,
     tenantId,
-    redirectUrl
+    redirectUrl, 
+    applicationIds
   });
   return response.data;
 };

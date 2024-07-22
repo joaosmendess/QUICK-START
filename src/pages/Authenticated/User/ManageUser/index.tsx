@@ -12,7 +12,7 @@ const ManageUser: React.FC = () => {
   const [name, setName] = useState('');
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
-  const [status, setStatus] = useState('active'); // Valor inicial do status
+  const [status, setStatus] = useState(''); // Valor inicial do status
   const [empresaId, setEmpresaId] = useState<number>(1); // Fixo como 1
   const [password] = useState('0fm53nh4@2024'); // Senha temporária fixa
 
@@ -169,9 +169,9 @@ const ManageUser: React.FC = () => {
               onChange={(e) => setStatus(e.target.value)}
               label="Status"
             >
-              <MenuItem value="active">Ativo</MenuItem>
+              <MenuItem value="Ativo">Ativo</MenuItem>
               <MenuItem value="blocked">Bloqueado</MenuItem>
-              <MenuItem value="inactive">Inativo</MenuItem>
+              <MenuItem value="Inativo">Inativo</MenuItem>
             </Select>
           </FormControl>
           <Box display="flex" justifyContent="center" width="100%">
@@ -182,7 +182,7 @@ const ManageUser: React.FC = () => {
               onClick={handleSave}
               disabled={loading}
             >
-              {loading ? <CircularProgress size={24} /> : 'Enviar e-mail'}
+               {loading ? <CircularProgress size={24} /> : id ? 'Editar' : 'Salvar'}
             </FormButton>
           </Box>
         </form>

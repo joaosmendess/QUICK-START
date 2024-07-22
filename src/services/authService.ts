@@ -1,5 +1,5 @@
 import api from './apiClient';
-import { LoginResponse, GetUserResponse } from '../types';
+import { LoginResponse, GetUserResponse, User } from '../types';
 
 export const login = async (username: string, password: string, tag: string): Promise<LoginResponse> => {
   const response = await api.post<LoginResponse>('/auth/login', { username, password, tag });
@@ -15,6 +15,12 @@ export const getUser = async (username: string): Promise<GetUserResponse> => {
   const response = await api.get<GetUserResponse>(`/auth/check-user/${username}`);
   return response.data;
 };
+
+export const getUsers = async (): Promise<User[]> => {
+  const response = await api.get<User[]>('/users');
+  return response.data;
+};
+
 
 export const validateToken = async (token: string) => {
   const response = await api.post('/auth/validate-jwt', { token });

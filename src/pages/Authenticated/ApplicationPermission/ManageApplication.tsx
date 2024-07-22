@@ -132,7 +132,7 @@ const ManageApplication: React.FC = () => {
         </Box>
         <TextField
           label="URL de desenvolvimento"
-          id='input-development-url'
+          id='input-url-development'
           variant="outlined"
           fullWidth
           required
@@ -144,7 +144,7 @@ const ManageApplication: React.FC = () => {
         />
         <TextField
           label="URL de homologação"
-          id='input-homologation-url'
+          id='input-url-homologation'
           variant="outlined"
           fullWidth
           required
@@ -156,7 +156,7 @@ const ManageApplication: React.FC = () => {
         />
         <TextField
           label="URL de produção"
-          id='input-production-url'
+          id='input-url-production'
           variant="outlined"
           fullWidth
           required
@@ -181,6 +181,7 @@ const ManageApplication: React.FC = () => {
         <FormButton
           loading={loading}
           onClick={handleSubmit}
+          id='button-manager-application'
           disabled={!name || !description || !developUrl || !homologUrl || !productionUrl || !logo}
         >
           {id ? 'Editar' : 'Salvar'}

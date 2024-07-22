@@ -102,15 +102,15 @@ export const updateUsers = async (
   return response.data;
 };
 
-export const getCompany = async (page: number): Promise<{ data: Company[]; total: number; last_page: number }> => {
-  const response = await api.get(`/companies?page=${page}`);
-  return {
-    data: response.data.data,
-    total: response.data.total,
-    last_page: response.data.last_page, 
-    //sd
-  };
-};
+//export const getCompany = async (page: number): Promise<{ data: Company[]; total: number; last_page: number }> => {
+////  const response = await api.get(`/companies?page=${page}`);
+////  return {
+////    data: response.data.data,
+////    total: response.data.total,
+////    last_page: response.data.last_page, 
+////    //sd
+////  };
+//};
 export const createCompany = async (name: string, cnpj: string,  clientId:string, clientSecret:string, ssoName:string, tenantId:string): Promise<Company> => {
   const response = await api.post(`/companies`, { name, cnpj, clientId,clientSecret, ssoName, tenantId });
   return response.data;

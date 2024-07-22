@@ -2,42 +2,33 @@ import React, { useState, useEffect } from 'react';
 import {
   Box,
   Toolbar,
+  
+  CircularProgress,
   SelectChangeEvent,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  TextField,
-  Select,
-  MenuItem
+  Typography
 } from '@mui/material';
-import { getUsers, updateUsers } from '../../../../services/auth';
+import { fetchUsers, deleteUser } from '../../../../services/userService';
 import { User } from '../../../../types';
 import HeaderTable from '../../../../components/HeaderTable';
-import UserTable from '../../../../components/Table/UserTable';
 import Success from '../../../../components/Messages/SuccessMessage';
 import { useNavigate } from 'react-router-dom';
+import ListItemWithMenu from '../../../../components/ListItemWithMenu';
 
 const ListUsers: React.FC = () => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedUser, setSelectedUser] = useState<null | string>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState('newest');
-  const [editUser, setEditUser] = useState<null | User>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const data = await getUsers();
+        const data = await fetchUsers();
         setUsers(data);
         setFilteredUsers(data);
       } catch (error) {
@@ -68,16 +59,6 @@ const ListUsers: React.FC = () => {
     );
   }, [searchTerm, users, sortBy]);
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>, userName: string) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedUser(userName);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    setSelectedUser(null);
-  };
-
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
@@ -90,43 +71,32 @@ const ListUsers: React.FC = () => {
     navigate(`/gerenciar-usuario/${user.id}`);
   };
 
-  const handleEditClose = () => {
-    setEditUser(null);
-  };
-
-  const handleEditSave = async () => {
-    if (editUser) {
-      try {
-        const updatedUser = await updateUsers(
-          editUser.id,
-          editUser.name,
-          editUser.username,
-          editUser.status,
-          editUser.invitationEmail,
-          editUser.companyId
-        );
-        setUsers((prevUsers) =>
-          prevUsers.map((user) =>
-            user.id === updatedUser.id ? updatedUser : user
-          )
-        );
-        setSuccessMessage('Usuário atualizado com sucesso!');
-      } catch (error) {
-        console.error('Erro ao atualizar usuário', error);
-      } finally {
-        setEditUser(null); // Limpar o estado de editUser após salvar ou falhar
-      }
-    } else {
-      console.error('Nenhum usuário selecionado para edição');
+  const handleDeleteUser = async (user: User) => {
+    setLoading(true);
+    try {
+      await deleteUser(user.id);
+      setUsers(users.filter(u => u.id !== user.id));
+      setSuccessMessage('Usuário excluído com sucesso!');
+    } catch (error) {
+      console.error('Erro ao excluir usuário', error);
+      setError('Erro ao excluir usuário');
+    } finally {
+      setLoading(false);
     }
   };
+
+  const renderUserDetails = (user: User) => (
+    <Box>
+      <Typography variant="h6">{user.name}</Typography>
+      <Typography variant="body2">{user.username}</Typography>
+      <Typography variant="body2">{user.invitationEmail}</Typography>
+    </Box>
+  );
 
   return (
     <>
       <Toolbar />
-      <Box
-        sx={{ width: '100%', maxWidth: 1200, margin: '0 auto', padding: '1rem' }}
-      >
+      <Box sx={{ width: '100%', maxWidth: 1200, margin: '0 auto', padding: '1rem' }}>
         {successMessage && <Success message={successMessage} />}
         <HeaderTable
           searchTerm={searchTerm}
@@ -134,91 +104,20 @@ const ListUsers: React.FC = () => {
           sortBy={sortBy}
           handleSortChange={handleSortChange}
         />
-        <UserTable
-          users={filteredUsers}
-          loading={loading}
-          error={error}
-          handleMenuClick={handleMenuClick}
-          handleMenuClose={handleMenuClose}
-          anchorEl={anchorEl}
-          selectedUser={selectedUser}
-          setUsers={setUsers}
-          handleEditClick={handleEditClick}
-        />
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          filteredUsers.map((user) => (
+            <ListItemWithMenu
+              key={user.id}
+              item={user}
+              onEdit={handleEditClick}
+              onDelete={handleDeleteUser}
+              renderItemDetails={renderUserDetails}
+            />
+          ))
+        )}
       </Box>
-
-      {editUser && (
-        <Dialog open={Boolean(editUser)} onClose={handleEditClose}>
-          <DialogTitle>Editar Usuário</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Faça as alterações necessárias nos campos abaixo.
-            </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              label="Nome"
-              fullWidth
-              value={editUser.name || ''}
-              id="input-name"
-              onChange={(e) =>
-                setEditUser({ ...editUser, name: e.target.value })
-              }
-            />
-            <TextField
-              margin="dense"
-              label="Usuário"
-              fullWidth
-              value={editUser.username || ''}
-              id="input-username"
-              onChange={(e) =>
-                setEditUser({ ...editUser, username: e.target.value })
-              }
-            />
-            <TextField
-              margin="dense"
-              label="Email de Convite"
-              fullWidth
-              value={editUser.invitationEmail || ''}
-              id="input-email"
-              onChange={(e) =>
-                setEditUser({ ...editUser, invitationEmail: e.target.value })
-              }
-            />
-            <TextField
-              margin="dense"
-              label="ID da Empresa"
-              fullWidth
-              value={editUser.companyId}
-              id="input-company"
-              onChange={(e) =>
-                setEditUser({ ...editUser, companyId: parseInt(e.target.value) })
-              }
-            />
-            <Select
-              margin="dense"
-              label="Status"
-              fullWidth
-              value={editUser.status || 'Ativo'}
-              id="input-status"
-              onChange={(e) =>
-                setEditUser({ ...editUser, status: e.target.value })
-              }
-            >
-              <MenuItem value="Ativo">Ativo</MenuItem>
-              <MenuItem value="Inativo">Inativo</MenuItem>
-            </Select>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleEditClose} id="button-close-modal">
-              Cancelar
-            </Button>
-            <Button onClick={handleEditSave} id="button-save-edit-user">
-              Salvar
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
     </>
   );
 };

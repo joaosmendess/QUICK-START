@@ -20,6 +20,7 @@ import ManageCompany from './pages/Authenticated/Company/ManageCompany';
 import ListCompany from './pages/Authenticated/Company/ListCompany';
 import ManageSsoUser from './pages/Authenticated/SsoUser/ManageSsoUser';
 import ListSsoUser from './pages/Authenticated/SsoUser/ListSsoUser';
+import NotFound from './components/NotFound';
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -40,10 +41,7 @@ const App: React.FC = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('name');
-    localStorage.removeItem('userName');
-
+    localStorage.clear();
     setIsAuthenticated(false);
   };
 
@@ -60,7 +58,8 @@ const App: React.FC = () => {
         </>
       )}
       <Routes>
-        <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
+        <Route path= "/login" element={<Login/>} /> 
+        <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login/>} />
         <Route path="/callback" element={<Callback />} />
         <Route
           path="/dashboard"
@@ -214,7 +213,9 @@ const App: React.FC = () => {
             </RouteGuard>
           }
         />
-        <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/"} />} />
+                     <Route path="/404" element={<NotFound />} />
+                     <Route path="*" element={<Navigate to="/404" replace />} />
+
       </Routes>
     </Router>
   );

@@ -65,7 +65,7 @@ export interface GetUserResponse {
 
 // Company related types
 export interface Company {
-  tag: string;
+  applications: Application[];
   id: number;
   name: string;
   cnpj: string;
@@ -73,9 +73,11 @@ export interface Company {
   clientId: string | null;
   clientSecret: string | null;
   tenantId: string | null;
+  redirectUrl:string
+  tag: string;
+  applicationsIds: number[]; 
   created_at: string;
   updated_at: string;
-  redirectUrl:string
 }
 
 export interface CompanyDetails {
