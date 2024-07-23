@@ -171,14 +171,14 @@ const ManageCompany: React.FC = () => {
               </Grid>
               <Grid item xs={12}>
                 <FormControl fullWidth variant="outlined">
-                  <InputLabel id="applications-label">Applications</InputLabel>
+                  <InputLabel id="applications-label">Aplicações</InputLabel>
                   <Select
                     labelId="applications-label"
                     id="select-applications"
                     multiple
                     value={applicationIds}
                     onChange={handleApplicationsChange}
-                    input={<OutlinedInput label="Applications" />}
+                    input={<OutlinedInput label="Aplicações" />}
                     renderValue={(selected) => (
                       (selected as number[]).map(id => {
                         const app = applications.find(app => app.id === id);

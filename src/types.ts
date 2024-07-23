@@ -38,18 +38,14 @@ export interface ModulePermission {
 export interface User {
   id: number;
   name: string;
-  username:string;
-  user: UserInfo;
+  username: string;
   status: string;
-  
   invitationEmail: string;
-  password: string;
+  password?: string;
   companyId: number;
-
-created_at: string
-
+  permissionGroupId?: string;
+  created_at?: string;
 }
-
 export interface UserInfo {
   name: string;
   username: string;

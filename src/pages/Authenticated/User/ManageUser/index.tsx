@@ -1,39 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { TextField, Box, CircularProgress, Toolbar, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
-import { createUser, getUserById, updateUser } from '../../../../services/userService';
+import { getUserById, updateUser } from '../../../../services/userService';
+import { fetchPermissionGroups } from '../../../../services/permissionGroupService';
 import Success from '../../../../components/Messages/SuccessMessage';
 import Error from '../../../../components/Messages/ErrorMessage';
 import FormContainer from '../../../../components/FormContainer';
 import FormButton from '../../../../components/FormButton';
+import { PermissionGroup } from '../../../../types';
+import { register } from '../../../../services/registerService';
 
 const ManageUser: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [name, setName] = useState('');
-  const [userName, setUserName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState(''); // Valor inicial do status
-  const [empresaId, setEmpresaId] = useState<number>(1); // Fixo como 1
-  const [password] = useState('0fm53nh4@2024'); // Senha temporária fixa
+  const [companyId, setCompanyId] = useState<number>(1); // Fixo como 1
+
+  const [permissionGroups, setPermissionGroups] = useState<PermissionGroup[]>([]);
+  const [selectedPermissionGroup, setSelectedPermissionGroup] = useState<string>('');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const [nameError, setNameError] = useState<string | null>(null);
-  const [userNameError, setUserNameError] = useState<string | null>(null);
+  const [usernameError, setUsernameError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPermissionGroupsData = async () => {
+      try {
+        const groups = await fetchPermissionGroups();
+        setPermissionGroups(groups);
+      } catch (error) {
+        console.error('Erro ao buscar grupos de permissão', error);
+        setError('Erro ao buscar grupos de permissão');
+      }
+    };
+
+    fetchPermissionGroupsData();
+  }, []);
 
   useEffect(() => {
     if (id) {
       const fetchUser = async () => {
         try {
           const user = await getUserById(parseInt(id));
+          console.log('Fetched user:', user);
+          
           setName(user.name);
-          setUserName(user.username);
+          setUsername(user.username);
           setEmail(user.invitationEmail);
           setStatus(user.status);
-          setEmpresaId(user.companyId);
+          setCompanyId(user.companyId);
+          setSelectedPermissionGroup(user.permissionGroupId || '');
         } catch (error) {
           console.error('Erro ao buscar usuário', error);
           setError('Erro ao buscar usuário');
@@ -58,11 +80,11 @@ const ManageUser: React.FC = () => {
       setNameError(null);
     }
 
-    if (!userName) {
-      setUserNameError('Usuário é obrigatório');
+    if (!username) {
+      setUsernameError('Usuário é obrigatório');
       hasError = true;
     } else {
-      setUserNameError(null);
+      setUsernameError(null);
     }
 
     if (!email) {
@@ -82,29 +104,27 @@ const ManageUser: React.FC = () => {
         await updateUser({
           id: parseInt(id),
           name,
-          username: userName,
+          username: username,
           invitationEmail: email,
-          companyId: empresaId,
+          companyId: companyId,
           status,
-          password,
-          created_at: new Date().toISOString(),
-          user: { name: '', username: '', status: '' },
+          permissionGroupId: selectedPermissionGroup
         });
-        setSuccessMessage('Usuário atualizado com sucesso!');
+        setSuccessMessage('Dados de usuário atualizados com sucesso!');
       } else {
-        await createUser(name, userName, email, empresaId, password, {
+        await register({
           name,
-          username: userName,
+          username,
           invitationEmail: email,
-          companyId: empresaId,
+          companyId,
           status,
-          password,
+          password: '0fm53nh4@2024'
         });
-        setSuccessMessage('Usuário criado com sucesso!');
+        setSuccessMessage('E-mail de confirmação enviado com sucesso!');
         setName('');
-        setUserName('');
+        setUsername('');
         setEmail('');
-        setStatus('active');
+        setStatus('Ativo');
       }
     } catch (error) {
       console.error('Erro ao salvar usuário', error);
@@ -139,13 +159,13 @@ const ManageUser: React.FC = () => {
             id="input-username"
             variant="outlined"
             type="text"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
             fullWidth
             margin="normal"
-            error={!!userNameError}
-            helperText={userNameError}
+            error={!!usernameError}
+            helperText={usernameError}
           />
           <TextField
             label="Email"
@@ -170,10 +190,28 @@ const ManageUser: React.FC = () => {
               label="Status"
             >
               <MenuItem value="Ativo">Ativo</MenuItem>
-              <MenuItem value="blocked">Bloqueado</MenuItem>
+              <MenuItem value="Bloqueado">Bloqueado</MenuItem>
               <MenuItem value="Inativo">Inativo</MenuItem>
             </Select>
           </FormControl>
+          
+          {id && (
+            <FormControl variant="outlined" fullWidth margin="normal">
+              <InputLabel id="select-permission-group-label">Grupo de Permissão</InputLabel>
+              <Select
+                labelId="select-permission-group-label"
+                id="select-permission-group"
+                value={selectedPermissionGroup}
+                onChange={(e) => setSelectedPermissionGroup(e.target.value)}
+                label="Grupo de Permissão"
+              >
+                {permissionGroups.map((group) => (
+                  <MenuItem key={group.id} value={group.id}>{group.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+          
           <Box display="flex" justifyContent="center" width="100%">
             <FormButton
               type="submit"
@@ -182,7 +220,7 @@ const ManageUser: React.FC = () => {
               onClick={handleSave}
               disabled={loading}
             >
-               {loading ? <CircularProgress size={24} /> : id ? 'Editar' : 'Salvar'}
+              {loading ? <CircularProgress size={24} /> : id ? 'Editar' : 'Salvar'}
             </FormButton>
           </Box>
         </form>

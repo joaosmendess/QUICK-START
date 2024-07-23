@@ -4,7 +4,7 @@ import { Button, CircularProgress, SxProps } from '@mui/material';
 interface StyledButtonProps {
   loading: boolean;
   children: React.ReactNode;
-  onClick: (event: React.FormEvent) => void;
+  onClick?: (event: React.FormEvent) => void;
   disabled?: boolean;
   type?: "button" | "submit" | "reset";
   id?: string; // Adicionando a propriedade id

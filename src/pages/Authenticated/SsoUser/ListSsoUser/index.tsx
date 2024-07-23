@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import {
   Container,
-  TextField,
+  
   Box,
   CircularProgress,
-  Snackbar,
-  Alert,
+ 
   Toolbar,
   Typography,
+  SelectChangeEvent,
 } from '@mui/material';
 import { styled } from '@stitches/react';
-import SearchIcon from '@mui/icons-material/Search';
 import { useNavigate } from 'react-router-dom';
 import { fetchUsers, deleteUser } from '../../../../services/userService';
 import { User } from '../../../../types';
 import ListItemWithMenu from '../../../../components/ListItemWithMenu';
+import Success from '../../../../components/Messages/SuccessMessage';
+import HeaderTable from '../../../../components/HeaderTable';
 
 const ListContainer = styled(Container, {
   marginTop: '20px',
@@ -23,8 +24,11 @@ const ListContainer = styled(Container, {
 const ListSsoUser: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [search, setSearch] = useState<string>('');
+  const [, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState('newest');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,6 +37,7 @@ const ListSsoUser: React.FC = () => {
       try {
         const fetchedUsers = await fetchUsers();
         setUsers(fetchedUsers);
+        setFilteredUsers(fetchedUsers);
       } catch (error) {
         setError('Erro ao buscar usuários');
       } finally {
@@ -43,70 +48,86 @@ const ListSsoUser: React.FC = () => {
     fetchUsersData();
   }, []);
 
-  const handleEdit = (user: User) => {
+  useEffect(() => {
+    let sortedUsers = [...users];
+    if (sortBy === 'newest') {
+      sortedUsers = sortedUsers.sort((a, b) => new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime());
+    } else if (sortBy === 'oldest') {
+      sortedUsers = sortedUsers.sort((a, b) => new Date(a.created_at || '').getTime() - new Date(b.created_at || '').getTime());
+    } else if (sortBy === 'name') {
+      sortedUsers = sortedUsers.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    setFilteredUsers(
+      sortedUsers.filter((user) =>
+        (user.name && user.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (user.username && user.username.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    );
+  }, [searchTerm, users, sortBy]);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSortChange = (event: SelectChangeEvent<string>) => {
+    setSortBy(event.target.value);
+  };
+
+  const handleEditClick = (user: User) => {
     navigate(`/gerenciar-usuario-sso/${user.id}`);
   };
 
-  const handleDelete = async (user: User) => {
-    if (user.id !== undefined) {
-      try {
-        await deleteUser(user.id);
-        setUsers(users.filter(u => u.id !== user.id));
-      } catch (error) {
-        setError('Erro ao excluir usuário');
-      }
+  const handleDeleteUser = async (user: User) => {
+    setLoading(true);
+    try {
+      await deleteUser(user.id);
+      setUsers(users.filter(u => u.id !== user.id));
+      setSuccessMessage('Usuário excluído com sucesso!');
+    } catch (error) {
+      console.error('Erro ao excluir usuário', error);
+      setError('Erro ao excluir usuário');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(search.toLowerCase()) ||
-    user.username.toLowerCase().includes(search.toLowerCase())
+  const renderUserDetails = (user: User) => (
+    <Box>
+      <Typography variant="h6">{user.name}</Typography>
+      <Typography variant="body2" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.username}</Typography>
+      <Typography variant="body2" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.invitationEmail}</Typography>
+    </Box>
   );
 
   return (
-    <div>
+    <>
       <Toolbar />
       <ListContainer maxWidth="sm">
-        <Box sx={{ display: 'flex', alignItems: 'center', margin: '20px 0' }}>
-          <TextField
-            variant="outlined"
-            placeholder="Pesquisar"
-            fullWidth
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            InputProps={{
-              endAdornment: <SearchIcon />,
-            }}
+        <Box sx={{ width: '100%', maxWidth: 1200, margin: '0 auto', padding: '1rem' }}>
+          {successMessage && <Success message={successMessage} />}
+          <HeaderTable
+            searchTerm={searchTerm}
+            handleSearchChange={handleSearchChange}
+            sortBy={sortBy}
+            handleSortChange={handleSortChange}
           />
-        </Box>
-        {loading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
+          {loading ? (
             <CircularProgress />
-          </Box>
-        ) : error ? (
-          <Snackbar open={!!error} autoHideDuration={6000} onClose={() => setError(null)}>
-            <Alert onClose={() => setError(null)} severity="error" sx={{ width: '100%' }}>
-              {error}
-            </Alert>
-          </Snackbar>
-        ) : (
-          filteredUsers.map((user) => (
-            <ListItemWithMenu
-              key={user.id}
-              item={user}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              renderItemDetails={(usr) => (
-                <>
-                  <Typography variant="h6">{usr.name}</Typography>
-                  <Typography variant="body2">{usr.username}</Typography>
-                </>
-              )}
-            />
-          ))
-        )}
+          ) : (
+            filteredUsers.map((user) => (
+              <ListItemWithMenu
+                key={user.id}
+                item={user}
+                onEdit={handleEditClick}
+                onDelete={handleDeleteUser}
+                renderItemDetails={renderUserDetails}
+              />
+            ))
+          )}
+        </Box>
       </ListContainer>
-    </div>
+    </>
   );
 };
 

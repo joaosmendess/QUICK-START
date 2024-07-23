@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   Box,
   Toolbar,
-  
   CircularProgress,
   SelectChangeEvent,
   Typography
@@ -44,17 +43,16 @@ const ListUsers: React.FC = () => {
   useEffect(() => {
     let sortedUsers = [...users];
     if (sortBy === 'newest') {
-      sortedUsers = sortedUsers.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      sortedUsers = sortedUsers.sort((a, b) => new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime());
     } else if (sortBy === 'oldest') {
-      sortedUsers = sortedUsers.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+      sortedUsers = sortedUsers.sort((a, b) => new Date(a.created_at || '').getTime() - new Date(b.created_at || '').getTime());
     } else if (sortBy === 'name') {
       sortedUsers = sortedUsers.sort((a, b) => a.name.localeCompare(b.name));
     }
 
     setFilteredUsers(
       sortedUsers.filter((user) =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.username.toLowerCase().includes(searchTerm.toLowerCase())
+        (user.name?.toLowerCase().includes(searchTerm.toLowerCase()) || user.username?.toLowerCase().includes(searchTerm.toLowerCase()))
       )
     );
   }, [searchTerm, users, sortBy]);
@@ -88,8 +86,8 @@ const ListUsers: React.FC = () => {
   const renderUserDetails = (user: User) => (
     <Box>
       <Typography variant="h6">{user.name}</Typography>
-      <Typography variant="body2">{user.username}</Typography>
-      <Typography variant="body2">{user.invitationEmail}</Typography>
+      <Typography variant="body2" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.username}</Typography>
+      <Typography variant="body2" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.invitationEmail}</Typography>
     </Box>
   );
 

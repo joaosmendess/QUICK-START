@@ -3,7 +3,7 @@ import api from './apiClient';
 import { RegisterData } from '../types';
 
 export const register = async (data: RegisterData) => {
-  const response = await api.post('/register', {
+  const response = await api.post('/auth/register', {
     name: data.name,
     username: data.username,
     invitationEmail: data.invitationEmail,
