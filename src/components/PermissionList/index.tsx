@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '../../stitches.config';
-import { TextField, Box, List, Toolbar } from '@mui/material';
+import { Box, CircularProgress, Toolbar, SelectChangeEvent } from '@mui/material';
 import { getPermissionGroups, deletePermissionGroupHasModule } from '../../services/auth';
 import ErrorMessage from '../Messages/ErrorMessage';
 import SuccessMessage from '../Messages/SuccessMessage';
-import PermissionItem from '../PermissionItem';
+import HeaderTable from '../HeaderTable';
+import GenericTable from '../Table/GenericTable';
 import DeleteDialog from '../DeleteDialog';
 import LoadingDialog from '../LoadingDialog';
 import { PermissionGroup } from '../../types';
@@ -14,7 +15,7 @@ const PermissionListContainer = styled(Box, {
   flexDirection: 'column',
   alignItems: 'center',
   width: '100%',
-  maxWidth: '400px',
+  maxWidth: '800px',
   margin: '0 auto',
   padding: '1rem',
   '@media (max-width: 600px)': {
@@ -24,12 +25,14 @@ const PermissionListContainer = styled(Box, {
 
 const PermissionList: React.FC = () => {
   const [permissionGroups, setPermissionGroups] = useState<PermissionGroup[]>([]);
-  const [initialLoading, setInitialLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [permissionToDelete, setPermissionToDelete] = useState<null | string>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('name');
 
   useEffect(() => {
     const fetchPermissions = async () => {
@@ -39,7 +42,7 @@ const PermissionList: React.FC = () => {
       } catch (error) {
         setError('Erro ao carregar grupos de permissões');
       } finally {
-        setInitialLoading(false);
+        setLoading(false);
       }
     };
     fetchPermissions();
@@ -71,30 +74,42 @@ const PermissionList: React.FC = () => {
     }
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSortChange = (event: SelectChangeEvent<string>) => {
+    setSortBy(event.target.value);
+  };
+
+  const filteredPermissions = permissionGroups.filter(pg =>
+    pg.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const columns = ['name',];
+
   return (
-    <PermissionListContainer>
+    <PermissionListContainer maxWidth='lg' >
       <Toolbar />
-      <TextField
-        label="Pesquise por nome"
-        variant="outlined"
-        type="search"
-        fullWidth
-        margin="normal"
-      />
       {error && <ErrorMessage message={error} />}
       {success && <SuccessMessage message={success} />}
-      {initialLoading ? (
-        <LoadingDialog open={initialLoading} message="Carregando informações, por favor aguarde..." />
+      <HeaderTable
+        searchTerm={searchTerm}
+        handleSearchChange={handleSearchChange}
+        sortBy={sortBy}
+        handleSortChange={handleSortChange}
+      />
+      {loading ? (
+        <CircularProgress />
       ) : (
-        <List style={{ width: '100%' }}>
-          {permissionGroups.map((permissionGroup) => (
-            <PermissionItem
-              key={permissionGroup.id}
-              permissionGroup={permissionGroup}
-              onDelete={() => handleDelete(permissionGroup.id.toString())}
-            />
-          ))}
-        </List>
+        <GenericTable
+          columns={columns}
+          data={filteredPermissions}
+          loading={loading}
+          error={error}
+          handleEdit={() => {}}
+          handleDelete={handleDelete}
+        />
       )}
       <DeleteDialog
         open={openDialog}

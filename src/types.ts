@@ -76,6 +76,12 @@ export interface Company {
   updated_at: string;
 }
 
+// Invite users
+export interface Invite {
+  invitationEmail: string;
+  companyId: number;
+}
+
 export interface CompanyDetails {
   name: string;
   cnpj: string;

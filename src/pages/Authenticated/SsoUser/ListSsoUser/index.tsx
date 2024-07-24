@@ -1,30 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
-  
-  Box,
   CircularProgress,
- 
   Toolbar,
-  Typography,
   SelectChangeEvent,
 } from '@mui/material';
 import { styled } from '@stitches/react';
 import { useNavigate } from 'react-router-dom';
 import { fetchUsers, deleteUser } from '../../../../services/userService';
 import { User } from '../../../../types';
-import ListItemWithMenu from '../../../../components/ListItemWithMenu';
 import Success from '../../../../components/Messages/SuccessMessage';
+import Error from '../../../../components/Messages/ErrorMessage';
 import HeaderTable from '../../../../components/HeaderTable';
+import GenericTable from '../../../../components/Table/GenericTable';
 
 const ListContainer = styled(Container, {
   marginTop: '20px',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '80vh',
+
 });
 
 const ListSsoUser: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -92,20 +95,15 @@ const ListSsoUser: React.FC = () => {
     }
   };
 
-  const renderUserDetails = (user: User) => (
-    <Box>
-      <Typography variant="h6">{user.name}</Typography>
-      <Typography variant="body2" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.username}</Typography>
-      <Typography variant="body2" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.invitationEmail}</Typography>
-    </Box>
-  );
+  const columns = ['name', 'username', 'invitationEmail', 'status',];
 
   return (
     <>
       <Toolbar />
-      <ListContainer maxWidth="sm">
-        <Box sx={{ width: '100%', maxWidth: 1200, margin: '0 auto', padding: '1rem' }}>
+      <ListContainer maxWidth="lg">
+
           {successMessage && <Success message={successMessage} />}
+          {error && <Error message={error} />}
           <HeaderTable
             searchTerm={searchTerm}
             handleSearchChange={handleSearchChange}
@@ -115,17 +113,16 @@ const ListSsoUser: React.FC = () => {
           {loading ? (
             <CircularProgress />
           ) : (
-            filteredUsers.map((user) => (
-              <ListItemWithMenu
-                key={user.id}
-                item={user}
-                onEdit={handleEditClick}
-                onDelete={handleDeleteUser}
-                renderItemDetails={renderUserDetails}
-              />
-            ))
+            <GenericTable
+              columns={columns}
+              data={filteredUsers}
+              loading={loading}
+              error={error}
+              handleEdit={handleEditClick}
+              handleDelete={handleDeleteUser}
+            />
           )}
-        </Box>
+       
       </ListContainer>
     </>
   );

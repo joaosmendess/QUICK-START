@@ -1,30 +1,25 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import {
   Container,
-  TextField,
   Box,
-  CircularProgress,
   Button,
   Toolbar,
-  List,
-  ListItem,
-  ListItemText,
   Pagination,
-  Menu,
-  MenuItem,
-  IconButton,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Typography
 } from '@mui/material';
 import { styled } from '@stitches/react';
-import SearchIcon from '@mui/icons-material/Search';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { getCompany, deleteCompany } from '../../../services/companyService';
 import { Company } from '../../../types';
 import { useNavigate } from 'react-router-dom';
+import HeaderTable from '../../../components/HeaderTable';
+import GenericTable from '../../../components/Table/GenericTable';
+import Error from '../../../components/Messages/ErrorMessage';
+import Success from '../../../components/Messages/SuccessMessage';
 
 const ListContainer = styled(Container, {
   marginTop: '20px',
@@ -35,25 +30,15 @@ const ListContainer = styled(Container, {
   height: '80vh'
 });
 
-const ListBox = styled(Box, {
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
-  width: '100%',
-  maxHeight: '60vh',
-  overflowY: 'auto'
-});
-
 const ListCompany: React.FC = () => {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(null);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -72,33 +57,13 @@ const ListCompany: React.FC = () => {
     fetchData();
   }, [page]);
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, companyId: number) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedCompanyId(companyId);
+  const handleEditClick = (company: Company) => {
+    navigate(`/gerenciar-empresa/${company.id}`, { state: { company } });
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    setSelectedCompanyId(null);
-  };
-
-  const handleEditClick = () => {
-    if (selectedCompanyId !== null) {
-      navigate(`/gerenciar-empresa/${selectedCompanyId}`);
-    }
-    handleMenuClose();
-  };
-
-  const handleDeleteClick = () => {
-    if (selectedCompanyId !== null) {
-      const company = companies.find(company => company.id === selectedCompanyId);
-      if (!company) {
-        console.error('Empresa não encontrada');
-        return;
-      }
-      setSelectedCompany(company);
-    }
-    handleMenuClose();
+  const handleDeleteClick = (company: Company) => {
+    setSelectedCompany(company);
+    setConfirmOpen(true);
   };
 
   const handleDeleteConfirm = async () => {
@@ -112,51 +77,49 @@ const ListCompany: React.FC = () => {
       setCompanies((prevCompanies) =>
         prevCompanies.filter((company) => company.id !== selectedCompany.id)
       );
+      setMessage({ type: 'success', text: 'Empresa excluída com sucesso!' });
       setSelectedCompany(null);
+      setConfirmOpen(false);
     } catch (error) {
+      setMessage({ type: 'error', text: 'Erro ao excluir empresa. Por favor, tente novamente.' });
       console.error('Erro ao excluir empresa:', error);
     }
+  };
+
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleCloseConfirmDialog = () => {
+    setConfirmOpen(false);
   };
 
   const filteredCompanies = companies.filter(company =>
     company.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const columns = ['name', 'cnpj'];
+
   return (
     <div>
       <Toolbar />
       <ListContainer maxWidth="md">
+        {message && (message.type === 'success' ? (
+          <Success message={message.text} />
+        ) : (
+          <Error message={message.text} />
+        ))}
         <Box sx={{ display: 'flex', alignItems: 'center', margin: '20px 0', justifyContent: 'center', width: '100%', flexDirection: 'column' }}>
-          <TextField
-            variant="outlined"
-            placeholder="Pesquisar"
-            sx={{ marginBottom: 2, width: '200px', maxWidth: '400px' }}
-            value={searchTerm}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
-            InputProps={{
-              endAdornment: (
-                <SearchIcon />
-              ),
-            }}
-          />
+          <HeaderTable searchTerm={searchTerm} handleSearchChange={handleSearchChange} />
 
-          {loading ? (
-            <CircularProgress />
-          ) : (
-            <ListBox>
-              <List sx={{ width: '80%' }}>
-                {filteredCompanies.map((company) => (
-                  <ListItem key={company.id} secondaryAction={
-                    <IconButton edge="end" onClick={(event) => handleMenuClick(event, company.id)}>
-                      <MoreVertIcon />
-                    </IconButton>
-                  }>
-                    <ListItemText primary={company.name} secondary={`CNPJ: ${company.cnpj}`} />
-                  </ListItem>
-                ))}
-              </List>
-            </ListBox>
-          )}
+          <GenericTable
+            columns={columns}
+            data={filteredCompanies}
+            loading={loading}
+            error={null}
+            handleEdit={handleEditClick}
+            handleDelete={handleDeleteClick}
+          />
 
           <Button variant="contained" color="primary" sx={{ marginTop: 2 }}>
             Exportar para CSV
@@ -172,19 +135,24 @@ const ListCompany: React.FC = () => {
         </Box>
       </ListContainer>
 
-      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-        <MenuItem onClick={handleEditClick}>Editar</MenuItem>
-        <MenuItem onClick={handleDeleteClick}>Excluir</MenuItem>
-      </Menu>
-
-      <Dialog open={Boolean(selectedCompany)} onClose={() => setSelectedCompany(null)}>
-        <DialogTitle>Confirmar Exclusão</DialogTitle>
+      <Dialog open={confirmOpen} onClose={handleCloseConfirmDialog}>
+        <DialogTitle>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Confirmar Exclusão
+          </Typography>
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText>Tem certeza que deseja excluir a empresa {selectedCompany?.name}?</DialogContentText>
+          <DialogContentText>
+            Tem certeza que deseja excluir a empresa <strong>{selectedCompany?.name}</strong>?
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setSelectedCompany(null)}>Cancelar</Button>
-          <Button onClick={handleDeleteConfirm} color="primary">Excluir</Button>
+          <Button onClick={handleCloseConfirmDialog} color="secondary">
+            Cancelar
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="primary" variant="contained">
+            Excluir
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

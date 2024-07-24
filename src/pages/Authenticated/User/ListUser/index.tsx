@@ -4,21 +4,35 @@ import {
   Toolbar,
   CircularProgress,
   SelectChangeEvent,
-  Typography
+  Container,
 } from '@mui/material';
 import { fetchUsers, deleteUser } from '../../../../services/userService';
 import { User } from '../../../../types';
 import HeaderTable from '../../../../components/HeaderTable';
 import Success from '../../../../components/Messages/SuccessMessage';
+import Error from '../../../../components/Messages/ErrorMessage';
 import { useNavigate } from 'react-router-dom';
-import ListItemWithMenu from '../../../../components/ListItemWithMenu';
+import GenericTable from '../../../../components/Table/GenericTable';
+import { styled } from '@stitches/react';
+const ListContainer = styled(Container, {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  width: '100%',
+  maxWidth: '800px',
+  margin: '0 auto',
+  padding: '1rem',
+  '@media (max-width: 600px)': {
+    padding: '0.5rem',
+  },
+});
 
 const ListUsers: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
-  const [, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState('newest');
   const navigate = useNavigate();
@@ -83,39 +97,38 @@ const ListUsers: React.FC = () => {
     }
   };
 
-  const renderUserDetails = (user: User) => (
-    <Box>
-      <Typography variant="h6">{user.name}</Typography>
-      <Typography variant="body2" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.username}</Typography>
-      <Typography variant="body2" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.invitationEmail}</Typography>
-    </Box>
-  );
+  const columns = ['name', 'username', 'status'];
 
   return (
     <>
       <Toolbar />
-      <Box sx={{ width: '100%', maxWidth: 1200, margin: '0 auto', padding: '1rem' }}>
+      <ListContainer maxWidth="lg">
+
+
+  
         {successMessage && <Success message={successMessage} />}
+        {error && <Error message={error} />}
         <HeaderTable
           searchTerm={searchTerm}
           handleSearchChange={handleSearchChange}
           sortBy={sortBy}
           handleSortChange={handleSortChange}
-        />
+          />
         {loading ? (
           <CircularProgress />
         ) : (
-          filteredUsers.map((user) => (
-            <ListItemWithMenu
-              key={user.id}
-              item={user}
-              onEdit={handleEditClick}
-              onDelete={handleDeleteUser}
-              renderItemDetails={renderUserDetails}
-            />
-          ))
+          
+          <GenericTable
+          columns={columns}
+          data={filteredUsers}
+          loading={loading}
+          error={error}
+          handleEdit={handleEditClick}
+          handleDelete={handleDeleteUser}
+          />
         )}
-      </Box>
+      
+        </ListContainer>
     </>
   );
 };

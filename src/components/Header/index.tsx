@@ -6,8 +6,6 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo-white.png';
 
-
-
 interface HeaderProps {
   pageTitle: string;
   toggleDrawer: () => void;

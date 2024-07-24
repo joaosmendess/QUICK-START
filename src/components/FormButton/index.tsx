@@ -23,6 +23,7 @@ const buttonStyles: SxProps = {
 const StyledButton: React.FC<StyledButtonProps> = ({ loading, children, onClick, disabled = false, type = "button", id, sx = {} }) => {
   return (
     <Button
+    className='form-button'
       variant="contained"
       color="primary"
       onClick={onClick}

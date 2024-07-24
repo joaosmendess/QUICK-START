@@ -25,6 +25,6 @@ export const updateApplication = async (application: Application): Promise<Appli
   return response.data;
 };
 
-export const DeleteApplication = async (id: number): Promise<void> => {
+export const deleteApplication = async (id: number): Promise<void> => {
   await api.delete(`/applications/${id}`);
 };

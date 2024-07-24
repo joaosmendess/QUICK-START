@@ -209,7 +209,7 @@ const ManageUser: React.FC = () => {
                   <MenuItem key={group.id} value={group.id}>{group.name}</MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> 
           )}
           
           <Box display="flex" justifyContent="center" width="100%">
@@ -220,7 +220,7 @@ const ManageUser: React.FC = () => {
               onClick={handleSave}
               disabled={loading}
             >
-              {loading ? <CircularProgress size={24} /> : id ? 'Editar' : 'Salvar'}
+              {loading ? <CircularProgress size={24} /> : id ? 'Editar' : 'Convidar'}
             </FormButton>
           </Box>
         </form>

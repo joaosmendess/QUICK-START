@@ -209,7 +209,7 @@ const ManageSsoUser: React.FC = () => {
           id='button-manager-sso-user'
           type="submit"
         >
-          {isEditMode ? 'Editar usuário' : 'Enviar e-mail'}
+          {isEditMode ? 'Editar usuário' : 'Convidar'}
         </ButtonForm>
       </form>
     </FormContainer>

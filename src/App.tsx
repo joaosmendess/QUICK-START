@@ -21,11 +21,12 @@ import ListCompany from './pages/Authenticated/Company/ListCompany';
 import ManageSsoUser from './pages/Authenticated/SsoUser/ManageSsoUser';
 import ListSsoUser from './pages/Authenticated/SsoUser/ListSsoUser';
 import NotFound from './components/NotFound';
+import Invitation from './pages/Authenticated/Invitation';
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [pageTitle, setPageTitle] = useState('Início');
+  const [pageTitle, setPageTitle] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
@@ -33,6 +34,17 @@ const App: React.FC = () => {
     setIsAuthenticated(!!token);
     setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    const storedTitle = localStorage.getItem('pageTitle');
+    if (storedTitle) {
+      setPageTitle(storedTitle);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('pageTitle', pageTitle);
+  }, [pageTitle]);
 
   globalStyles();
 
@@ -213,9 +225,17 @@ const App: React.FC = () => {
             </RouteGuard>
           }
         />
-                     <Route path="/404" element={<NotFound />} />
-                     <Route path="*" element={<Navigate to="/404" replace />} />
 
+        <Route
+          path="/convidar-usuario"
+          element={
+            <RouteGuard isAuthenticated={isAuthenticated}>
+              <Invitation />
+            </RouteGuard>
+          }
+        />
+        <Route path="/404" element={<NotFound />} />
+        <Route path="*" element={<Navigate to="/404" replace />} />
       </Routes>
     </Router>
   );

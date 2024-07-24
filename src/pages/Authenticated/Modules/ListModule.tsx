@@ -18,7 +18,7 @@ const ModuleList: React.FC = () => {
   return (
     <div>
       <Toolbar/>
-      <ListContainer maxWidth="md">
+      <ListContainer maxWidth="lg">
         <Box sx={{ display: 'flex', alignItems: 'center', margin: '20px 0' }}>
           <TextField
             variant="outlined"
