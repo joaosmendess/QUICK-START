@@ -21,7 +21,7 @@ export const globalStyles = globalCss({
    
     display: "flex",
     justifyContent: "flex-end", // Alinha o botão à direita
-    marginLeft: "50px",  
+
 
   },
   // Estilos globais para o contêiner dos formulários
@@ -35,6 +35,7 @@ export const globalStyles = globalCss({
     gap: '16px',
     maxWidth: '600px',
     margin: 'auto',
+   
     
     '@media (max-width: 600px)': {
       padding: '16px',
