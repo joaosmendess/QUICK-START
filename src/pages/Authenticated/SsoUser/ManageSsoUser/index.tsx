@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { TextField, Select, MenuItem, FormControl, InputLabel, Toolbar, CircularProgress } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { register } from '../../../../services/registerService';
-import { updateUser } from '../../../../services/userService';
-import { getUserById } from '../../../../services/userService';
+import { updateUser, getUserById } from '../../../../services/userService';
 import { getCompany } from '../../../../services/companyService';
 import { RegisterData, Company, User } from '../../../../types';
 import Success from '../../../../components/Messages/SuccessMessage';
@@ -121,9 +120,9 @@ const ManageSsoUser: React.FC = () => {
     }
 
     if (isEditMode) {
-      handleUpdateUser();
+      await handleUpdateUser();
     } else {
-      handleCreateUser();
+      await handleCreateUser();
     }
   };
 
@@ -208,6 +207,7 @@ const ManageSsoUser: React.FC = () => {
           loading={loading}
           id='button-manager-sso-user'
           type="submit"
+          disabled={loading || !name || !username || !invitationEmail || !companyId}
         >
           {isEditMode ? 'Editar usuário' : 'Convidar'}
         </ButtonForm>

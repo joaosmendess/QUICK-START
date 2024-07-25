@@ -103,10 +103,10 @@ const ManagePermissionGroup: React.FC = () => {
         post: currentPermissions.post ? 1 : 0,
         put: currentPermissions.put ? 1 : 0,
         delete: currentPermissions.delete ? 1 : 0,
-        id: 0, 
+        id: 0,
         created_at: '',
         updated_at: '',
-        permissionsGroupsId: 0, 
+        permissionsGroupsId: 0,
       };
       await createPermissionGroupHasModule(newPermissionGroupHasModule);
       setSuccess('Permissões criadas com sucesso!');
@@ -166,25 +166,32 @@ const ManagePermissionGroup: React.FC = () => {
 
         <TabPanel value={tabValue} index={0}>
           <form onSubmit={handleSaveGroupName}>
-            <TextField
-              label="Nome do grupo"
-              id="input-group-name"
-              variant="outlined"
-              type="text"
-              value={groupName}
-              onChange={(e) => setGroupName(e.target.value)}
-              required
-              fullWidth
-              margin="normal"
-              disabled={loading}
-            />
+            <Box 
+              display="flex" 
+              flexDirection="column" 
+              width={{ xs: '100%', sm: '35rem' }}
+              maxWidth="100%"
+            >
+              <TextField
+                label="Nome do grupo"
+                id="input-group-name"
+                variant="outlined"
+                type="text"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                required
+                fullWidth
+                margin="normal"
+                disabled={loading}
+              />
+            </Box>
             <Box display="flex" justifyContent="center" width="100%">
               <FormButton
                 type="submit"
                 id="button-manage-permission-group"
                 loading={loading}
                 onClick={handleSaveGroupName}
-                disabled={loading}
+                disabled={loading || !groupName}
               >
                 Salvar
               </FormButton>
@@ -194,26 +201,31 @@ const ManagePermissionGroup: React.FC = () => {
 
         <TabPanel value={tabValue} index={1}>
           <form onSubmit={handleSavePermissions}>
-            <FormControl fullWidth margin="normal" disabled={loading}>
-              <InputLabel>Módulo</InputLabel>
-              <Select
-                label="Módulo"
-                id="select-module"
-                value={currentPermissions.modules_id || ''}
-                onChange={handleModuleChange}
-                required
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                {modules.map((module) => (
-                  <MenuItem key={module.id} value={module.id}>
-                    {module.name}
+            <Box 
+              display="flex" 
+              flexDirection="column" 
+              width={{ xs: '100%', sm: '35rem' }}
+              maxWidth="100%"
+            >
+              <FormControl fullWidth margin="normal" disabled={loading}>
+                <InputLabel>Módulo</InputLabel>
+                <Select
+                  label="Módulo"
+                  id="select-module"
+                  value={currentPermissions.modules_id || ''}
+                  onChange={handleModuleChange}
+                  required
+                >
+                  <MenuItem value="">
+                    <em>None</em>
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <Box display="flex" flexDirection="column" alignItems="start" width="100%">
+                  {modules.map((module) => (
+                    <MenuItem key={module.id} value={module.id}>
+                      {module.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -269,7 +281,7 @@ const ManagePermissionGroup: React.FC = () => {
                 id="button-manage-permission-group"
                 loading={loading}
                 onClick={handleSavePermissions}
-                disabled={loading}
+                disabled={loading || !groupName || !currentPermissions.modules_id}
               >
                 Salvar
               </FormButton>

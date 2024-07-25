@@ -15,6 +15,35 @@ const stripHtmlTags = (html: string): string => {
   return div.textContent || div.innerText || '';
 };
 
+const translateErrors = (errors: any) => {
+  const translatedErrors: any = {};
+  for (const key in errors) {
+    if (Object.prototype.hasOwnProperty.call(errors, key)) {
+      translatedErrors[key] = errors[key].map((error: string) => {
+        switch (error) {
+          case 'Name is required':
+            return 'O nome é obrigatório';
+          case 'Description is required':
+            return 'A descrição é obrigatória';
+          case 'Develop URL is required':
+            return 'A URL de desenvolvimento é obrigatória';
+          case 'Homolog URL is required':
+            return 'A URL de homologação é obrigatória';
+          case 'Production URL is required':
+            return 'A URL de produção é obrigatória';
+          case 'Logo is required':
+            return 'O logo é obrigatório';
+           case 'The name has already been taken':
+             return 'O nome já está em uso';
+          default:
+            return error;
+        }
+      });
+    }
+  }
+  return translatedErrors;
+};
+
 const ManageApplication: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -82,7 +111,8 @@ const ManageApplication: React.FC = () => {
       navigate('/listar-aplicacoes');
     } catch (error: any) {
       if (error.response && error.response.data && error.response.data.errors) {
-        setErrors(error.response.data.errors);
+        const translatedErrors = translateErrors(error.response.data.errors);
+        setErrors(translatedErrors);
         setErrorMessage('Erro ao salvar aplicação.');
       } else {
         console.error('Erro ao salvar aplicação:', error);
@@ -110,7 +140,6 @@ const ManageApplication: React.FC = () => {
           value={name}
           onChange={(e) => setName(e.target.value)}
           error={!!errors.name}
-          helperText={errors.name ? errors.name[0] : ''}
           sx={{ marginBottom: 2 }}
         />
         <Box sx={{ width: '100%', marginBottom: 2 }}>
@@ -139,7 +168,7 @@ const ManageApplication: React.FC = () => {
           value={developUrl}
           onChange={(e) => setDevelopUrl(e.target.value)}
           error={!!errors.developUrl}
-          helperText={errors.developUrl ? errors.developUrl[0] : ''}
+          
           sx={{ marginBottom: 2 }}
         />
         <TextField
@@ -151,7 +180,6 @@ const ManageApplication: React.FC = () => {
           value={homologUrl}
           onChange={(e) => setHomologUrl(e.target.value)}
           error={!!errors.homologUrl}
-          helperText={errors.homologUrl ? errors.homologUrl[0] : ''}
           sx={{ marginBottom: 2 }}
         />
         <TextField
@@ -163,7 +191,6 @@ const ManageApplication: React.FC = () => {
           value={productionUrl}
           onChange={(e) => setProductionUrl(e.target.value)}
           error={!!errors.productionUrl}
-          helperText={errors.productionUrl ? errors.productionUrl[0] : ''}
           sx={{ marginBottom: 2 }}
         />
         <TextField
@@ -175,7 +202,7 @@ const ManageApplication: React.FC = () => {
           value={logo}
           onChange={(e) => setLogo(e.target.value)}
           error={!!errors.logo}
-          helperText={errors.logo ? errors.logo[0] : ''}
+          
           sx={{ marginBottom: 2 }}
         />
         <FormButton

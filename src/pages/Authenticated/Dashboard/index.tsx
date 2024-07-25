@@ -24,7 +24,7 @@ interface Company {
 }
 
 const Dashboard: React.FC = () => {
- /* const [totalUsers, setTotalUsers] = useState<number>(0);
+  const [totalUsers, setTotalUsers] = useState<number>(0);
   const [activeUsers, setActiveUsers] = useState<number>(0);
   const [inactiveUsers, setInactiveUsers] = useState<number>(0);
   const [totalCompanies, setTotalCompanies] = useState<number>(0);
@@ -35,10 +35,9 @@ const Dashboard: React.FC = () => {
   const [usersByStatus, setUsersByStatus] = useState<{ name: string, active: number, inactive: number }[]>([]);
 
   useEffect(() => {
-    const storedName = localStorage.getItem('name');
-    const storedUsername = localStorage.getItem('username');
-    setName(storedName);
-    setUsername(storedUsername);
+    const customerData = JSON.parse(localStorage.getItem('customerData') || '{}');
+    setName(customerData.name);
+    setUsername(customerData.username);
 
     // Fetch data for users and companies
     fetchData();
@@ -76,7 +75,7 @@ const Dashboard: React.FC = () => {
     } catch (error) {
       console.error('Failed to fetch data', error);
     }
-  };*/
+  };
 
   return (
     <>
@@ -94,7 +93,7 @@ const Dashboard: React.FC = () => {
                   Total de Usuários
                 </Typography>
                 <Typography variant="h4" color="textPrimary">
-                 {/* totalUsers */}
+                 {totalUsers}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
                   +3% em relação ao mês passado
@@ -113,10 +112,10 @@ const Dashboard: React.FC = () => {
                   Status dos Usuários
                 </Typography>
                 <Typography component="p" variant="h4" color="success.main">
-                  Ativos: {/* activeUsers */}
+                  Ativos: {activeUsers}
                 </Typography>
                 <Typography component="p" variant="h4" color="error.main">
-                  Inativos: {/* inactiveUsers */}
+                  Inativos: {inactiveUsers}
                 </Typography>
               </Box>
             </Paper>
@@ -132,7 +131,7 @@ const Dashboard: React.FC = () => {
                   Total de Empresas
                 </Typography>
                 <Typography variant="h4" color="textPrimary">
-                  {/*totalCompanies*/}
+                  {totalCompanies}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
                   +5% em relação ao mês passado
@@ -144,11 +143,11 @@ const Dashboard: React.FC = () => {
         <br />
         {/* Gráficos */}
         <Grid container spacing={0}>
-        {/*   <DashboardCharts 
+           <DashboardCharts 
             usersRegisteredPerDay={usersRegisteredPerDay} 
             usersPerCompany={usersPerCompany} 
             usersByStatus={usersByStatus}
-          /> */}
+          />
           {/* Card com Nome e Username */}
           <Grid item xs={12}>
             <Paper sx={{ ...paperStyle, justifyContent: 'center' }}>
@@ -156,10 +155,10 @@ const Dashboard: React.FC = () => {
                 Usuário Logado
               </Typography>
               <Typography variant="h5" noWrap>
-                Nome: {/*name*/}
+                Nome: {name}
               </Typography>
               <Typography variant="h5" noWrap>
-                Usuário: {/*username*/}
+                Usuário: {username}
               </Typography>
               <Box sx={flexGrowStyle} />
             </Paper>

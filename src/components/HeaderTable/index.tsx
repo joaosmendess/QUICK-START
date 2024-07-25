@@ -1,18 +1,21 @@
 import React from 'react';
-import { Box, TextField, InputAdornment } from '@mui/material';
+import { Box, TextField, InputAdornment, SelectChangeEvent } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 interface HeaderTableProps {
   searchTerm: string;
   handleSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  sortOption: string;
+  handleSortChange: (event: SelectChangeEvent<string>) => void;
 }
 
-const HeaderTable: React.FC<HeaderTableProps> = ({ searchTerm, handleSearchChange }) => {
+const HeaderTable: React.FC<HeaderTableProps> = ({ searchTerm, handleSearchChange, sortOption, handleSortChange }) => {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', marginBottom: 2 }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', marginBottom: 2, padding: 2, }}>
       <TextField
         variant="outlined"
-        placeholder="Pesquisar"
+        id='input-name'
+        placeholder="Procurar"
         sx={{ width: '100%', maxWidth: '400px' }}
         value={searchTerm}
         onChange={handleSearchChange}

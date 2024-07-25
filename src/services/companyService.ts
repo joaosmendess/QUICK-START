@@ -48,7 +48,6 @@ export const getCompanyById = async (id: number): Promise<Company> => {
  */
 export const createCompany = async (
   name: string,
-  tag: string,
   cnpj: string,
   applicationIds: number[],
   redirectUrl: string,
@@ -59,7 +58,6 @@ export const createCompany = async (
 ): Promise<Company> => {
   const response = await api.post('/companies', {
     name,
-    tag,
     cnpj,
     ssoName,
     clientId,

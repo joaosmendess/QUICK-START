@@ -39,7 +39,7 @@ const Login: React.FC = () => {
     setError(null);
 
     try {
-      const response = await login(username, password, 'ofm');
+      const response = await login(username, password, '6a0fa847ea059e4c27f51bb660eac26e');
       if (response && response.token) {
         localStorage.setItem('token', response.token);
         localStorage.setItem('customerData', JSON.stringify(response.customerData));

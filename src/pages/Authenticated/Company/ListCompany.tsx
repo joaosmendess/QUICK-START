@@ -10,7 +10,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Typography
+  Typography,
+  SelectChangeEvent
 } from '@mui/material';
 import { styled } from '@stitches/react';
 import { getCompany, deleteCompany } from '../../../services/companyService';
@@ -34,6 +35,7 @@ const ListCompany: React.FC = () => {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [sortOption, setSortOption] = useState('Novos');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
@@ -46,7 +48,7 @@ const ListCompany: React.FC = () => {
       setLoading(true);
       try {
         const { data, last_page } = await getCompany(page);
-        setCompanies(data.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()));
+        setCompanies(data);
         setTotalPages(last_page);
       } catch (error) {
         console.error('Erro ao buscar empresas', error);
@@ -56,6 +58,25 @@ const ListCompany: React.FC = () => {
     };
     fetchData();
   }, [page]);
+
+  useEffect(() => {
+    let sortedCompanies = [...companies];
+    if (sortOption === 'Novos') {
+      sortedCompanies = sortedCompanies.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    } else if (sortOption === 'Antigos') {
+      sortedCompanies = sortedCompanies.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+    }
+
+    setCompanies(sortedCompanies);
+  }, [sortOption]);
+
+  useEffect(() => {
+    setCompanies((prevCompanies) =>
+      prevCompanies.filter((company) =>
+        company.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm]);
 
   const handleEditClick = (company: Company) => {
     navigate(`/gerenciar-empresa/${company.id}`, { state: { company } });
@@ -90,31 +111,31 @@ const ListCompany: React.FC = () => {
     setSearchTerm(event.target.value);
   };
 
+  const handleSortChange = (event: SelectChangeEvent<string>) => {
+    setSortOption(event.target.value);
+  };
+
   const handleCloseConfirmDialog = () => {
     setConfirmOpen(false);
   };
-
-  const filteredCompanies = companies.filter(company =>
-    company.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const columns = ['name', 'cnpj'];
 
   return (
     <div>
       <Toolbar />
-      <ListContainer maxWidth="md">
+      <ListContainer maxWidth="lg">
         {message && (message.type === 'success' ? (
           <Success message={message.text} />
         ) : (
           <Error message={message.text} />
         ))}
         <Box sx={{ display: 'flex', alignItems: 'center', margin: '20px 0', justifyContent: 'center', width: '100%', flexDirection: 'column' }}>
-          <HeaderTable searchTerm={searchTerm} handleSearchChange={handleSearchChange} />
+          <HeaderTable searchTerm={searchTerm} handleSearchChange={handleSearchChange} sortOption={sortOption} handleSortChange={handleSortChange} />
 
           <GenericTable
             columns={columns}
-            data={filteredCompanies}
+            data={companies}
             loading={loading}
             error={null}
             handleEdit={handleEditClick}

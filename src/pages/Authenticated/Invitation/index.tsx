@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Select, MenuItem, TextField, Toolbar, Box, FormControl, InputLabel } from '@mui/material';
-
 import { getCompany } from '../../../services/companyService';
 import { inviteUser } from '../../../services/inviteService';
 import { Company } from '../../../types';
@@ -54,39 +53,51 @@ const Invitation: React.FC = () => {
       <FormContainer>
         {error && <Error message={error} />}
         {successMessage && <Success message={successMessage} />}
-        <TextField
-          placeholder='E-mail para convite'
-          variant='outlined'
-          label='E-mail'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          fullWidth
-          required
-        />
-        <FormControl variant="outlined" fullWidth required>
-          <InputLabel>Empresa</InputLabel>
-          <Select
-            value={company}
-            onChange={(e) => setCompany(e.target.value as string)}
-            label='Empresa'
+        <form onSubmit={handleSubmit}>
+          <Box 
+            display="flex" 
+            flexDirection="column" 
+            width={{ xs: '100%', sm: '35rem' }}
+            maxWidth="100%"
           >
-            {companies.map((company) => (
-              <MenuItem key={company.id} value={company.id}>
-                {company.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <Box mt={2}>
-          <FormButton 
-            loading={loading} 
-            type="submit" 
-            onClick={handleSubmit} 
-            id="invite-button"
-          >
-            Enviar Convite
-          </FormButton>
-        </Box>
+            <TextField
+              placeholder='E-mail para convite'
+              id='input-invitation-email'
+              variant='outlined'
+              label='E-mail'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              fullWidth
+              required
+              margin="normal"
+            />
+            <FormControl variant="outlined" fullWidth required margin="normal">
+              <InputLabel>Empresa</InputLabel>
+              <Select
+                value={company}
+                id='select-company-id'
+                onChange={(e) => setCompany(e.target.value as string)}
+                label='Empresa'
+              >
+                {companies.map((company) => (
+                  <MenuItem key={company.id} value={company.id}>
+                    {company.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+          <Box display="flex" justifyContent="center" width="100%">
+            <FormButton 
+              loading={loading} 
+              type="submit" 
+              disabled={loading || !email || !company}
+              id="button-invite"
+            >
+              Enviar Convite
+            </FormButton>
+          </Box>
+        </form>
       </FormContainer>
     </div>
   );

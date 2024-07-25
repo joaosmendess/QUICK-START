@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box,
   Toolbar,
   CircularProgress,
   SelectChangeEvent,
@@ -14,6 +13,7 @@ import Error from '../../../../components/Messages/ErrorMessage';
 import { useNavigate } from 'react-router-dom';
 import GenericTable from '../../../../components/Table/GenericTable';
 import { styled } from '@stitches/react';
+
 const ListContainer = styled(Container, {
   display: 'flex',
   flexDirection: 'column',
@@ -34,7 +34,7 @@ const ListUsers: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState('newest');
+  const [sortOption, setSortOption] = useState('Novos');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -56,11 +56,11 @@ const ListUsers: React.FC = () => {
 
   useEffect(() => {
     let sortedUsers = [...users];
-    if (sortBy === 'newest') {
+    if (sortOption === 'Novos') {
       sortedUsers = sortedUsers.sort((a, b) => new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime());
-    } else if (sortBy === 'oldest') {
+    } else if (sortOption === 'Antigos') {
       sortedUsers = sortedUsers.sort((a, b) => new Date(a.created_at || '').getTime() - new Date(b.created_at || '').getTime());
-    } else if (sortBy === 'name') {
+    } else if (sortOption === 'Nome') {
       sortedUsers = sortedUsers.sort((a, b) => a.name.localeCompare(b.name));
     }
 
@@ -69,14 +69,14 @@ const ListUsers: React.FC = () => {
         (user.name?.toLowerCase().includes(searchTerm.toLowerCase()) || user.username?.toLowerCase().includes(searchTerm.toLowerCase()))
       )
     );
-  }, [searchTerm, users, sortBy]);
+  }, [searchTerm, users, sortOption]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
   const handleSortChange = (event: SelectChangeEvent<string>) => {
-    setSortBy(event.target.value);
+    setSortOption(event.target.value);
   };
 
   const handleEditClick = (user: User) => {
@@ -103,32 +103,27 @@ const ListUsers: React.FC = () => {
     <>
       <Toolbar />
       <ListContainer maxWidth="lg">
-
-
-  
         {successMessage && <Success message={successMessage} />}
         {error && <Error message={error} />}
         <HeaderTable
           searchTerm={searchTerm}
           handleSearchChange={handleSearchChange}
-          sortBy={sortBy}
+          sortOption={sortOption}
           handleSortChange={handleSortChange}
-          />
+        />
         {loading ? (
           <CircularProgress />
         ) : (
-          
           <GenericTable
-          columns={columns}
-          data={filteredUsers}
-          loading={loading}
-          error={error}
-          handleEdit={handleEditClick}
-          handleDelete={handleDeleteUser}
+            columns={columns}
+            data={filteredUsers}
+            loading={loading}
+            error={error}
+            handleEdit={handleEditClick}
+            handleDelete={handleDeleteUser}
           />
         )}
-      
-        </ListContainer>
+      </ListContainer>
     </>
   );
 };

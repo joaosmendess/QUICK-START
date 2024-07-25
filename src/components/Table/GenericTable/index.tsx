@@ -44,6 +44,10 @@ const columnLabels: { [key: string]: string } = {
   // Adicione outros mapeamentos de colunas conforme necessário
 };
 
+const statusStyles: { [key: string]: { color: string; fontWeight: string } } = {
+  ativo: { color: 'green', fontWeight: 'bold' },
+  inativo: { color: 'red', fontWeight: 'bold' },
+};
 const GenericTable = <T extends TableData>({ columns, data, loading, error, handleEdit, handleDelete }: GenericTableProps<T>) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedItem, setSelectedItem] = useState<null | T>(null);
@@ -108,7 +112,12 @@ const GenericTable = <T extends TableData>({ columns, data, loading, error, hand
                   {data.map((item, index) => (
                     <TableRow key={index}>
                       {columns.map((column) => (
-                        <TableCell key={column}>{item[column]}</TableCell>
+                        <TableCell
+                          key={column}
+                          style={column === 'status' ? statusStyles[item[column]] : {}}
+                        >
+                          {item[column]}
+                        </TableCell>
                       ))}
                       <TableCell>
                         <IconButton onClick={(event) => handleMenuClick(event, item)}>

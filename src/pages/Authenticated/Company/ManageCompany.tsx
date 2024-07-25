@@ -80,13 +80,13 @@ const ManageCompany: React.FC = () => {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const companyData = { name, tag, cnpj, redirectUrl, applicationIds, clientId, clientSecret, tenantId, ssoName };
+      const companyData = { name, cnpj, redirectUrl, applicationIds, clientId, clientSecret, tenantId, ssoName };
 
       if (id) {
         await updateCompany(Number(id), companyData);
         setMessage('Empresa atualizada com sucesso!');
       } else {
-        await createCompany(name, tag, cnpj, applicationIds, redirectUrl, ssoName, clientId, clientSecret, tenantId);
+        await createCompany(name, cnpj, applicationIds, redirectUrl, ssoName, clientId, clientSecret, tenantId);
         setMessage('Empresa criada com sucesso!');
       }
       setSeverity('success');
@@ -128,18 +128,6 @@ const ManageCompany: React.FC = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Ex.: Nome da Empresa"
-                  variant="outlined"
-                  required
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Tag"
-                  id='input-tag'
-                  value={tag}
-                  onChange={(e) => setTag(e.target.value)}
-                  placeholder="Ex.: tag da empresa"
                   variant="outlined"
                   required
                   fullWidth
@@ -248,16 +236,16 @@ const ManageCompany: React.FC = () => {
           )}
         </Box>
         <Grid container spacing={1} justifyContent="center" mt={2}>
-          <Grid item xs={0} md={3}>
+         
             <FormButton
               loading={loading}
               id='button-manager-company'
               onClick={handleSubmit}
-              disabled={!name || !tag || !cnpj || !redirectUrl}
+              disabled={!name || !cnpj || !redirectUrl}
             >
               Salvar
             </FormButton>
-          </Grid>
+       
         </Grid>
       </FormContainer>
     </>

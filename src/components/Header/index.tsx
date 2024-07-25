@@ -25,6 +25,7 @@ const Header: React.FC<HeaderProps> = ({ pageTitle, toggleDrawer, onLogout }) =>
   };
 
   const handleLogout = () => {
+    localStorage.clear();
     onLogout();
     navigate('/');
   };

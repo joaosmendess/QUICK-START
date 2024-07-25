@@ -14,6 +14,8 @@ export const globalStyles = globalCss({
   },
   "html, body, #root": {
     height: "100%",
+    background: "#f5f5f5 ",
+
     
    
   },
