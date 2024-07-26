@@ -1,0 +1,15 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+      "noEmit": true,
+      "skipLibCheck": true,
+      "allowJs": true,
+      "checkJs": false,
+      "noErrorTruncation": true,
+      "noImplicitAny": false,
+      "strict": false,
+      "ignoreDeprecations": "5.0"
+    },
+    "include": ["src/**/*.ts"]
+  }
+  

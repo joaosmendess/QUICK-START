@@ -70,7 +70,6 @@ export interface Company {
   clientSecret: string | null;
   tenantId: string | null;
   redirectUrl:string
-  tag: string;
   applicationsIds: number[]; 
   created_at: string;
   updated_at: string;

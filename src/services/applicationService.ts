@@ -19,7 +19,7 @@ export const createApplication = async (application: Application): Promise<Appli
 export const updateApplication = async (application: Application): Promise<Application> => {
   if (!application.id) {
     throw new Error("Application ID is required for update.");
-  }
+  };
 
   const response = await api.put(`/applications/${application.id}`, application);
   return response.data;

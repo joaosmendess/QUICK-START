@@ -24,7 +24,6 @@ const ManageCompany: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [tabIndex, setTabIndex] = useState(0);
   const [name, setName] = useState('');
-  const [tag, setTag] = useState('');
   const [cnpj, setCnpj] = useState('');
   const [redirectUrl, setRedirectUrl] = useState('');
   const [applicationIds, setApplicationIds] = useState<number[]>([]);
@@ -49,7 +48,7 @@ const ManageCompany: React.FC = () => {
     try {
       const company: Company = await getCompanyById(Number(companyId));
       setName(company.name);
-      setTag(company.tag);
+
       setCnpj(company.cnpj);
       setRedirectUrl(company.redirectUrl || '');
       setApplicationIds(company.applications.map((app: Application) => app.id).filter((id): id is number => id !== undefined));

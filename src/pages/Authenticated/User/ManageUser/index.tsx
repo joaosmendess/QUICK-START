@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { TextField, Box, CircularProgress, Toolbar, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
-import { getUserById, updateUser } from '../../../../services/userService';
+import { getUserById, updateUser, createUser } from '../../../../services/userService';
 import { fetchPermissionGroups } from '../../../../services/permissionGroupService';
+import { getCompany } from '../../../../services/companyService';
 import Success from '../../../../components/Messages/SuccessMessage';
 import Error from '../../../../components/Messages/ErrorMessage';
 import FormContainer from '../../../../components/FormContainer';
 import FormButton from '../../../../components/FormButton';
-import { PermissionGroup } from '../../../../types';
-import { register } from '../../../../services/registerService';
+import { PermissionGroup, Company } from '../../../../types';
 
 const ManageUser: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
+  const [invitationEmail, setInvitaionEmail] = useState('');
+  const [password, setPassword] = useState(''); // Novo campo para senha
+  const [companyId, setCompanyId] = useState<number | ''>(''); // Campo para companyId
+  const [companies, setCompanies] = useState<Company[]>([]); // Estado para armazenar as empresas
   const [status, setStatus] = useState(''); // Valor inicial do status
-  const [companyId, setCompanyId] = useState<number>(1); // Fixo como 1
 
   const [permissionGroups, setPermissionGroups] = useState<PermissionGroup[]>([]);
   const [selectedPermissionGroup, setSelectedPermissionGroup] = useState<string>('');
@@ -42,7 +44,27 @@ const ManageUser: React.FC = () => {
       }
     };
 
+    const fetchCompaniesData = async () => {
+      try {
+        let page = 1;
+        let allCompanies: Company[] = [];
+        let response;
+
+        do {
+          response = await getCompany(page);
+          allCompanies = [...allCompanies, ...response.data];
+          page++;
+        } while (page <= response.last_page);
+
+        setCompanies(allCompanies);
+      } catch (error) {
+        console.error('Erro ao buscar empresas', error);
+        setError('Erro ao buscar empresas');
+      }
+    };
+
     fetchPermissionGroupsData();
+    fetchCompaniesData();
   }, []);
 
   useEffect(() => {
@@ -54,7 +76,7 @@ const ManageUser: React.FC = () => {
           
           setName(user.name);
           setUsername(user.username);
-          setEmail(user.invitationEmail);
+          setInvitaionEmail(user.invitationEmail);
           setStatus(user.status);
           setCompanyId(user.companyId);
           setSelectedPermissionGroup(user.permissionGroupId || '');
@@ -68,13 +90,12 @@ const ManageUser: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    if (name && username && email) {
+    if (name && username && invitationEmail && companyId) {
       setIsButtonDisabled(false);
     } else {
       setIsButtonDisabled(true);
     }
-  }, [name, username, email]);
-
+  }, [name, username, invitationEmail, companyId]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,7 +119,7 @@ const ManageUser: React.FC = () => {
       setUsernameError(null);
     }
 
-    if (!email) {
+    if (!invitationEmail) {
       setEmailError('Email é obrigatório');
       hasError = true;
     } else {
@@ -116,26 +137,21 @@ const ManageUser: React.FC = () => {
           id: parseInt(id),
           name,
           username: username,
-          invitationEmail: email,
-          companyId: companyId,
+          invitationEmail: invitationEmail,
+          companyId: companyId as number,
           status,
           permissionGroupId: selectedPermissionGroup
         });
         setSuccessMessage('Dados de usuário atualizados com sucesso!');
       } else {
-        await register({
-          name,
-          username,
-          invitationEmail: email,
-          companyId,
-          status,
-          password: '0fm53nh4@2024'
-        });
-        setSuccessMessage('E-mail de confirmação enviado com sucesso!');
+        await createUser(name, username, invitationEmail, companyId as number, password);
+        setSuccessMessage('Usuário criado com sucesso!');
         setName('');
         setUsername('');
-        setEmail('');
+        setInvitaionEmail('');
         setStatus('Ativo');
+        setPassword(''); // Resetando o campo de senha após o envio
+        setCompanyId(''); // Resetando o campo de empresa após o envio
       }
     } catch (error) {
       console.error('Erro ao salvar usuário', error);
@@ -183,14 +199,27 @@ const ManageUser: React.FC = () => {
             id="input-email"
             variant="outlined"
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={invitationEmail}
+            onChange={(e) => setInvitaionEmail(e.target.value)}
             required
             fullWidth
             margin="normal"
             error={!!emailError}
             helperText={emailError}
           />
+          {!id && (
+            <TextField
+              label="Senha"
+              id="input-password"
+              variant="outlined"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              fullWidth
+              margin="normal"
+            />
+          )}
           <FormControl variant="outlined" fullWidth margin="normal">
             <InputLabel id="select-status-label">Status</InputLabel>
             <Select
@@ -205,7 +234,20 @@ const ManageUser: React.FC = () => {
               <MenuItem value="Inativo">Inativo</MenuItem>
             </Select>
           </FormControl>
-          
+          <FormControl variant="outlined" fullWidth margin="normal">
+            <InputLabel id="select-company-id-label">Empresa</InputLabel>
+            <Select
+              labelId="select-company-id-label"
+              id="select-company-id"
+              value={companyId}
+              onChange={(e) => setCompanyId(e.target.value as number)}
+              label="Empresa"
+            >
+              {companies.map((company) => (
+                <MenuItem key={company.id} value={company.id}>{company.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           {id && (
             <FormControl variant="outlined" fullWidth margin="normal">
               <InputLabel id="select-permission-group-label">Grupo de Permissão</InputLabel>
@@ -231,7 +273,7 @@ const ManageUser: React.FC = () => {
               onClick={handleSave}
               disabled={loading || isButtonDisabled}
             >
-              {loading ? <CircularProgress size={24} /> : id ? 'Editar' : 'Convidar'}
+              {loading ? <CircularProgress size={24} /> : id ? 'Editar' : 'Criar usuário'}
             </FormButton>
           </Box>
         </form>

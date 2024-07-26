@@ -3,11 +3,11 @@ import { Company } from '../types';
 
 /**
  * Obtém os dados da empresa pública.
- * @param {string} tag - Tag da empresa.
+ * @param {string} hash - Hash da empresa.
  * @returns {Promise<any>} - Dados da empresa.
  */
-export const getPublicCompany = async (tag: string) => {
-  const response = await api.get(`/public-company/${tag}`);
+export const getPublicCompany = async (hash: string) => {
+  const response = await api.get(`/public-company/${hash}`);
   return response.data;
 };
 
@@ -18,6 +18,11 @@ interface CompanyResponse {
   total: number;
 }
 
+/**
+ * Obtém a lista de empresas paginada.
+ * @param {number} page - Número da página.
+ * @returns {Promise<CompanyResponse>} - Lista de empresas.
+ */
 export const getCompany = async (page: number): Promise<CompanyResponse> => {
   const response = await api.get(`/companies?page=${page}`);
   return response.data;
@@ -36,7 +41,6 @@ export const getCompanyById = async (id: number): Promise<Company> => {
 /**
  * Cria uma nova empresa.
  * @param {string} name - Nome da empresa.
- * @param {string} tag - Tag da empresa.
  * @param {string} cnpj - CNPJ da empresa.
  * @param {number[]} applicationIds - IDs das aplicações associadas.
  * @param {string} redirectUrl - URL de redirecionamento (opcional).
@@ -70,10 +74,10 @@ export const createCompany = async (
 };
 
 /**
- * Atualiza os dados da empresa.
+ * Atualiza os dados de uma empresa.
  * @param {number} id - ID da empresa.
  * @param {Partial<Company>} data - Dados a serem atualizados.
- * @returns {Promise<any>} - Resposta da API.
+ * @returns {Promise<Company>} - Empresa atualizada.
  */
 export const updateCompany = async (
   id: number,
@@ -84,11 +88,11 @@ export const updateCompany = async (
 };
 
 /**
- * Deleta a empresa.
+ * Deleta uma empresa.
  * @param {number} id - ID da empresa.
  * @returns {Promise<any>} - Resposta da API.
  */
-export const deleteCompany = async (id: number) => {
+export const deleteCompany = async (id: number)=> {
   const response = await api.delete(`/companies/${id}`);
   return response.data;
 };

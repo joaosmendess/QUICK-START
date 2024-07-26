@@ -1,0 +1,605 @@
+<svg version="1.1" baseProfile="full" width="2806.8" height="921.0" viewbox="0 0 2806.75 921" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events">
+<desc >#.interface: fill=lightblue
+#.enumeration: fill=lightgreen
+#.type: fill=lightgray
+[&lt;interface&gt;LoginResponse|+token: string;+customerData: UserCustomerData|]
+[&lt;interface&gt;UserCustomerData|+name: string;+username: string;+company: string;+companyId: number;+tagCompany: string;+permissions: UserPermission\[\]|]
+[&lt;interface&gt;UserPermission|+application: ApplicationDetails;+modules: ModulePermission\[\]|]
+[&lt;interface&gt;ApplicationDetails|+name: string;+description: string;+developUrl: string;+homologUrl: string;+productionUrl: string|]
+[&lt;interface&gt;ModulePermission|+name: string;+get: boolean;+post: boolean;+put: boolean;+delete: boolean|]
+[&lt;interface&gt;User|+id: number;+name: string;+username: string;+status: string;+invitationEmail: string;+password?: string;+companyId: number;+permissionGroupId?: string;+created_at?: string|]
+[&lt;interface&gt;UserInfo|+name: string;+username: string;+status: string|]
+[&lt;interface&gt;GetUserResponse|+message: string;+username: string;+name: string;+company: CompanyDetails|]
+[&lt;interface&gt;Company|+applications: Application\[\];+id: number;+name: string;+cnpj: string;+ssoName: string;+clientId: string;+clientSecret: string;+tenantId: string;+redirectUrl: string;+applicationsIds: number\[\];+created_at: string;+updated_at: string|]
+[&lt;interface&gt;Invite|+invitationEmail: string;+companyId: number|]
+[&lt;interface&gt;CompanyDetails|+name: string;+cnpj: string;+ssoName: string;+clientId: string;+clientSecret: string;+tenantId: string;+redirectUrl: string|]
+[&lt;interface&gt;Permission|+id: number;+name: string;+get: number;+post: number;+put: number;+delete: number;+modulesId: number;+permissionsGroupsId: number;+created_at: string;+updated_at: string|]
+[&lt;interface&gt;PermissionGroup|+id: number;+name: string;+created_at: string;+updated_at: string|]
+[&lt;interface&gt;PermissionGroupHasModule|+name: string;+id: number;+get: number;+post: number;+put: number;+delete: number;+modulesId: number;+permissionsGroupsId: number;+created_at: string;+updated_at: string|]
+[&lt;interface&gt;UserHasPermission|+id: number;+permissionsGroupsId: number;+userId: number;+created_at: string;+updated_at: string;+user: User;+permissions_group: PermissionGroup|]
+[&lt;interface&gt;Module|+id: number;+name: string;+applicationsId: number;+created_at: string;+updated_at: string|]
+[&lt;interface&gt;Application|+id?: number;+name: string;+description: string;+developUrl: string;+homologUrl: string;+productionUrl: string;+companyId: number;+logo: string|]
+[&lt;interface&gt;RegisterData|+name: string;+username: string;+invitationEmail: string;+password: string;+companyId: number;+status: string|]
+[LoginResponse]  -  [UserCustomerData]
+[UserCustomerData]  - 0..* [UserPermission]
+[UserPermission]  -  [ApplicationDetails]
+[UserPermission]  - 0..* [ModulePermission]
+[GetUserResponse]  -  [CompanyDetails]
+[Company]  - 0..* [Application]
+[UserHasPermission]  -  [User]
+[UserHasPermission]  -  [PermissionGroup]
+[&lt;interface&gt;CompanyResponse|+current_page: number;+data: Company\[\];+last_page: number;+total: number|]
+[CompanyResponse]  - 0..* [Company]</desc>
+<g stroke-width="1.0" text-align="left" font="12pt Helvetica, Arial, sans-serif" font-size="12pt" font-family="Helvetica" font-weight="normal" font-style="normal">
+<g font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" stroke-width="3.0" stroke-linejoin="round" stroke-linecap="round" stroke="#33322E">
+<g stroke="transparent" fill="transparent">
+<rect x="0.0" y="0.0" height="921.0" width="2806.8" stroke="none"></rect>
+</g>
+<g transform="translate(8, 8)" fill="#33322E">
+<g transform="translate(20, 20)" fill="#33322E" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal">
+<path d="M199.8 145.0 L199.75 225 L199.75 290 L199.8 290.0 " fill="none"></path>
+<text x="164.8" y="557.0" stroke="none">0..*</text>
+<path d="M199.8 435.0 L199.75 500 L199.75 565 L199.8 565.0 " fill="none"></path>
+<path d="M157.5 650.0 L93 715 L93 735 L93.0 735.0 " fill="none"></path>
+<text x="314.5" y="727.0" stroke="none">0..*</text>
+<path d="M242.0 650.0 L306.5 715 L306.5 735 L306.5 735.0 " fill="none"></path>
+<path d="M2632.3 160.0 L2632.25 225 L2632.25 282.5 L2632.3 282.5 " fill="none"></path>
+<text x="652.8" y="512.0" stroke="none">0..*</text>
+<path d="M687.8 480.0 L687.75 500 L687.75 520 L687.8 520.0 " fill="none"></path>
+<path d="M1670.8 148.0 L1397 225 L1397 267.5 L1397.0 267.5 " fill="none"></path>
+<path d="M1993.8 169.7 L2126.5 225 L2126.5 305 L2126.5 305.0 " fill="none"></path>
+<text x="652.8" y="237.0" stroke="none">0..*</text>
+<path d="M687.8 160.0 L687.75 225 L687.75 245 L687.8 245.0 " fill="none"></path>
+<g data-name="LoginResponse">
+<g fill="lightblue" stroke="#33322E" data-name="LoginResponse">
+<rect x="51.8" y="60.0" height="85.0" width="296.0" data-name="LoginResponse"></rect>
+<path d="M51.8 91.0 L347.8 91.0" fill="none" data-name="LoginResponse"></path>
+<path d="M51.8 137.0 L347.8 137.0" fill="none" data-name="LoginResponse"></path>
+</g>
+<g transform="translate(51.75, 60)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="LoginResponse">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="LoginResponse">
+<a id="../src/types.ts.LoginResponse" xlink:href="../src/types.ts"><text x="140.0" y="13.5" stroke="none" text-anchor="middle" data-name="LoginResponse">LoginResponse</text></a>
+
+</g>
+</g>
+<g transform="translate(51.75, 91)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="LoginResponse">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="LoginResponse">
+<text x="0.0" y="13.5" stroke="none" data-name="LoginResponse">+token: string</text>
+<text x="0.0" y="28.5" stroke="none" data-name="LoginResponse">+customerData: UserCustomerData</text>
+
+</g>
+</g>
+<g transform="translate(51.75, 137)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="LoginResponse">
+<g transform="translate(8, 8)" fill="#33322E" data-name="LoginResponse">
+
+</g>
+</g>
+</g>
+<g data-name="UserCustomerData">
+<g fill="lightblue" stroke="#33322E" data-name="UserCustomerData">
+<rect x="67.3" y="290.0" height="145.0" width="265.0" data-name="UserCustomerData"></rect>
+<path d="M67.3 321.0 L332.3 321.0" fill="none" data-name="UserCustomerData"></path>
+<path d="M67.3 427.0 L332.3 427.0" fill="none" data-name="UserCustomerData"></path>
+</g>
+<g transform="translate(67.25, 290)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserCustomerData">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="UserCustomerData">
+<a id="../src/types.ts.UserCustomerData" xlink:href="../src/types.ts"><text x="124.5" y="13.5" stroke="none" text-anchor="middle" data-name="UserCustomerData">UserCustomerData</text></a>
+
+</g>
+</g>
+<g transform="translate(67.25, 321)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserCustomerData">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="UserCustomerData">
+<text x="0.0" y="13.5" stroke="none" data-name="UserCustomerData">+name: string</text>
+<text x="0.0" y="28.5" stroke="none" data-name="UserCustomerData">+username: string</text>
+<text x="0.0" y="43.5" stroke="none" data-name="UserCustomerData">+company: string</text>
+<text x="0.0" y="58.5" stroke="none" data-name="UserCustomerData">+companyId: number</text>
+<text x="0.0" y="73.5" stroke="none" data-name="UserCustomerData">+tagCompany: string</text>
+<text x="0.0" y="88.5" stroke="none" data-name="UserCustomerData">+permissions: UserPermission[]</text>
+
+</g>
+</g>
+<g transform="translate(67.25, 427)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserCustomerData">
+<g transform="translate(8, 8)" fill="#33322E" data-name="UserCustomerData">
+
+</g>
+</g>
+</g>
+<g data-name="UserPermission">
+<g fill="lightblue" stroke="#33322E" data-name="UserPermission">
+<rect x="68.3" y="565.0" height="85.0" width="263.0" data-name="UserPermission"></rect>
+<path d="M68.3 596.0 L331.3 596.0" fill="none" data-name="UserPermission"></path>
+<path d="M68.3 642.0 L331.3 642.0" fill="none" data-name="UserPermission"></path>
+</g>
+<g transform="translate(68.25, 565)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserPermission">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="UserPermission">
+<a id="../src/types.ts.UserPermission" xlink:href="../src/types.ts"><text x="123.5" y="13.5" stroke="none" text-anchor="middle" data-name="UserPermission">UserPermission</text></a>
+
+</g>
+</g>
+<g transform="translate(68.25, 596)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserPermission">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="UserPermission">
+<text x="0.0" y="13.5" stroke="none" data-name="UserPermission">+application: ApplicationDetails</text>
+<text x="0.0" y="28.5" stroke="none" data-name="UserPermission">+modules: ModulePermission[]</text>
+
+</g>
+</g>
+<g transform="translate(68.25, 642)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserPermission">
+<g transform="translate(8, 8)" fill="#33322E" data-name="UserPermission">
+
+</g>
+</g>
+</g>
+<g data-name="ApplicationDetails">
+<g fill="lightblue" stroke="#33322E" data-name="ApplicationDetails">
+<rect x="0.0" y="735.0" height="130.0" width="186.0" data-name="ApplicationDetails"></rect>
+<path d="M0.0 766.0 L186.0 766.0" fill="none" data-name="ApplicationDetails"></path>
+<path d="M0.0 857.0 L186.0 857.0" fill="none" data-name="ApplicationDetails"></path>
+</g>
+<g transform="translate(0, 735)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ApplicationDetails">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="ApplicationDetails">
+<a id="../src/types.ts.ApplicationDetails" xlink:href="../src/types.ts"><text x="85.0" y="13.5" stroke="none" text-anchor="middle" data-name="ApplicationDetails">ApplicationDetails</text></a>
+
+</g>
+</g>
+<g transform="translate(0, 766)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ApplicationDetails">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="ApplicationDetails">
+<text x="0.0" y="13.5" stroke="none" data-name="ApplicationDetails">+name: string</text>
+<text x="0.0" y="28.5" stroke="none" data-name="ApplicationDetails">+description: string</text>
+<text x="0.0" y="43.5" stroke="none" data-name="ApplicationDetails">+developUrl: string</text>
+<text x="0.0" y="58.5" stroke="none" data-name="ApplicationDetails">+homologUrl: string</text>
+<text x="0.0" y="73.5" stroke="none" data-name="ApplicationDetails">+productionUrl: string</text>
+
+</g>
+</g>
+<g transform="translate(0, 857)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ApplicationDetails">
+<g transform="translate(8, 8)" fill="#33322E" data-name="ApplicationDetails">
+
+</g>
+</g>
+</g>
+<g data-name="ModulePermission">
+<g fill="lightblue" stroke="#33322E" data-name="ModulePermission">
+<rect x="226.0" y="735.0" height="130.0" width="161.0" data-name="ModulePermission"></rect>
+<path d="M226.0 766.0 L387.0 766.0" fill="none" data-name="ModulePermission"></path>
+<path d="M226.0 857.0 L387.0 857.0" fill="none" data-name="ModulePermission"></path>
+</g>
+<g transform="translate(226, 735)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ModulePermission">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="ModulePermission">
+<a id="../src/types.ts.ModulePermission" xlink:href="../src/types.ts"><text x="72.5" y="13.5" stroke="none" text-anchor="middle" data-name="ModulePermission">ModulePermission</text></a>
+
+</g>
+</g>
+<g transform="translate(226, 766)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ModulePermission">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="ModulePermission">
+<text x="0.0" y="13.5" stroke="none" data-name="ModulePermission">+name: string</text>
+<text x="0.0" y="28.5" stroke="none" data-name="ModulePermission">+get: boolean</text>
+<text x="0.0" y="43.5" stroke="none" data-name="ModulePermission">+post: boolean</text>
+<text x="0.0" y="58.5" stroke="none" data-name="ModulePermission">+put: boolean</text>
+<text x="0.0" y="73.5" stroke="none" data-name="ModulePermission">+delete: boolean</text>
+
+</g>
+</g>
+<g transform="translate(226, 857)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ModulePermission">
+<g transform="translate(8, 8)" fill="#33322E" data-name="ModulePermission">
+
+</g>
+</g>
+</g>
+<g data-name="User">
+<g fill="lightblue" stroke="#33322E" data-name="User">
+<rect x="1277.0" y="267.5" height="190.0" width="240.0" data-name="User"></rect>
+<path d="M1277.0 298.5 L1517.0 298.5" fill="none" data-name="User"></path>
+<path d="M1277.0 449.5 L1517.0 449.5" fill="none" data-name="User"></path>
+</g>
+<g transform="translate(1277, 267.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="User">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="User">
+<a id="../src/types.ts.User" xlink:href="../src/types.ts"><text x="112.0" y="13.5" stroke="none" text-anchor="middle" data-name="User">User</text></a>
+
+</g>
+</g>
+<g transform="translate(1277, 298.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="User">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="User">
+<text x="0.0" y="13.5" stroke="none" data-name="User">+id: number</text>
+<text x="0.0" y="28.5" stroke="none" data-name="User">+name: string</text>
+<text x="0.0" y="43.5" stroke="none" data-name="User">+username: string</text>
+<text x="0.0" y="58.5" stroke="none" data-name="User">+status: string</text>
+<text x="0.0" y="73.5" stroke="none" data-name="User">+invitationEmail: string</text>
+<text x="0.0" y="88.5" stroke="none" data-name="User">+password?: string</text>
+<text x="0.0" y="103.5" stroke="none" data-name="User">+companyId: number</text>
+<text x="0.0" y="118.5" stroke="none" data-name="User">+permissionGroupId?: string</text>
+<text x="0.0" y="133.5" stroke="none" data-name="User">+created_at?: string</text>
+
+</g>
+</g>
+<g transform="translate(1277, 449.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="User">
+<g transform="translate(8, 8)" fill="#33322E" data-name="User">
+
+</g>
+</g>
+</g>
+<g data-name="UserInfo">
+<g fill="lightblue" stroke="#33322E" data-name="UserInfo">
+<rect x="387.8" y="52.5" height="100.0" width="159.0" data-name="UserInfo"></rect>
+<path d="M387.8 83.5 L546.8 83.5" fill="none" data-name="UserInfo"></path>
+<path d="M387.8 144.5 L546.8 144.5" fill="none" data-name="UserInfo"></path>
+</g>
+<g transform="translate(387.75, 52.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserInfo">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="UserInfo">
+<a id="../src/types.ts.UserInfo" xlink:href="../src/types.ts"><text x="71.5" y="13.5" stroke="none" text-anchor="middle" data-name="UserInfo">UserInfo</text></a>
+
+</g>
+</g>
+<g transform="translate(387.75, 83.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserInfo">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="UserInfo">
+<text x="0.0" y="13.5" stroke="none" data-name="UserInfo">+name: string</text>
+<text x="0.0" y="28.5" stroke="none" data-name="UserInfo">+username: string</text>
+<text x="0.0" y="43.5" stroke="none" data-name="UserInfo">+status: string</text>
+
+</g>
+</g>
+<g transform="translate(387.75, 144.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserInfo">
+<g transform="translate(8, 8)" fill="#33322E" data-name="UserInfo">
+
+</g>
+</g>
+</g>
+<g data-name="GetUserResponse">
+<g fill="lightblue" stroke="#33322E" data-name="GetUserResponse">
+<rect x="2513.8" y="45.0" height="115.0" width="237.0" data-name="GetUserResponse"></rect>
+<path d="M2513.8 76.0 L2750.8 76.0" fill="none" data-name="GetUserResponse"></path>
+<path d="M2513.8 152.0 L2750.8 152.0" fill="none" data-name="GetUserResponse"></path>
+</g>
+<g transform="translate(2513.75, 45)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="GetUserResponse">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="GetUserResponse">
+<a id="../src/types.ts.GetUserResponse" xlink:href="../src/types.ts"><text x="110.5" y="13.5" stroke="none" text-anchor="middle" data-name="GetUserResponse">GetUserResponse</text></a>
+
+</g>
+</g>
+<g transform="translate(2513.75, 76)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="GetUserResponse">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="GetUserResponse">
+<text x="0.0" y="13.5" stroke="none" data-name="GetUserResponse">+message: string</text>
+<text x="0.0" y="28.5" stroke="none" data-name="GetUserResponse">+username: string</text>
+<text x="0.0" y="43.5" stroke="none" data-name="GetUserResponse">+name: string</text>
+<text x="0.0" y="58.5" stroke="none" data-name="GetUserResponse">+company: CompanyDetails</text>
+
+</g>
+</g>
+<g transform="translate(2513.75, 152)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="GetUserResponse">
+<g transform="translate(8, 8)" fill="#33322E" data-name="GetUserResponse">
+
+</g>
+</g>
+</g>
+<g data-name="Company">
+<g fill="lightblue" stroke="#33322E" data-name="Company">
+<rect x="573.8" y="245.0" height="235.0" width="228.0" data-name="Company"></rect>
+<path d="M573.8 276.0 L801.8 276.0" fill="none" data-name="Company"></path>
+<path d="M573.8 472.0 L801.8 472.0" fill="none" data-name="Company"></path>
+</g>
+<g transform="translate(573.75, 245)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Company">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Company">
+<a id="../src/types.ts.Company" xlink:href="../src/types.ts"><text x="106.0" y="13.5" stroke="none" text-anchor="middle" data-name="Company">Company</text></a>
+
+</g>
+</g>
+<g transform="translate(573.75, 276)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Company">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Company">
+<text x="0.0" y="13.5" stroke="none" data-name="Company">+applications: Application[]</text>
+<text x="0.0" y="28.5" stroke="none" data-name="Company">+id: number</text>
+<text x="0.0" y="43.5" stroke="none" data-name="Company">+name: string</text>
+<text x="0.0" y="58.5" stroke="none" data-name="Company">+cnpj: string</text>
+<text x="0.0" y="73.5" stroke="none" data-name="Company">+ssoName: string</text>
+<text x="0.0" y="88.5" stroke="none" data-name="Company">+clientId: string</text>
+<text x="0.0" y="103.5" stroke="none" data-name="Company">+clientSecret: string</text>
+<text x="0.0" y="118.5" stroke="none" data-name="Company">+tenantId: string</text>
+<text x="0.0" y="133.5" stroke="none" data-name="Company">+redirectUrl: string</text>
+<text x="0.0" y="148.5" stroke="none" data-name="Company">+applicationsIds: number[]</text>
+<text x="0.0" y="163.5" stroke="none" data-name="Company">+created_at: string</text>
+<text x="0.0" y="178.5" stroke="none" data-name="Company">+updated_at: string</text>
+
+</g>
+</g>
+<g transform="translate(573.75, 472)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Company">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Company">
+
+</g>
+</g>
+</g>
+<g data-name="Invite">
+<g fill="lightblue" stroke="#33322E" data-name="Invite">
+<rect x="828.8" y="60.0" height="85.0" width="194.0" data-name="Invite"></rect>
+<path d="M828.8 91.0 L1022.8 91.0" fill="none" data-name="Invite"></path>
+<path d="M828.8 137.0 L1022.8 137.0" fill="none" data-name="Invite"></path>
+</g>
+<g transform="translate(828.75, 60)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Invite">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Invite">
+<a id="../src/types.ts.Invite" xlink:href="../src/types.ts"><text x="89.0" y="13.5" stroke="none" text-anchor="middle" data-name="Invite">Invite</text></a>
+
+</g>
+</g>
+<g transform="translate(828.75, 91)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Invite">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Invite">
+<text x="0.0" y="13.5" stroke="none" data-name="Invite">+invitationEmail: string</text>
+<text x="0.0" y="28.5" stroke="none" data-name="Invite">+companyId: number</text>
+
+</g>
+</g>
+<g transform="translate(828.75, 137)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Invite">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Invite">
+
+</g>
+</g>
+</g>
+<g data-name="CompanyDetails">
+<g fill="lightblue" stroke="#33322E" data-name="CompanyDetails">
+<rect x="2545.8" y="282.5" height="160.0" width="173.0" data-name="CompanyDetails"></rect>
+<path d="M2545.8 313.5 L2718.8 313.5" fill="none" data-name="CompanyDetails"></path>
+<path d="M2545.8 434.5 L2718.8 434.5" fill="none" data-name="CompanyDetails"></path>
+</g>
+<g transform="translate(2545.75, 282.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CompanyDetails">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="CompanyDetails">
+<a id="../src/types.ts.CompanyDetails" xlink:href="../src/types.ts"><text x="78.5" y="13.5" stroke="none" text-anchor="middle" data-name="CompanyDetails">CompanyDetails</text></a>
+
+</g>
+</g>
+<g transform="translate(2545.75, 313.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CompanyDetails">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="CompanyDetails">
+<text x="0.0" y="13.5" stroke="none" data-name="CompanyDetails">+name: string</text>
+<text x="0.0" y="28.5" stroke="none" data-name="CompanyDetails">+cnpj: string</text>
+<text x="0.0" y="43.5" stroke="none" data-name="CompanyDetails">+ssoName: string</text>
+<text x="0.0" y="58.5" stroke="none" data-name="CompanyDetails">+clientId: string</text>
+<text x="0.0" y="73.5" stroke="none" data-name="CompanyDetails">+clientSecret: string</text>
+<text x="0.0" y="88.5" stroke="none" data-name="CompanyDetails">+tenantId: string</text>
+<text x="0.0" y="103.5" stroke="none" data-name="CompanyDetails">+redirectUrl: string</text>
+
+</g>
+</g>
+<g transform="translate(2545.75, 434.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CompanyDetails">
+<g transform="translate(8, 8)" fill="#33322E" data-name="CompanyDetails">
+
+</g>
+</g>
+</g>
+<g data-name="Permission">
+<g fill="lightblue" stroke="#33322E" data-name="Permission">
+<rect x="1062.8" y="0.0" height="205.0" width="264.0" data-name="Permission"></rect>
+<path d="M1062.8 31.0 L1326.8 31.0" fill="none" data-name="Permission"></path>
+<path d="M1062.8 197.0 L1326.8 197.0" fill="none" data-name="Permission"></path>
+</g>
+<g transform="translate(1062.75, 0)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Permission">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Permission">
+<a id="../src/types.ts.Permission" xlink:href="../src/types.ts"><text x="124.0" y="13.5" stroke="none" text-anchor="middle" data-name="Permission">Permission</text></a>
+
+</g>
+</g>
+<g transform="translate(1062.75, 31)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Permission">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Permission">
+<text x="0.0" y="13.5" stroke="none" data-name="Permission">+id: number</text>
+<text x="0.0" y="28.5" stroke="none" data-name="Permission">+name: string</text>
+<text x="0.0" y="43.5" stroke="none" data-name="Permission">+get: number</text>
+<text x="0.0" y="58.5" stroke="none" data-name="Permission">+post: number</text>
+<text x="0.0" y="73.5" stroke="none" data-name="Permission">+put: number</text>
+<text x="0.0" y="88.5" stroke="none" data-name="Permission">+delete: number</text>
+<text x="0.0" y="103.5" stroke="none" data-name="Permission">+modulesId: number</text>
+<text x="0.0" y="118.5" stroke="none" data-name="Permission">+permissionsGroupsId: number</text>
+<text x="0.0" y="133.5" stroke="none" data-name="Permission">+created_at: string</text>
+<text x="0.0" y="148.5" stroke="none" data-name="Permission">+updated_at: string</text>
+
+</g>
+</g>
+<g transform="translate(1062.75, 197)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Permission">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Permission">
+
+</g>
+</g>
+</g>
+<g data-name="PermissionGroup">
+<g fill="lightblue" stroke="#33322E" data-name="PermissionGroup">
+<rect x="2041.5" y="305.0" height="115.0" width="170.0" data-name="PermissionGroup"></rect>
+<path d="M2041.5 336.0 L2211.5 336.0" fill="none" data-name="PermissionGroup"></path>
+<path d="M2041.5 412.0 L2211.5 412.0" fill="none" data-name="PermissionGroup"></path>
+</g>
+<g transform="translate(2041.5, 305)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PermissionGroup">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="PermissionGroup">
+<a id="../src/types.ts.PermissionGroup" xlink:href="../src/types.ts"><text x="77.0" y="13.5" stroke="none" text-anchor="middle" data-name="PermissionGroup">PermissionGroup</text></a>
+
+</g>
+</g>
+<g transform="translate(2041.5, 336)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PermissionGroup">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="PermissionGroup">
+<text x="0.0" y="13.5" stroke="none" data-name="PermissionGroup">+id: number</text>
+<text x="0.0" y="28.5" stroke="none" data-name="PermissionGroup">+name: string</text>
+<text x="0.0" y="43.5" stroke="none" data-name="PermissionGroup">+created_at: string</text>
+<text x="0.0" y="58.5" stroke="none" data-name="PermissionGroup">+updated_at: string</text>
+
+</g>
+</g>
+<g transform="translate(2041.5, 412)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PermissionGroup">
+<g transform="translate(8, 8)" fill="#33322E" data-name="PermissionGroup">
+
+</g>
+</g>
+</g>
+<g data-name="PermissionGroupHasModule">
+<g fill="lightblue" stroke="#33322E" data-name="PermissionGroupHasModule">
+<rect x="1366.8" y="0.0" height="205.0" width="264.0" data-name="PermissionGroupHasModule"></rect>
+<path d="M1366.8 31.0 L1630.8 31.0" fill="none" data-name="PermissionGroupHasModule"></path>
+<path d="M1366.8 197.0 L1630.8 197.0" fill="none" data-name="PermissionGroupHasModule"></path>
+</g>
+<g transform="translate(1366.75, 0)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PermissionGroupHasModule">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="PermissionGroupHasModule">
+<a id="../src/types.ts.PermissionGroupHasModule" xlink:href="../src/types.ts"><text x="124.0" y="13.5" stroke="none" text-anchor="middle" data-name="PermissionGroupHasModule">PermissionGroupHasModule</text></a>
+
+</g>
+</g>
+<g transform="translate(1366.75, 31)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PermissionGroupHasModule">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="PermissionGroupHasModule">
+<text x="0.0" y="13.5" stroke="none" data-name="PermissionGroupHasModule">+name: string</text>
+<text x="0.0" y="28.5" stroke="none" data-name="PermissionGroupHasModule">+id: number</text>
+<text x="0.0" y="43.5" stroke="none" data-name="PermissionGroupHasModule">+get: number</text>
+<text x="0.0" y="58.5" stroke="none" data-name="PermissionGroupHasModule">+post: number</text>
+<text x="0.0" y="73.5" stroke="none" data-name="PermissionGroupHasModule">+put: number</text>
+<text x="0.0" y="88.5" stroke="none" data-name="PermissionGroupHasModule">+delete: number</text>
+<text x="0.0" y="103.5" stroke="none" data-name="PermissionGroupHasModule">+modulesId: number</text>
+<text x="0.0" y="118.5" stroke="none" data-name="PermissionGroupHasModule">+permissionsGroupsId: number</text>
+<text x="0.0" y="133.5" stroke="none" data-name="PermissionGroupHasModule">+created_at: string</text>
+<text x="0.0" y="148.5" stroke="none" data-name="PermissionGroupHasModule">+updated_at: string</text>
+
+</g>
+</g>
+<g transform="translate(1366.75, 197)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PermissionGroupHasModule">
+<g transform="translate(8, 8)" fill="#33322E" data-name="PermissionGroupHasModule">
+
+</g>
+</g>
+</g>
+<g data-name="UserHasPermission">
+<g fill="lightblue" stroke="#33322E" data-name="UserHasPermission">
+<rect x="1670.8" y="22.5" height="160.0" width="323.0" data-name="UserHasPermission"></rect>
+<path d="M1670.8 53.5 L1993.8 53.5" fill="none" data-name="UserHasPermission"></path>
+<path d="M1670.8 174.5 L1993.8 174.5" fill="none" data-name="UserHasPermission"></path>
+</g>
+<g transform="translate(1670.75, 22.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserHasPermission">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="UserHasPermission">
+<a id="../src/types.ts.UserHasPermission" xlink:href="../src/types.ts"><text x="153.5" y="13.5" stroke="none" text-anchor="middle" data-name="UserHasPermission">UserHasPermission</text></a>
+
+</g>
+</g>
+<g transform="translate(1670.75, 53.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserHasPermission">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="UserHasPermission">
+<text x="0.0" y="13.5" stroke="none" data-name="UserHasPermission">+id: number</text>
+<text x="0.0" y="28.5" stroke="none" data-name="UserHasPermission">+permissionsGroupsId: number</text>
+<text x="0.0" y="43.5" stroke="none" data-name="UserHasPermission">+userId: number</text>
+<text x="0.0" y="58.5" stroke="none" data-name="UserHasPermission">+created_at: string</text>
+<text x="0.0" y="73.5" stroke="none" data-name="UserHasPermission">+updated_at: string</text>
+<text x="0.0" y="88.5" stroke="none" data-name="UserHasPermission">+user: User</text>
+<text x="0.0" y="103.5" stroke="none" data-name="UserHasPermission">+permissions_group: PermissionGroup</text>
+
+</g>
+</g>
+<g transform="translate(1670.75, 174.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="UserHasPermission">
+<g transform="translate(8, 8)" fill="#33322E" data-name="UserHasPermission">
+
+</g>
+</g>
+</g>
+<g data-name="Module">
+<g fill="lightblue" stroke="#33322E" data-name="Module">
+<rect x="2033.8" y="37.5" height="130.0" width="206.0" data-name="Module"></rect>
+<path d="M2033.8 68.5 L2239.8 68.5" fill="none" data-name="Module"></path>
+<path d="M2033.8 159.5 L2239.8 159.5" fill="none" data-name="Module"></path>
+</g>
+<g transform="translate(2033.75, 37.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Module">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Module">
+<a id="../src/types.ts.Module" xlink:href="../src/types.ts"><text x="95.0" y="13.5" stroke="none" text-anchor="middle" data-name="Module">Module</text></a>
+
+</g>
+</g>
+<g transform="translate(2033.75, 68.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Module">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Module">
+<text x="0.0" y="13.5" stroke="none" data-name="Module">+id: number</text>
+<text x="0.0" y="28.5" stroke="none" data-name="Module">+name: string</text>
+<text x="0.0" y="43.5" stroke="none" data-name="Module">+applicationsId: number</text>
+<text x="0.0" y="58.5" stroke="none" data-name="Module">+created_at: string</text>
+<text x="0.0" y="73.5" stroke="none" data-name="Module">+updated_at: string</text>
+
+</g>
+</g>
+<g transform="translate(2033.75, 159.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Module">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Module">
+
+</g>
+</g>
+</g>
+<g data-name="Application">
+<g fill="lightblue" stroke="#33322E" data-name="Application">
+<rect x="594.8" y="520.0" height="175.0" width="186.0" data-name="Application"></rect>
+<path d="M594.8 551.0 L780.8 551.0" fill="none" data-name="Application"></path>
+<path d="M594.8 687.0 L780.8 687.0" fill="none" data-name="Application"></path>
+</g>
+<g transform="translate(594.75, 520)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Application">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Application">
+<a id="../src/types.ts.Application" xlink:href="../src/types.ts"><text x="85.0" y="13.5" stroke="none" text-anchor="middle" data-name="Application">Application</text></a>
+
+</g>
+</g>
+<g transform="translate(594.75, 551)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Application">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Application">
+<text x="0.0" y="13.5" stroke="none" data-name="Application">+id?: number</text>
+<text x="0.0" y="28.5" stroke="none" data-name="Application">+name: string</text>
+<text x="0.0" y="43.5" stroke="none" data-name="Application">+description: string</text>
+<text x="0.0" y="58.5" stroke="none" data-name="Application">+developUrl: string</text>
+<text x="0.0" y="73.5" stroke="none" data-name="Application">+homologUrl: string</text>
+<text x="0.0" y="88.5" stroke="none" data-name="Application">+productionUrl: string</text>
+<text x="0.0" y="103.5" stroke="none" data-name="Application">+companyId: number</text>
+<text x="0.0" y="118.5" stroke="none" data-name="Application">+logo: string</text>
+
+</g>
+</g>
+<g transform="translate(594.75, 687)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Application">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Application">
+
+</g>
+</g>
+</g>
+<g data-name="RegisterData">
+<g fill="lightblue" stroke="#33322E" data-name="RegisterData">
+<rect x="2279.8" y="30.0" height="145.0" width="194.0" data-name="RegisterData"></rect>
+<path d="M2279.8 61.0 L2473.8 61.0" fill="none" data-name="RegisterData"></path>
+<path d="M2279.8 167.0 L2473.8 167.0" fill="none" data-name="RegisterData"></path>
+</g>
+<g transform="translate(2279.75, 30)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RegisterData">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="RegisterData">
+<a id="../src/types.ts.RegisterData" xlink:href="../src/types.ts"><text x="89.0" y="13.5" stroke="none" text-anchor="middle" data-name="RegisterData">RegisterData</text></a>
+
+</g>
+</g>
+<g transform="translate(2279.75, 61)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RegisterData">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="RegisterData">
+<text x="0.0" y="13.5" stroke="none" data-name="RegisterData">+name: string</text>
+<text x="0.0" y="28.5" stroke="none" data-name="RegisterData">+username: string</text>
+<text x="0.0" y="43.5" stroke="none" data-name="RegisterData">+invitationEmail: string</text>
+<text x="0.0" y="58.5" stroke="none" data-name="RegisterData">+password: string</text>
+<text x="0.0" y="73.5" stroke="none" data-name="RegisterData">+companyId: number</text>
+<text x="0.0" y="88.5" stroke="none" data-name="RegisterData">+status: string</text>
+
+</g>
+</g>
+<g transform="translate(2279.75, 167)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="RegisterData">
+<g transform="translate(8, 8)" fill="#33322E" data-name="RegisterData">
+
+</g>
+</g>
+</g>
+<g data-name="CompanyResponse">
+<g fill="lightblue" stroke="#33322E" data-name="CompanyResponse">
+<rect x="586.8" y="45.0" height="115.0" width="202.0" data-name="CompanyResponse"></rect>
+<path d="M586.8 76.0 L788.8 76.0" fill="none" data-name="CompanyResponse"></path>
+<path d="M586.8 152.0 L788.8 152.0" fill="none" data-name="CompanyResponse"></path>
+</g>
+<g transform="translate(586.75, 45)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CompanyResponse">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="CompanyResponse">
+<a id="../src/services/companyService.ts.CompanyResponse" xlink:href="../src/services/companyService.ts"><text x="93.0" y="13.5" stroke="none" text-anchor="middle" data-name="CompanyResponse">CompanyResponse</text></a>
+
+</g>
+</g>
+<g transform="translate(586.75, 76)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CompanyResponse">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="CompanyResponse">
+<text x="0.0" y="13.5" stroke="none" data-name="CompanyResponse">+current_page: number</text>
+<text x="0.0" y="28.5" stroke="none" data-name="CompanyResponse">+data: Company[]</text>
+<text x="0.0" y="43.5" stroke="none" data-name="CompanyResponse">+last_page: number</text>
+<text x="0.0" y="58.5" stroke="none" data-name="CompanyResponse">+total: number</text>
+
+</g>
+</g>
+<g transform="translate(586.75, 152)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CompanyResponse">
+<g transform="translate(8, 8)" fill="#33322E" data-name="CompanyResponse">
+
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</svg>

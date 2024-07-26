@@ -1,0 +1,13 @@
+{
+    "entryPoints": ["src/services"],
+    "entryPointStrategy": "expand",
+    "out": "docs",
+    "exclude": [
+      "**/*.test.ts",
+      "**/*.spec.ts",
+      "src/hooks/**/*"
+
+    ],
+    "tsconfig": "tsconfig.typedoc.json"
+  }
+  
