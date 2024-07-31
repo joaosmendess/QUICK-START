@@ -24,7 +24,7 @@ interface Props {
 
 const Success: React.FC<Props> = ({ message }) => (
   <SuccessMessage>
-    <Typography variant="body1">{message}</Typography>
+    <Typography variant="body1" className='success-message'>{message}</Typography>
   </SuccessMessage>
 );
 

@@ -199,7 +199,7 @@ const ManageSsoUser: React.FC = () => {
             onChange={(e) => setStatus(e.target.value)}
             label="Status"
           >
-            <MenuItem value="Ativo">Ativo</MenuItem>
+            <MenuItem id='menu-ativo' value="Ativo">Ativo</MenuItem>
             <MenuItem value="Inativo">Inativo</MenuItem>
           </Select>
         </FormControl>
