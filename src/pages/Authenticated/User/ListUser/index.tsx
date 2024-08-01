@@ -105,12 +105,7 @@ const ListUsers: React.FC = () => {
       <ListContainer maxWidth="lg">
         {successMessage && <Success message={successMessage} />}
         {error && <Error message={error} />}
-        <HeaderTable
-          searchTerm={searchTerm}
-          handleSearchChange={handleSearchChange}
-          sortOption={sortOption}
-          handleSortChange={handleSortChange}
-        />
+      
         {loading ? (
           <CircularProgress />
         ) : (

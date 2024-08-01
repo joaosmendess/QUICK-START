@@ -1,171 +1,133 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Container, Grid, Paper, Toolbar, Typography, Link } from '@mui/material';
+import React, { Suspense, useEffect, useState } from 'react';
+import { Box, Container, Grid, Paper, Toolbar, Typography, Link, Fade } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import BusinessIcon from '@mui/icons-material/Business';
-import { getUsers } from '../../../services/authService';
-import { getCompany } from '../../../services/companyService';
-import { paperStyle, iconBoxStyle, iconBoxBlueStyle, containerStyle, footerStyle, flexGrowStyle, iconBoxGreenStyle } from './styles';
 import DashboardCharts from '../../../components/DashboardCharts';
-
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  companyId?: number;
-  status: string;
-  created_at?: string;
-  updated_at?: string;
-}
-
-interface Company {
-  id: number;
-  name: string;
-}
+import { calculateUserStats, calculateUsersPerCompany } from './utils/dashboardUtils';
+import { UserStats, UsersPerCompany } from './types';
+import { getUsers } from '../../../services/authService';
+import { getCompany, getUsersByCompanyId } from '../../../services/companyService';
+import { paperStyle, iconBoxStyle } from './styles';
 
 const Dashboard: React.FC = () => {
-  const [totalUsers, setTotalUsers] = useState<number>(0);
-  const [activeUsers, setActiveUsers] = useState<number>(0);
-  const [inactiveUsers, setInactiveUsers] = useState<number>(0);
-  const [totalCompanies, setTotalCompanies] = useState<number>(0);
-  const [name, setName] = useState<string | null>(null);
-  const [username, setUsername] = useState<string | null>(null);
-  const [usersRegisteredPerDay, setUsersRegisteredPerDay] = useState<{ name: string, value: number }[]>([]);
-  const [usersPerCompany, setUsersPerCompany] = useState<{ name: string, value: number }[]>([]);
-  const [usersByStatus, setUsersByStatus] = useState<{ name: string, active: number, inactive: number }[]>([]);
+  const [userStats, setUserStats] = useState<UserStats | null>(null);
+  const [usersPerCompany, setUsersPerCompany] = useState<UsersPerCompany>([]);
+  const [usersByStatus, setUsersByStatus] = useState<{ name: string; active: number; inactive: number }[]>([]);
+  const [, setName] = useState<string | null>(null);
+  const [, setUsername] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const customerData = JSON.parse(localStorage.getItem('customerData') || '{}');
     setName(customerData.name);
     setUsername(customerData.username);
 
-    // Fetch data for users and companies
     fetchData();
   }, []);
 
   const fetchData = async () => {
     try {
-      const users = await getUsers();
-      const companies = await getCompany(1); // Assuming page 1 for simplicity
-      setTotalUsers(users.length);
-      setTotalCompanies(companies.total);
+      // Agrupando as requisições para otimizar a performance
+      const [users, companies] = await Promise.all([getUsers(), getCompany(1)]);
+      
+      // Calculando estatísticas gerais de usuários
+      const userStats = calculateUserStats(users);
+      setUserStats({
+        ...userStats,
+        totalCompanies: companies.total,
+      });
 
-      const active = users.filter((user: User) => user.status === 'active').length;
-      const inactive = users.length - active;
-      setActiveUsers(active);
-      setInactiveUsers(inactive);
+      // Calculando usuários por empresa
+      const companyStats = calculateUsersPerCompany(users, companies.data);
+      setUsersPerCompany(companyStats);
 
-      const usersByDay = users.reduce((acc: any, user: User) => {
-        if (user.created_at) {
-          const date = new Date(user.created_at).toLocaleDateString();
-          acc[date] = (acc[date] || 0) + 1;
-        }
-        return acc;
-      }, {});
-      setUsersRegisteredPerDay(Object.keys(usersByDay).map(date => ({ name: date, value: usersByDay[date] })));
+      // Obtendo usuários por empresa e calculando ativos e inativos
+      const statusByCompany = await Promise.all(
+        companies.data.map(async (company) => {
+          const usersInCompany = await getUsersByCompanyId(company.id);
+          const stats = calculateUserStats(usersInCompany);
+          return {
+            name: company.name,
+            active: stats.activeUsers,
+            inactive: stats.inactiveUsers,
+          };
+        })
+      );
+      setUsersByStatus(statusByCompany);
 
-      const usersByCompany = users.reduce((acc: any, user: User) => {
-        const companyName = companies.data.find((c: Company) => c.id === user.companyId)?.name || 'Unknown';
-        acc[companyName] = (acc[companyName] || 0) + 1;
-        return acc;
-      }, {});
-      setUsersPerCompany(Object.keys(usersByCompany).map(company => ({ name: company, value: usersByCompany[company] })));
-
-      setUsersByStatus([{ name: 'Users', active, inactive }]);
+      // Após os dados serem carregados, desabilita o estado de carregamento
+      setLoading(false);
     } catch (error) {
       console.error('Failed to fetch data', error);
     }
   };
 
+  if (loading || !userStats) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <Toolbar />
-      <Container maxWidth="lg" sx={containerStyle}>
-        <Grid container spacing={5}>
-          {/* Card de Usuários Totais */}
-          <Grid item xs={12} md={4} lg={4}>
-            <Paper sx={paperStyle}>
-              <Box sx={iconBoxStyle}>
-                <PersonIcon sx={{ color: '#ffffff', fontSize: '2rem' }} />
-              </Box>
-              <Box sx={{ mt: 4 }}>
-                <Typography variant="h6" color="textSecondary">
-                  Total de Usuários
-                </Typography>
-                <Typography variant="h4" color="textPrimary">
-                 {totalUsers}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  +3% em relação ao mês passado
-                </Typography>
-              </Box>
-            </Paper>
+      <Container maxWidth="lg">
+        <Fade in={!loading} timeout={1000}>
+          <Grid container spacing={3} sx={{ mb: 4 }}>
+            <Grid item xs={12} md={4}>
+              <Paper elevation={3} sx={{ ...paperStyle, display: 'flex', alignItems: 'center', background: 'linear-gradient(to right, #FF4081, #FF80AB)' }}>
+                <Box sx={{ ...iconBoxStyle, backgroundColor: '#FF4081' }}>
+                  <PersonIcon sx={{ color: '#ffffff' }} />
+                </Box>
+                <Box sx={{ ml: 4 }}>
+                  <Typography variant="h6" sx={{ color: '#ffffff' }}>Total de Usuários</Typography>
+                  <Typography variant="h4" sx={{ color: '#ffffff' }}>{userStats.totalUsers}</Typography>
+                  <Typography variant="body2" color="textSecondary" sx={{ color: '#ffffff', opacity: 0.8 }}>
+                    +3% em relação ao mês passado
+                  </Typography>
+                </Box>
+              </Paper>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Paper elevation={3} sx={{ ...paperStyle, display: 'flex', alignItems: 'center', background: 'linear-gradient(to right, #2196F3, #64B5F6)' }}>
+                <Box sx={{ ...iconBoxStyle, backgroundColor: '#2196F3' }}>
+                  <AssessmentIcon sx={{ color: '#ffffff' }} />
+                </Box>
+                <Box sx={{ ml: 4 }}>
+                  <Typography variant="h6" sx={{ color: '#ffffff' }}>Status dos Usuários</Typography>
+                  <Typography component="p" variant="h6" color="#ffffff">
+                    Ativos: {userStats.activeUsers}
+                  </Typography>
+                  <Typography component="p" variant="h6" color="#ffffff">
+                    Inativos: {userStats.inactiveUsers}
+                  </Typography>
+                </Box>
+              </Paper>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Paper elevation={3} sx={{ ...paperStyle, display: 'flex', alignItems: 'center', background: 'linear-gradient(to right, #4CAF50, #81C784)' }}>
+                <Box sx={{ ...iconBoxStyle, backgroundColor: '#4CAF50' }}>
+                  <BusinessIcon sx={{ color: '#ffffff' }} />
+                </Box>
+                <Box sx={{ ml: 4 }}>
+                  <Typography variant="h6" sx={{ color: '#ffffff' }}>Total de Empresas</Typography>
+                  <Typography variant="h4" sx={{ color: '#ffffff' }}>{userStats.totalCompanies}</Typography>
+                  <Typography variant="body2" color="textSecondary" sx={{ color: '#ffffff', opacity: 0.8 }}>
+                    +5% em relação ao mês passado
+                  </Typography>
+                </Box>
+              </Paper>
+            </Grid>
           </Grid>
-          {/* Card de Status dos Usuários */}
-          <Grid item xs={12} md={4} lg={3}>
-            <Paper sx={paperStyle}>
-              <Box sx={iconBoxBlueStyle}>
-                <AssessmentIcon sx={{ color: '#ffffff', fontSize: '2rem' }} />
-              </Box>
-              <Box sx={{ mt: 1 }}>
-                <Typography variant="h6" color="textSecondary">
-                  Status dos Usuários
-                </Typography>
-                <Typography component="p" variant="h4" color="success.main">
-                  Ativos: {activeUsers}
-                </Typography>
-                <Typography component="p" variant="h4" color="error.main">
-                  Inativos: {inactiveUsers}
-                </Typography>
-              </Box>
-            </Paper>
-          </Grid>
-          {/* Card de Empresas Totais */}
-          <Grid item xs={12} md={4} lg={5}>
-            <Paper sx={paperStyle}>
-              <Box sx={iconBoxGreenStyle}>
-                <BusinessIcon sx={{ color: '#ffffff', fontSize: '2rem' }} />
-              </Box>
-              <Box sx={{ mt: 1 }}>
-                <Typography variant="h6" color="textSecondary">
-                  Total de Empresas
-                </Typography>
-                <Typography variant="h4" color="textPrimary">
-                  {totalCompanies}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  +5% em relação ao mês passado
-                </Typography>
-              </Box>
-            </Paper>
-          </Grid>
-        </Grid>
-        <br />
-        {/* Gráficos */}
-        <Grid container spacing={0}>
-           <DashboardCharts 
-            usersRegisteredPerDay={usersRegisteredPerDay} 
+        </Fade>
+        <Suspense fallback={<div>Loading Charts...</div>}>
+          <DashboardCharts 
             usersPerCompany={usersPerCompany} 
             usersByStatus={usersByStatus}
           />
-          {/* Card com Nome e Username */}
-          <Grid item xs={12}>
-            <Paper sx={{ ...paperStyle, justifyContent: 'center' }}>
-              <Typography variant="h6" gutterBottom>
-                Usuário Logado
-              </Typography>
-              <Typography variant="h5" noWrap>
-                Nome: {name}
-              </Typography>
-              <Typography variant="h5" noWrap>
-                Usuário: {username}
-              </Typography>
-              <Box sx={flexGrowStyle} />
-            </Paper>
-          </Grid>
-        </Grid>
-        <Box sx={footerStyle}>
-          <Typography variant="body2" color="text.secondary" align="center">
+        </Suspense>
+
+        <Box sx={{ mt: 4, textAlign: 'center' }}>
+          <Typography variant="body2" color="text.secondary">
             {'Copyright © '}
             <Link color="inherit" href="https://ofm.com.br/">
               Ofm System

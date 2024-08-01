@@ -1,39 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-
-import Dashboard from './pages/Authenticated/Dashboard';
-import Login from './pages/Unauthenticated/Login';
-import ManageUser from './pages/Authenticated/User/ManageUser';
-import ListUsers from './pages/Authenticated/User/ListUser';
-import ManagePermissions from './pages/Authenticated/PermissionGroup/ManagePermisionGroups';
-import ListPermissions from './pages/Authenticated/PermissionGroup/ListPermisionGroups';
-import { globalStyles } from '../Styles/global';
-import Header from './components/Header';
-import DrawerMenu from './components/DrawerMenu';
-import RouteGuard from './components/RouterGuard';
-import Callback from './pages/Callback';
-import ManageApplication from './pages/Authenticated/ApplicationPermission/ManageApplication';
-import ListApplication from './pages/Authenticated/ApplicationPermission/ListApplication';
-import ManageModule from './pages/Authenticated/Modules/ManageModule';
-import ModuleList from './pages/Authenticated/Modules/ListModule';
-import ManageCompany from './pages/Authenticated/Company/ManageCompany';
-import ListCompany from './pages/Authenticated/Company/ListCompany';
-import ManageSsoUser from './pages/Authenticated/SsoUser/ManageSsoUser';
-import ListSsoUser from './pages/Authenticated/SsoUser/ListSsoUser';
-import NotFound from './components/NotFound';
-import Invitation from './pages/Authenticated/Invitation';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { globalStyles } from './Styles/global';
+import AppRoutes from './routes';
+import Layout from './layout/index';
+import { useAuth } from './hooks/useAuth';
 
 const App: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [pageTitle, setPageTitle] = useState('');
+  const { isAuthenticated, isLoading, handleLogout } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    setIsAuthenticated(!!token);
-    setIsLoading(false);
-  }, []);
+  const [pageTitle, setPageTitle] = useState('');
 
   useEffect(() => {
     const storedTitle = localStorage.getItem('pageTitle');
@@ -42,201 +17,26 @@ const App: React.FC = () => {
     }
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem('pageTitle', pageTitle);
-  }, [pageTitle]);
+  const toggleDrawer = () => setDrawerOpen(!drawerOpen);
 
-  globalStyles();
-
-  const toggleDrawer = () => {
-    setDrawerOpen(!drawerOpen);
-  };
-
-  const handleLogout = () => {
-    localStorage.clear();
-    setIsAuthenticated(false);
-  };
+  globalStyles(); // Aplica os estilos globais
 
   if (isLoading) {
-    return <div>Loading...</div>; // Ou qualquer componente de carregamento que preferir
+    return <div>Loading...</div>; // Componente de carregamento
   }
 
   return (
     <Router>
-      {isAuthenticated && (
-        <>
-          <Header pageTitle={pageTitle} toggleDrawer={toggleDrawer} onLogout={handleLogout} />
-          <DrawerMenu open={drawerOpen} onClose={toggleDrawer} setPageTitle={setPageTitle} />
-        </>
-      )}
-      <Routes>
-        <Route path= "/login" element={<Login/>} /> 
-        <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login/>} />
-        <Route path="/callback" element={<Callback />} />
-        <Route
-          path="/dashboard"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <Dashboard />
-            </RouteGuard>
-          }
-        />
-        <Route
-          path="/gerenciar-usuario"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <ManageUser />
-            </RouteGuard>
-          }
-        />
-        <Route
-          path="/gerenciar-usuario/:id"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <ManageUser />
-            </RouteGuard>
-          }
-        />
-        <Route
-          path="/listar-usuarios"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <ListUsers />
-            </RouteGuard>
-          }
-        />
-        <Route
-          path="/gerenciar-permissao"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <ManagePermissions />
-            </RouteGuard>
-          }
-        />
-        <Route
-          path="/gerenciar-permissao/:id"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <ManagePermissions />
-            </RouteGuard>
-          }
-        />
-        <Route
-          path="/listar-permissoes"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <ListPermissions />
-            </RouteGuard>
-          }
-        />
-        <Route
-          path="/gerenciar-empresa"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <ManageCompany />
-            </RouteGuard>
-          }
-        />
-        <Route
-          path="/gerenciar-empresa/:id"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <ManageCompany />
-            </RouteGuard>
-          }
-        />
-        <Route
-          path="/listar-empresas"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <ListCompany />
-            </RouteGuard>
-          }
-        />
-        <Route
-          path="/gerenciar-aplicacao"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <ManageApplication />
-            </RouteGuard>
-          }
-        />
-        <Route
-          path="/gerenciar-aplicacao/:id"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <ManageApplication />
-            </RouteGuard>
-          }
-        />
-        <Route
-          path="/listar-aplicacoes"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <ListApplication />
-            </RouteGuard>
-          }
-        />
-        <Route
-          path="/gerenciar-modulo"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <ManageModule />
-            </RouteGuard>
-          }
-        />
-        <Route
-          path="/gerenciar-modulo/:id"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <ManageModule />
-            </RouteGuard>
-          }
-        />
-        <Route
-          path="/listar-modulos"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <ModuleList />
-            </RouteGuard>
-          }
-        />
-        <Route
-          path="/gerenciar-usuario-sso"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <ManageSsoUser />
-            </RouteGuard>
-          }
-        />
-        <Route
-          path="/gerenciar-usuario-sso/:id"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <ManageSsoUser />
-            </RouteGuard>
-          }
-        />
-        <Route
-          path="/listar-usuarios-sso"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <ListSsoUser />
-            </RouteGuard>
-          }
-        />
-
-        <Route
-          path="/convidar-usuario"
-          element={
-            <RouteGuard isAuthenticated={isAuthenticated}>
-              <Invitation />
-            </RouteGuard>
-          }
-        />
-        <Route path="/404" element={<NotFound />} />
-        <Route path="*" element={<Navigate to="/404" replace />} />
-      </Routes>
+      <Layout 
+        isAuthenticated={isAuthenticated} 
+        toggleDrawer={toggleDrawer} 
+        handleLogout={handleLogout} 
+        drawerOpen={drawerOpen}
+        setPageTitle={setPageTitle}
+        pageTitle={pageTitle} // Passa o título da página para o Layout
+      >
+        <AppRoutes isAuthenticated={isAuthenticated} />
+      </Layout>
     </Router>
   );
 };

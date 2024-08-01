@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
-import { AppBar, Toolbar, IconButton, Avatar, Typography, Menu, MenuItem, Box } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Avatar, Typography, Menu, MenuItem, Box, } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-
-import { useNavigate } from 'react-router-dom';
-import logo from '../../assets/logo-white.png';
+;
+import logo from '../../assets/logo 1.png'
 
 interface HeaderProps {
   pageTitle: string;
   toggleDrawer: () => void;
+  drawerOpen: boolean; // Adicionando o estado do Drawer como uma prop
   onLogout: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ pageTitle, toggleDrawer, onLogout }) => {
+const drawerWidth = 240;
+
+
+
+const Header: React.FC<HeaderProps> = ({ pageTitle, toggleDrawer, drawerOpen, onLogout }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const navigate = useNavigate();
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -25,50 +27,46 @@ const Header: React.FC<HeaderProps> = ({ pageTitle, toggleDrawer, onLogout }) =>
   };
 
   const handleLogout = () => {
-    localStorage.clear();
     onLogout();
-    navigate('/');
   };
 
   return (
     <AppBar
       position="fixed"
       sx={{
-        backgroundImage: 'linear-gradient(to right, #202020, #3E3D45)',
-        color: '#ffffff',
+        backgroundColor: '#ffffff',
+        color: '#000000',
+        boxShadow: 'none',
+        borderBottom: '1px solid #e0e0e0',
+        width: drawerOpen ? `calc(100% - ${drawerWidth}px)` : '100%', // Ajusta a largura conforme o estado do Drawer
+        ml: drawerOpen ? `${drawerWidth}px` : '0', // Adiciona margem esquerda apenas quando o Drawer estiver aberto
+        transition: 'width 0.3s, margin-left 0.3s',
       }}
     >
-      <Toolbar sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+      <Toolbar sx={{ justifyContent: 'space-between', alignItems: 'center',}}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer} id='menu-main'>
+          <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer}>
             <MenuIcon />
           </IconButton>
-          <img src={logo} alt="SSO" style={{ height: 40 }} />
-          <Typography variant="h6" sx={{ marginLeft: 2 }}>
+          
+
+          
+          <Typography variant="h6" sx={{  color: '#000000', fontWeight: 'bold' }}>
             {pageTitle}
           </Typography>
         </Box>
+
+        <Box sx={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
+          <img src={logo} alt="logo OFM" style={{ height: '30px', display: 'block' }} />
+        </Box>
+
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <IconButton color="inherit">
-            <NotificationsIcon />
-          </IconButton>
-          <IconButton 
-          color="inherit" 
-          id='menu-profile'
-          onClick={handleMenuOpen}>
+         
+          <IconButton color="inherit" onClick={handleMenuOpen}>
             <Avatar src="/path-to-avatar.jpg" />
           </IconButton>
-          <Menu 
-          anchorEl={anchorEl}
-          
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}>
-            <MenuItem 
-            onClick={handleLogout}
-            id='menu-logout'
-            >
-              Sair
-              </MenuItem>
+          <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+            <MenuItem onClick={handleLogout}>Sair</MenuItem>
           </Menu>
         </Box>
       </Toolbar>

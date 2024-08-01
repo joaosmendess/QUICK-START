@@ -11,18 +11,44 @@ interface HeaderTableProps {
 
 const HeaderTable: React.FC<HeaderTableProps> = ({ searchTerm, handleSearchChange, sortOption, handleSortChange }) => {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', marginBottom: 2, padding: 2, }}>
+    <Box 
+      sx={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        width: '100%', 
+        marginBottom: 2, 
+        padding: 2, 
+        backgroundColor: 'background.paper', 
+        borderRadius: 1, 
+        boxShadow: 1,
+      }}
+    >
       <TextField
         variant="outlined"
         id='input-search'
         placeholder="Procurar"
-        sx={{ width: '100%', maxWidth: '400px' }}
+        sx={{ 
+          width: '100%', 
+          maxWidth: '400px',
+          backgroundColor: 'background.default', // Mantém o campo no estilo do tema
+          borderRadius: 1, // Ajuste de bordas
+          '& .MuiOutlinedInput-root': {
+            padding: '0 10px',
+          },
+          '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'divider', // Usar uma cor neutra para a borda
+          },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'text.primary',
+          },
+        }}
         value={searchTerm}
         onChange={handleSearchChange}
         InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <SearchIcon />
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon sx={{ color: 'text.secondary' }} />
             </InputAdornment>
           ),
         }}

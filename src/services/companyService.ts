@@ -96,3 +96,14 @@ export const deleteCompany = async (id: number)=> {
   const response = await api.delete(`/companies/${id}`);
   return response.data;
 };
+
+/**
+ * Obtém todos os usuários de uma determinada empresa
+ * @param {idCompany}
+ * @returns {Promise<any>}
+ */
+export const getUsersByCompanyId = async (idCompany: number) => {
+  const response = await api.get(`/companies/${idCompany}/users`);
+  return response.data
+}
+

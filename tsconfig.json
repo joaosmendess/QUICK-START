@@ -17,5 +17,5 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src", "Styles","cypress/**/*.ts", "cypress/e2e/Login/login.spec.js", "cypress/e2e/integration/user.spec.cjs"]
+  "include": ["src", "src/Styles","cypress/**/*.ts", "cypress/e2e/Login/login.spec.js", "cypress/e2e/integration/user.spec.cjs"]
 }

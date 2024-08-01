@@ -58,3 +58,14 @@ export const updateUser = async (data: User): Promise<User> => {
 export const deleteUser = async (id: number): Promise<void> => {
   await api.delete(`/users/${id}`);
 };
+
+
+/**
+ * Obtém todos os usuários de uma determinada empresa
+ * @param {idCompany}
+ * @returns {Promise<any>}
+ */
+export const getUsersByCompanyId = async (idCompany: number) => {
+  const response = await api.get(`/companies/${idCompany}/users`);
+  return response.data
+}

@@ -14,6 +14,8 @@ export const {
     colors: {
       primary: "#0070f3",
       secondary: "#1A1A1A",
+      background: "#f0f0f0", // Novo tom neutro
+      text: "#2C3E50", // Cor de texto mais escura para contraste
     },
   },
 });
@@ -25,8 +27,8 @@ const globalStyles = globalCss({
     boxSizing: "border-box",
   },
   body: {
-    fontFamily: "Roboto, sans-serif",
-    backgroundColor: "$background",
+    fontFamily: "'Poppins', sans-serif", 
+    backgroundColor: `$background`,
     color: "$text",
     lineHeight: 1.5,
     "-webkit-font-smoothing": "antialiased",

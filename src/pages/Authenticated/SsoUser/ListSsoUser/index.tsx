@@ -105,6 +105,7 @@ const ListSsoUser: React.FC = () => {
           {successMessage && <Success message={successMessage} />}
           {error && <Error message={error} />}
           <HeaderTable
+          
             searchTerm={searchTerm}
             handleSearchChange={handleSearchChange}
             sortBy={sortBy}

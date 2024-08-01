@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
 import {
   Table,
@@ -19,7 +18,13 @@ import {
   DialogContentText,
   DialogActions,
   Button,
+  Tooltip,
+  Box,
+  Chip,
+  TextField,
+  InputAdornment,
 } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 interface TableData {
@@ -40,18 +45,22 @@ const columnLabels: { [key: string]: string } = {
   username: 'Nome de usuário',
   invitationEmail: 'Email de Convite',
   description: 'Descrição',
-  status: 'Status'
+  status: 'Status',
   // Adicione outros mapeamentos de colunas conforme necessário
 };
 
-const statusStyles: { [key: string]: { color: string; fontWeight: string } } = {
-  ativo: { color: 'green', fontWeight: 'bold' },
-  inativo: { color: 'red', fontWeight: 'bold' },
+const statusStyles: { [key: string]: { color: string; backgroundColor: string } } = {
+  Ativo: { color: 'green', backgroundColor: '#D3EAE2' },
+  Inativo: { color: 'red', backgroundColor: '#F8DCD9' },
 };
-const GenericTable = <T extends TableData>({ columns, data, loading, error, handleEdit, handleDelete }: GenericTableProps<T>) => {
+
+const GenericTable = <T extends TableData>({
+  columns, data, loading, error, handleEdit, handleDelete
+}: GenericTableProps<T>) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedItem, setSelectedItem] = useState<null | T>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState<string>(''); // Novo estado para busca
 
   const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>, item: T) => {
     setAnchorEl(event.currentTarget);
@@ -88,60 +97,132 @@ const GenericTable = <T extends TableData>({ columns, data, loading, error, hand
     setConfirmOpen(false);
   };
 
+  // Filtra os dados com base no termo de busca
+  const filteredData = data.filter(item =>
+    columns.some(column =>
+      item[column].toString().toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
+
   return (
     <>
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        <>
-          {error && <Typography variant="body1" color="error">{error}</Typography>}
-          {data.length === 0 ? (
-            <Typography variant="body1" align="center">Nenhum dado encontrado</Typography>
-          ) : (
-            <TableContainer component={Paper}>
-              <Table>
-                <TableHead>
+      <TableContainer component={Paper} elevation={3} sx={{ borderRadius: 2, overflowX: 'auto' }}>
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            justifyContent: 'flex-start',
+            alignItems: 'center', 
+            p: 2,
+            backgroundColor: '#f5f5f5', // Ajuste de cor de fundo
+            borderBottom: '1px solid #e0e0e0', // Linha separadora entre a busca e a tabela
+            flexWrap: 'wrap',
+          }}
+        >
+          <TextField
+            variant="outlined"
+            placeholder="Procurar"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{ 
+              maxWidth: '300px', 
+              width: '100%',
+              mb: { xs: 2, sm: 0 } // Margem inferior no modo responsivo
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+        {loading ? (
+          <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+            <CircularProgress />
+          </Box>
+        ) : (
+          <>
+            {error && <Typography variant="body1" color="error">{error}</Typography>}
+            {filteredData.length === 0 ? (
+              <Typography variant="body1" align="center" sx={{ p: 2 }}>Nenhum dado encontrado</Typography>
+            ) : (
+              <Table sx={{ minWidth: 650, tableLayout: 'auto' }}>
+                <TableHead sx={{ backgroundColor: '#000' }}>
                   <TableRow>
                     {columns.map((column) => (
-                      <TableCell key={column}>{columnLabels[column] || column}</TableCell>
+                      <TableCell
+                        key={column}
+                        sx={{ 
+                          color: 'white', 
+                          fontWeight: 'bold', 
+                          textAlign: 'center',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {columnLabels[column] || column}
+                      </TableCell>
                     ))}
-                    <TableCell>Ações</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}>
+                      Ações
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data.map((item, index) => (
-                    <TableRow key={index}>
+                  {filteredData.map((item, index) => (
+                    <TableRow
+                      key={index}
+                      hover
+                      sx={{
+                        '&:nth-of-type(odd)': { backgroundColor: 'action.hover' },
+                        '&:last-child td, &:last-child th': { border: 0 },
+                      }}
+                    >
                       {columns.map((column) => (
                         <TableCell
                           key={column}
-                          style={column === 'status' ? statusStyles[item[column]] : {}}
+                          sx={{ 
+                            textAlign: 'center',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                          }}
                         >
-                          {item[column]}
+                          {column === 'status' ? (
+                            <Chip
+                              label={item[column]}
+                              sx={statusStyles[item[column]]}
+                              size="small"
+                            />
+                          ) : (
+                            item[column]
+                          )}
                         </TableCell>
                       ))}
-                      <TableCell>
-                        <IconButton  id='menu' onClick={(event) => handleMenuClick(event, item)}>
-                          <MoreVertIcon />
-                        </IconButton>
+                      <TableCell sx={{ textAlign: 'center', display: 'flex', justifyContent: 'center' }}>
+                        <Tooltip title="Ações" arrow>
+                          <IconButton id="menu" onClick={(event) => handleMenuClick(event, item)}>
+                            <MoreVertIcon />
+                          </IconButton>
+                        </Tooltip>
                         <Menu
                           anchorEl={anchorEl}
-                         
                           keepMounted
                           open={Boolean(anchorEl)}
                           onClose={handleMenuClose}
                         >
-                          <MenuItem id='menu-edit' onClick={handleEditClick}>Editar</MenuItem>
-                          <MenuItem id='menu-delete' onClick={handleDeleteClick}>Excluir</MenuItem>
+                          <MenuItem id="menu-edit" onClick={handleEditClick}>Editar</MenuItem>
+                          <MenuItem id="menu-delete" onClick={handleDeleteClick}>Excluir</MenuItem>
                         </Menu>
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-            </TableContainer>
-          )}
-        </>
-      )}
+            )}
+          </>
+        )}
+      </TableContainer>
 
       <Dialog open={confirmOpen} onClose={handleCloseConfirmDialog}>
         <DialogTitle>
