@@ -33,8 +33,8 @@ const translateErrors = (errors: any) => {
             return 'A URL de produção é obrigatória';
           case 'Logo is required':
             return 'O logo é obrigatório';
-           case 'The name has already been taken':
-             return 'O nome já está em uso';
+          case 'The name has already been taken':
+            return 'O nome já está em uso';
           default:
             return error;
         }
@@ -129,7 +129,34 @@ const ManageApplication: React.FC = () => {
       {loading && <LinearProgress />}
       {successMessage && <Success message={successMessage} />}
       {errorMessage && <Error message={errorMessage} />}
-      <FormContainer>
+      <FormContainer
+        title={id ? "Editar Aplicação" : "Criar Aplicação"}
+        description="Preencha os detalhes da aplicação nos campos abaixo."
+        sideContent={
+          <Box 
+            sx={{
+              
+              marginBottom: '16px', // Espaçamento inferior para separação visual
+            }}
+          >
+            <Typography variant="h6" gutterBottom>
+              Dicas:
+            </Typography>
+            <Typography variant="body2">
+              - O nome da aplicação é obrigatório e deve ser único.
+            </Typography>
+            <Typography variant="body2">
+              - Descreva a aplicação de forma clara, destacando suas principais funcionalidades.
+            </Typography>
+            <Typography variant="body2">
+              - Preencha as URLs de desenvolvimento, homologação e produção corretamente.
+            </Typography>
+            <Typography variant="body2">
+              - Não esqueça de fornecer o logo da aplicação.
+            </Typography>
+          </Box>
+        }
+      >
         <TextField
           label="Nome"
           id='input-name'
@@ -149,6 +176,24 @@ const ManageApplication: React.FC = () => {
             value={description}
             onChange={setDescription}
             placeholder="Descrição (máximo de 255 caracteres)"
+            theme="snow"
+            modules={{
+              toolbar: [
+                [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
+                [{size: []}],
+                ['bold', 'italic', 'underline'],
+                [{'list': 'ordered'}, {'list': 'bullet'}],
+                ['link', 'image'],
+                ['clean']                                         
+              ]
+            }}
+            formats={[
+              'header', 'font', 'size',
+              'bold', 'italic', 'underline',
+              'list', 'bullet',
+              'link', 'image'
+            ]}
+            style={{ backgroundColor: '#f5f5f5', borderRadius: '8px' }}
           />
           <Typography variant="caption">
             {description.length}/255 caracteres
@@ -168,7 +213,6 @@ const ManageApplication: React.FC = () => {
           value={developUrl}
           onChange={(e) => setDevelopUrl(e.target.value)}
           error={!!errors.developUrl}
-          
           sx={{ marginBottom: 2 }}
         />
         <TextField
@@ -202,7 +246,6 @@ const ManageApplication: React.FC = () => {
           value={logo}
           onChange={(e) => setLogo(e.target.value)}
           error={!!errors.logo}
-          
           sx={{ marginBottom: 2 }}
         />
         <FormButton

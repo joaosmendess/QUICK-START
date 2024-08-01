@@ -106,123 +106,140 @@ const GenericTable = <T extends TableData>({
 
   return (
     <>
-      <TableContainer component={Paper} elevation={3} sx={{ borderRadius: 2, overflowX: 'auto' }}>
-        <Box 
-          sx={{ 
-            display: 'flex', 
-            justifyContent: 'flex-start',
-            alignItems: 'center', 
-            p: 2,
-            backgroundColor: '#f5f5f5', // Ajuste de cor de fundo
-            borderBottom: '1px solid #e0e0e0', // Linha separadora entre a busca e a tabela
-            flexWrap: 'wrap',
-          }}
-        >
-          <TextField
-            variant="outlined"
-            placeholder="Procurar"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            sx={{ 
-              maxWidth: '300px', 
-              width: '100%',
-              mb: { xs: 2, sm: 0 } // Margem inferior no modo responsivo
-            }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
-        {loading ? (
-          <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-            <CircularProgress />
-          </Box>
-        ) : (
-          <>
-            {error && <Typography variant="body1" color="error">{error}</Typography>}
-            {filteredData.length === 0 ? (
-              <Typography variant="body1" align="center" sx={{ p: 2 }}>Nenhum dado encontrado</Typography>
-            ) : (
-              <Table sx={{ minWidth: 650, tableLayout: 'auto' }}>
-                <TableHead sx={{ backgroundColor: '#000' }}>
-                  <TableRow>
-                    {columns.map((column) => (
-                      <TableCell
-                        key={column}
-                        sx={{ 
-                          color: 'white', 
-                          fontWeight: 'bold', 
-                          textAlign: 'center',
-                          whiteSpace: 'nowrap',
-                        }}
-                      >
-                        {columnLabels[column] || column}
-                      </TableCell>
-                    ))}
-                    <TableCell sx={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}>
-                      Ações
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {filteredData.map((item, index) => (
-                    <TableRow
-                      key={index}
-                      hover
-                      sx={{
-                        '&:nth-of-type(odd)': { backgroundColor: 'action.hover' },
-                        '&:last-child td, &:last-child th': { border: 0 },
-                      }}
-                    >
-                      {columns.map((column) => (
-                        <TableCell
-                          key={column}
-                          sx={{ 
-                            textAlign: 'center',
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                          }}
-                        >
-                          {column === 'status' ? (
-                            <Chip
-                              label={item[column]}
-                              sx={statusStyles[item[column]]}
-                              size="small"
-                            />
-                          ) : (
-                            item[column]
-                          )}
-                        </TableCell>
-                      ))}
-                      <TableCell sx={{ textAlign: 'center', display: 'flex', justifyContent: 'center' }}>
-                        <Tooltip title="Ações" arrow>
-                          <IconButton id="menu" onClick={(event) => handleMenuClick(event, item)}>
-                            <MoreVertIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Menu
-                          anchorEl={anchorEl}
-                          keepMounted
-                          open={Boolean(anchorEl)}
-                          onClose={handleMenuClose}
-                        >
-                          <MenuItem id="menu-edit" onClick={handleEditClick}>Editar</MenuItem>
-                          <MenuItem id="menu-delete" onClick={handleDeleteClick}>Excluir</MenuItem>
-                        </Menu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </>
-        )}
-      </TableContainer>
+     <TableContainer 
+  component={Paper} 
+  elevation={3} 
+  sx={{ 
+    borderRadius: 2, 
+    overflowX: 'auto', 
+    width: '100%', 
+    mt: 2 
+  }}
+>
+  <Box 
+    sx={{ 
+      display: 'flex', 
+      justifyContent: 'space-between',
+      alignItems: 'center', 
+      p: 2,
+      backgroundColor: '#f5f5f5',
+      borderBottom: '1px solid #e0e0e0',
+      flexWrap: 'wrap',
+    }}
+  >
+    <TextField
+      variant="outlined"
+      placeholder="Procurar"
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      sx={{ 
+        width: { xs: '100%', sm: 'auto' },
+        mb: { xs: 2, sm: 0 } 
+      }}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <SearchIcon />
+          </InputAdornment>
+        ),
+      }}
+    />
+  </Box>
+  {loading ? (
+    <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+      <CircularProgress />
+    </Box>
+  ) : (
+    <>
+      {error && <Typography variant="body1" color="error">{error}</Typography>}
+      {filteredData.length === 0 ? (
+        <Typography variant="body1" align="center" sx={{ p: 2 }}>Nenhum dado encontrado</Typography>
+      ) : (
+        <Table sx={{ minWidth: 650, tableLayout: 'fixed' }}>
+          <TableHead sx={{ backgroundColor: '#000' }}>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell
+                  key={column}
+                  sx={{ 
+                    color: 'white', 
+                    fontWeight: 'bold', 
+                    textAlign: 'center',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    px: { xs: 1, sm: 2 }, 
+                    py: { xs: 1, sm: 2 },
+                    display: { xs: column === 'description' ? 'none' : 'table-cell', sm: 'table-cell' }
+                  }}
+                >
+                  {columnLabels[column] || column}
+                </TableCell>
+              ))}
+              <TableCell sx={{ color: 'white', fontWeight: 'bold', textAlign: 'center', px: { xs: 1, sm: 2 }, py: { xs: 1, sm: 2 } }}>
+                Ações
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredData.map((item, index) => (
+              <TableRow
+                key={index}
+                hover
+                sx={{
+                  '&:nth-of-type(odd)': { backgroundColor: 'action.hover' },
+                  '&:last-child td, &:last-child th': { border: 0 },
+                }}
+              >
+                {columns.map((column) => (
+                  <TableCell
+                    key={column}
+                    sx={{ 
+                      textAlign: 'center',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      px: { xs: 1, sm: 2 }, 
+                      py: { xs: 1, sm: 2 },
+                      fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                      display: { xs: column === 'description' ? 'none' : 'table-cell', sm: 'table-cell' }
+                    }}
+                  >
+                    {column === 'status' ? (
+                      <Chip
+                        label={item[column]}
+                        sx={statusStyles[item[column]]}
+                        size="small"
+                      />
+                    ) : (
+                      item[column]
+                    )}
+                  </TableCell>
+                ))}
+                <TableCell sx={{ textAlign: 'center', display: 'flex', justifyContent: 'center' }}>
+                  <Tooltip title="Ações" arrow>
+                    <IconButton id="menu" onClick={(event) => handleMenuClick(event, item)}>
+                      <MoreVertIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Menu
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                  >
+                    <MenuItem id="menu-edit" onClick={handleEditClick}>Editar</MenuItem>
+                    <MenuItem id="menu-delete" onClick={handleDeleteClick}>Excluir</MenuItem>
+                  </Menu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
+    </>
+  )}
+</TableContainer>
 
       <Dialog open={confirmOpen} onClose={handleCloseConfirmDialog}>
         <DialogTitle>

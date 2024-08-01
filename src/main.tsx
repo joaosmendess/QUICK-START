@@ -7,14 +7,22 @@ import theme from './Styles/theme'; // Importe o tema configurado
 const globalStyles = (
   <GlobalStyles
     styles={{
+      ':root': {
+        '--color-default-white': '#FFFFFF',
+        '--color-default-gft': '#156A62',
+        '--color-table-header': '#ECECEC',
+        '--color-background': '#E1EAF7',
+        '--color-table-rows': '#F0FFFC',
+      },
       '*': {
+        fontFamily: 'Poppins, sans-serif',
         margin: 0,
         padding: 0,
         boxSizing: 'border-box',
       },
       body: {
         fontFamily: 'Poppins, sans-serif',
-        backgroundColor: '#f0f0f0',
+        background: 'repeating-radial-gradient(circle at 90%, var(--color-background), var(--color-background) 38px, var(--color-default-white) 20px, var(--color-default-white) 39px) !important',
         color: '#ECF0F1',
         lineHeight: 1.5,
         WebkitFontSmoothing: 'antialiased',

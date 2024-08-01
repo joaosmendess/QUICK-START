@@ -3,7 +3,7 @@ import { Box, Container, Grid, Paper, Toolbar, Typography, Link, Fade } from '@m
 import PersonIcon from '@mui/icons-material/Person';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import BusinessIcon from '@mui/icons-material/Business';
-import DashboardCharts from '../../../components/DashboardCharts';
+import DashboardCharts from './components/DashboardCharts';
 import { calculateUserStats, calculateUsersPerCompany } from './utils/dashboardUtils';
 import { UserStats, UsersPerCompany } from './types';
 import { getUsers } from '../../../services/authService';
@@ -75,8 +75,8 @@ const Dashboard: React.FC = () => {
           <Grid container spacing={3} sx={{ mb: 4 }}>
             <Grid item xs={12} md={4}>
               <Paper elevation={3} sx={{ ...paperStyle, display: 'flex', alignItems: 'center', background: 'linear-gradient(to right, #FF4081, #FF80AB)' }}>
-                <Box sx={{ ...iconBoxStyle, backgroundColor: '#FF4081' }}>
-                  <PersonIcon sx={{ color: '#ffffff' }} />
+                <Box sx={{ ...iconBoxStyle, backgroundColor: '#FFFFFF' }}>
+                  <PersonIcon sx={{ color: '#FF4081' }} />
                 </Box>
                 <Box sx={{ ml: 4 }}>
                   <Typography variant="h6" sx={{ color: '#ffffff' }}>Total de Usuários</Typography>
@@ -89,8 +89,8 @@ const Dashboard: React.FC = () => {
             </Grid>
             <Grid item xs={12} md={4}>
               <Paper elevation={3} sx={{ ...paperStyle, display: 'flex', alignItems: 'center', background: 'linear-gradient(to right, #2196F3, #64B5F6)' }}>
-                <Box sx={{ ...iconBoxStyle, backgroundColor: '#2196F3' }}>
-                  <AssessmentIcon sx={{ color: '#ffffff' }} />
+                <Box sx={{ ...iconBoxStyle, backgroundColor: '#FFFF' }}>
+                  <AssessmentIcon sx={{ color: '#2196F3' }} />
                 </Box>
                 <Box sx={{ ml: 4 }}>
                   <Typography variant="h6" sx={{ color: '#ffffff' }}>Status dos Usuários</Typography>
@@ -105,8 +105,8 @@ const Dashboard: React.FC = () => {
             </Grid>
             <Grid item xs={12} md={4}>
               <Paper elevation={3} sx={{ ...paperStyle, display: 'flex', alignItems: 'center', background: 'linear-gradient(to right, #4CAF50, #81C784)' }}>
-                <Box sx={{ ...iconBoxStyle, backgroundColor: '#4CAF50' }}>
-                  <BusinessIcon sx={{ color: '#ffffff' }} />
+                <Box sx={{ ...iconBoxStyle, backgroundColor: '#FFFFFF' }}>
+                  <BusinessIcon sx={{ color: '#4CAF50' }} />
                 </Box>
                 <Box sx={{ ml: 4 }}>
                   <Typography variant="h6" sx={{ color: '#ffffff' }}>Total de Empresas</Typography>

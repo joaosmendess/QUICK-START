@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Toolbar, LinearProgress, Grid, Tabs, Tab, Box, Select, MenuItem, FormControl, InputLabel, Checkbox, ListItemText, OutlinedInput, SelectChangeEvent } from '@mui/material';
+import { TextField, Toolbar, LinearProgress, Grid, Tabs, Tab, Box, Select, MenuItem, FormControl, InputLabel, Checkbox, ListItemText, OutlinedInput, SelectChangeEvent, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { createCompany, getCompanyById, updateCompany } from '../../../services/companyService';
 import { fetchApplications } from '../../../services/applicationService';
@@ -48,7 +48,6 @@ const ManageCompany: React.FC = () => {
     try {
       const company: Company = await getCompanyById(Number(companyId));
       setName(company.name);
-
       setCnpj(company.cnpj);
       setRedirectUrl(company.redirectUrl || '');
       setApplicationIds(company.applications.map((app: Application) => app.id).filter((id): id is number => id !== undefined));
@@ -110,16 +109,51 @@ const ManageCompany: React.FC = () => {
     <>
       <Toolbar />
       {loading && <LinearProgress />}
-      <FormContainer>
+      <FormContainer
+        title={id ? "Editar Empresa" : "Criar Empresa"}
+        description="Preencha os dados da empresa e configure suas aplicações."
+        maxWidth="900px"
+        sideContent={
+          <Box 
+            sx={{
+              padding: '16px',
+              marginBottom: '16px', // Espaçamento inferior para separação visual
+            }}
+          >
+            <Typography variant="h6" gutterBottom>
+              Dicas:
+            </Typography>
+            <Typography variant="body2">
+              - Nome da empresa e CNPJ são obrigatórios.
+            </Typography>
+            <Typography variant="body2">
+              - Preencha todos os campos obrigatórios antes de salvar.
+            </Typography>
+            <Typography variant="body2">
+              - Na aba Dados SSO Externo, insira os dados de integração se aplicável.
+            </Typography>
+            <Typography variant="body2">
+              - Selecione as aplicações que a empresa pode acessar.
+            </Typography>
+          </Box>
+        }
+      >
         {severity === 'error' && <Error message={message as string} />}
         {severity === 'success' && <Success message={message as string} />}
-        <Tabs value={tabIndex} onChange={handleTabChange} centered>
+        <Tabs 
+          value={tabIndex} 
+          onChange={handleTabChange} 
+          centered 
+          textColor="primary" 
+          indicatorColor="primary"
+          sx={{ mb: 3 }}
+        >
           <Tab id="tab-dados-principais" label="Dados Principais" />
           <Tab id="tab-dados-sso-externo" label="Dados SSO Externo" />
         </Tabs>
         <Box mt={2} width="100%">
           {tabIndex === 0 && (
-            <Grid container spacing={2} justifyContent="center">
+            <Grid container spacing={3} justifyContent="center">
               <Grid item xs={12}>
                 <TextField
                   label="Nome"
@@ -186,7 +220,7 @@ const ManageCompany: React.FC = () => {
             </Grid>
           )}
           {tabIndex === 1 && (
-            <Grid container spacing={2} justifyContent="center">
+            <Grid container spacing={3} justifyContent="center">
               <Grid item xs={12} md={6}>
                 <TextField
                   label="Client ID"
@@ -234,8 +268,8 @@ const ManageCompany: React.FC = () => {
             </Grid>
           )}
         </Box>
-        <Grid container spacing={1} justifyContent="center" mt={2}>
-         
+        <Grid container spacing={2} justifyContent="center" mt={2}>
+          <Grid item>
             <FormButton
               loading={loading}
               id='button-manager-company'
@@ -244,7 +278,7 @@ const ManageCompany: React.FC = () => {
             >
               Salvar
             </FormButton>
-       
+          </Grid>
         </Grid>
       </FormContainer>
     </>

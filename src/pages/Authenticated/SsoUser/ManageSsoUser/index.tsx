@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Select, MenuItem, FormControl, InputLabel, Toolbar, CircularProgress } from '@mui/material';
+import { TextField, Select, MenuItem, FormControl, InputLabel, Toolbar, CircularProgress, Grid, Box, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { register } from '../../../../services/registerService';
 import { updateUser, getUserById } from '../../../../services/userService';
@@ -72,7 +72,7 @@ const ManageSsoUser: React.FC = () => {
   };
 
   const handleUpdateUser = async () => {
-    const updatedUser: User = { id: Number(id), name, username, invitationEmail, companyId: Number(companyId), status};
+    const updatedUser: User = { id: Number(id), name, username, invitationEmail, companyId: Number(companyId), status };
     setLoading(true);
 
     try {
@@ -135,84 +135,168 @@ const ManageSsoUser: React.FC = () => {
     }
   };
 
+  // Verifica se todos os campos obrigatórios foram preenchidos
+  const isFieldFilled = (field: string) => field && field.length > 0;
+
   return (
-    <FormContainer>
+    <>
       <Toolbar />
       {loading && <CircularProgress />}
-      {error && <Error message={error} />}
-      {successMessage && <Success message={successMessage} />}
-      <form onSubmit={handleSubmit}>
-        <TextField
-          label="Nome"
-          id="input-name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          fullWidth
-          required
-          margin="normal"
-          error={!!nameError}
-          helperText={nameError}
-        />
-        <TextField
-          label="Nome de usuário"
-          id="input-username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          fullWidth
-          required
-          margin="normal"
-          error={!!usernameError}
-          helperText={usernameError}
-        />
-        <TextField
-          label="Email de convite"
-          id="input-email"
-          value={invitationEmail}
-          onChange={(e) => setInvitationEmail(e.target.value)}
-          fullWidth
-          required
-          margin="normal"
-          error={!!emailError}
-          helperText={emailError}
-        />
-        <FormControl fullWidth margin="normal" required>
-          <InputLabel id="company-select-label">Empresas</InputLabel>
-          <Select
-            labelId="company-select-label"
-            label="Empresas"
-            id="company-select"
-            value={companyId}
-            onChange={(e) => setCompanyId(e.target.value as number)}
+      <FormContainer
+        title={isEditMode ? "Editar Usuário SSO" : "Criar Usuário SSO"}
+        description="Preencha os campos abaixo para gerenciar os dados do usuário."
+        sideContent={
+          <Box
+            sx={{
+              
+              padding: '16px',
+            
+              marginBottom: '16px', // Espaçamento inferior para separação visual
+            }}
           >
-            {companies.map((company) => (
-              <MenuItem key={company.id} value={company.id}>
-                {company.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl fullWidth margin="normal" required>
-          <InputLabel>Status</InputLabel>
-          <Select
-            value={status}
-            id="select-status"
-            onChange={(e) => setStatus(e.target.value)}
-            label="Status"
-          >
-            <MenuItem id='menu-ativo' value="Ativo">Ativo</MenuItem>
-            <MenuItem value="Inativo">Inativo</MenuItem>
-          </Select>
-        </FormControl>
-        <ButtonForm
-          loading={loading}
-          id='button-manager-sso-user'
-          type="submit"
-          disabled={loading || !name || !username || !invitationEmail || !companyId}
-        >
-          {isEditMode ? 'Editar usuário' : 'Convidar'}
-        </ButtonForm>
-      </form>
-    </FormContainer>
+            <Typography variant="h6" gutterBottom>
+              Dicas:
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                textDecoration: isFieldFilled(name) ? 'line-through' : 'none'
+              }}
+            >
+              - Nome é obrigatório.
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                textDecoration: isFieldFilled(username) ? 'line-through' : 'none'
+              }}
+            >
+              - Usuário é obrigatório.
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                textDecoration: isFieldFilled(invitationEmail) ? 'line-through' : 'none'
+              }}
+            >
+              - Email é obrigatório.
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                textDecoration: isFieldFilled(companyId.toString()) ? 'line-through' : 'none'
+              }}
+            >
+              - Selecione a empresa correta para o usuário.
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                textDecoration: isFieldFilled(status) ? 'line-through' : 'none'
+              }}
+            >
+              - Defina o status do usuário.
+            </Typography>
+          </Box>
+        }
+      >
+        {error && <Error message={error} />}
+        {successMessage && <Success message={successMessage} />}
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Nome"
+                id="input-name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                fullWidth
+                required
+                error={!!nameError}
+                helperText={nameError}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Nome de usuário"
+                id="input-username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                fullWidth
+                required
+                error={!!usernameError}
+                helperText={usernameError}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Email de convite"
+                id="input-email"
+                value={invitationEmail}
+                onChange={(e) => setInvitationEmail(e.target.value)}
+                fullWidth
+                required
+                error={!!emailError}
+                helperText={emailError}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Senha"
+                id="input-password"
+                value={password}
+                fullWidth
+                required
+                type="password"
+                disabled
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth required>
+                <InputLabel id="company-select-label">Empresa</InputLabel>
+                <Select
+                  labelId="company-select-label"
+                  label="Empresa"
+                  id="company-select"
+                  value={companyId}
+                  onChange={(e) => setCompanyId(e.target.value as number)}
+                >
+                  {companies.map((company) => (
+                    <MenuItem key={company.id} value={company.id}>
+                      {company.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth required>
+                <InputLabel>Status</InputLabel>
+                <Select
+                  value={status}
+                  id="select-status"
+                  onChange={(e) => setStatus(e.target.value)}
+                  label="Status"
+                >
+                  <MenuItem id='menu-ativo' value="Ativo">Ativo</MenuItem>
+                  <MenuItem value="Inativo">Inativo</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+          <Box mt={3} display="flex" justifyContent="center">
+            <ButtonForm
+              loading={loading}
+              id='button-manager-sso-user'
+              type="submit"
+              disabled={loading || !name || !username || !invitationEmail || !companyId}
+            >
+              {isEditMode ? 'Editar usuário' : 'Convidar'}
+            </ButtonForm>
+          </Box>
+        </form>
+      </FormContainer>
+    </>
   );
 };
 

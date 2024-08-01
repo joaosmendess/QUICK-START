@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
-import { AppBar, Toolbar, IconButton, Avatar, Typography, Menu, MenuItem, Box, } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Avatar, Typography, Menu, MenuItem, Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-;
-import logo from '../../assets/logo 1.png'
+import logo from '../../assets/logo 1.png';
 
 interface HeaderProps {
   pageTitle: string;
   toggleDrawer: () => void;
-  drawerOpen: boolean; // Adicionando o estado do Drawer como uma prop
+  drawerOpen: boolean;
   onLogout: () => void;
 }
 
 const drawerWidth = 240;
-
-
 
 const Header: React.FC<HeaderProps> = ({ pageTitle, toggleDrawer, drawerOpen, onLogout }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -38,30 +35,39 @@ const Header: React.FC<HeaderProps> = ({ pageTitle, toggleDrawer, drawerOpen, on
         color: '#000000',
         boxShadow: 'none',
         borderBottom: '1px solid #e0e0e0',
-        width: drawerOpen ? `calc(100% - ${drawerWidth}px)` : '100%', // Ajusta a largura conforme o estado do Drawer
-        ml: drawerOpen ? `${drawerWidth}px` : '0', // Adiciona margem esquerda apenas quando o Drawer estiver aberto
+        width: drawerOpen ? `calc(100% - ${drawerWidth}px)` : '100%',
+        ml: drawerOpen ? `${drawerWidth}px` : '0',
         transition: 'width 0.3s, margin-left 0.3s',
       }}
     >
-      <Toolbar sx={{ justifyContent: 'space-between', alignItems: 'center',}}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Toolbar sx={{ justifyContent: 'space-between', alignItems: 'center', position: 'relative', display: 'flex' }}>
+        
+        {/* Esquerda - Menu Icon */}
+        <Box sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer}>
             <MenuIcon />
           </IconButton>
-          
 
-          
-          <Typography variant="h6" sx={{  color: '#000000', fontWeight: 'bold' }}>
+          <Typography variant="h6" sx={{ color: '#000000', fontWeight: 'bold', ml: 2 }}>
             {pageTitle}
           </Typography>
         </Box>
 
-        <Box sx={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
+        {/* Centro - Logo */}
+        <Box sx={{ 
+          position: { xs: 'relative', sm: 'absolute' }, 
+          left: { sm: '50%' }, 
+          transform: { sm: 'translateX(-50%)' },
+          display: 'flex',
+          justifyContent: 'center',
+          flexGrow: 1,
+          order: { xs: -1, sm:0 }  // Move logo para o topo no mobile
+        }}>
           <img src={logo} alt="logo OFM" style={{ height: '30px', display: 'block' }} />
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-         
+        {/* Direita - Avatar */}
+        <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
           <IconButton color="inherit" onClick={handleMenuOpen}>
             <Avatar src="/path-to-avatar.jpg" />
           </IconButton>

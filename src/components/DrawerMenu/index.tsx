@@ -66,10 +66,31 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({ open, onClose, setPageTitle }) 
           boxSizing: 'border-box',
           backgroundColor: '#202020',
           color: '#ffffff',
+          '&::-webkit-scrollbar': {
+            width: '8px',
+          },
+          '&::-webkit-scrollbar-track': {
+            background: '#383838',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#606060',
+            borderRadius: '8px',
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: '#808080',
+          },
+          '&::-webkit-scrollbar-corner': {
+            backgroundColor: '#202020', // Esquina do scrollbar para caso de overflow em duas direções
+          }
+        },
+        // Para Firefox
+        '& *': {
+          scrollbarWidth: 'thin',
+          scrollbarColor: '#606060 #383838',
         },
       }}
     >
-      <List>
+      <List sx={{ overflowY: 'auto', height: '100%' }}>
         {renderMenuItems(navigationItems)}
       </List>
     </Drawer>

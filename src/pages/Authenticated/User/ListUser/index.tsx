@@ -28,13 +28,13 @@ const ListContainer = styled(Container, {
 });
 
 const ListUsers: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, ] = useState('');
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [sortOption, setSortOption] = useState('Novos');
+  const [sortOption, ] = useState('Novos');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -71,14 +71,7 @@ const ListUsers: React.FC = () => {
     );
   }, [searchTerm, users, sortOption]);
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const handleSortChange = (event: SelectChangeEvent<string>) => {
-    setSortOption(event.target.value);
-  };
-
+  
   const handleEditClick = (user: User) => {
     navigate(`/gerenciar-usuario/${user.id}`);
   };

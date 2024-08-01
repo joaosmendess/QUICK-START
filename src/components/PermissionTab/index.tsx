@@ -17,7 +17,16 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index, ...other })
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box
+          sx={{
+            p: 3,
+            
+            borderRadius: 2, // Bordas suavemente arredondadas
+          
+           
+            borderColor: 'divider', // Borda compatível com o tema
+          }}
+        >
           {children}
         </Box>
       )}

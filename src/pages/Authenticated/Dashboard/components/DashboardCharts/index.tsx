@@ -64,7 +64,7 @@ const DashboardCharts: React.FC<DashboardChartsProps> = ({ usersPerCompany, user
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
-          <Bar dataKey="usuariosPorEmpresa" barSize={20} fill="#8884d8" />
+          <Bar dataKey="usuariosPorEmpresa" barSize={20} fill="#673ab7" />
           <Line type="monotone" dataKey="ativo" stroke="#4CAF50" strokeWidth={2} />
           <Line type="monotone" dataKey="inativo" stroke="#FF0000" strokeWidth={2} />
         </ComposedChart>

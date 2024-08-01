@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   TextField,
   Box,
@@ -11,6 +11,7 @@ import {
   Tabs,
   Tab,
   Toolbar,
+  Typography,
   SelectChangeEvent,
 } from '@mui/material';
 import TabPanel from '../../../../components/PermissionTab';
@@ -71,11 +72,11 @@ const ManagePermissionGroup: React.FC = () => {
     fetchModules();
   }, []);
 
-  const handleTabChange = (_event: React.ChangeEvent<object>, newValue: number) => {
+  const handleTabChange = useCallback((_event: React.ChangeEvent<object>, newValue: number) => {
     setTabValue(newValue);
-  };
+  }, []);
 
-  const handleSaveGroupName = (e: React.FormEvent) => {
+  const handleSaveGroupName = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (!groupName) {
       setError('O nome do grupo é obrigatório');
@@ -84,9 +85,9 @@ const ManagePermissionGroup: React.FC = () => {
     setError(null);
     setSuccess('Nome do grupo salvo com sucesso!');
     setTabValue(1);
-  };
+  }, [groupName]);
 
-  const handleSavePermissions = async (e: React.FormEvent) => {
+  const handleSavePermissions = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!groupName) {
       setError('O nome do grupo é obrigatório');
@@ -117,24 +118,25 @@ const ManagePermissionGroup: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [groupName, currentPermissions]);
 
-  const handlePermissionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePermissionChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setCurrentPermissions((prevPermissions) => ({
       ...prevPermissions,
       [event.target.name]: event.target.checked,
     }));
-  };
+  }, []);
 
-  const handleModuleChange = (event: SelectChangeEvent<number | string>) => {
+  const handleModuleChange = useCallback((event: SelectChangeEvent<number>) => {
+
     const moduleId = event.target.value as number;
     setCurrentPermissions({
       ...currentPermissions,
       modules_id: moduleId,
     });
-  };
+  }, [currentPermissions]);
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setGroupName('');
     setCurrentPermissions({
       id: 0,
@@ -149,17 +151,44 @@ const ManagePermissionGroup: React.FC = () => {
       updated_at: '',
     });
     setTabValue(0);
-  };
+  }, []);
 
   return (
     <>
       <Toolbar />
-      <Toolbar />
-      <FormContainer>
+      <FormContainer
+
+        description="Configure as permissões para cada módulo do sistema."
+        sideContent={
+          <Box>
+            <Typography variant="h6" gutterBottom>
+              Dicas:
+            </Typography>
+            <Typography variant="body2" >
+              - Nome do grupo é obrigatório.
+            </Typography>
+            <Typography variant="body2" >
+              - Certifique-se de selecionar os módulos apropriados para este grupo.
+            </Typography>
+            <Typography variant="body2" >
+              - As permissões podem ser configuradas para cada módulo.
+            </Typography>
+            <Typography variant="body2" >
+              - Clique em Salvar após configurar as permissões.
+            </Typography>
+          </Box>
+        }
+      >
         <LoadingDialog open={initialLoading} message="Carregando informações, por favor aguarde..." />
         {error && <Error message={error} />}
         {success && <Success message={success} />}
-        <Tabs value={tabValue} onChange={handleTabChange} centered>
+        <Tabs
+          value={tabValue}
+          onChange={handleTabChange}
+          centered
+          textColor="primary"
+          indicatorColor="primary"
+        >
           <Tab label="Principais" />
           <Tab label="Módulos" />
         </Tabs>
