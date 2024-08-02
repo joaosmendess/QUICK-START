@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Box, CircularProgress, MenuItem, Toolbar } from '@mui/material';
-import { getApplications, createModule, updateModule } from '../../../services/auth';
+import { TextField, Box, MenuItem, Toolbar, Typography, Grid, Button, CircularProgress } from '@mui/material';
+import { getApplications, createModule, updateModule } from '../../../services/moduleService';
 import SuccessMessage from '../../../components/Messages/SuccessMessage';
 import DeleteMessage from '../../../components/Messages/ErrorMessage';
 import { useLocation } from 'react-router-dom';
-import FormContainer from '../../../components/FormContainer'; // Certifique-se de importar o FormContainer
-import FormButton from '../../../components/FormButton'; // Certifique-se de importar o FormButton
+import FormContainer from '../../../components/FormContainer';
+import FormButton from '../../../components/FormButton';
 
 interface Application {
-  id: string;
+  id: number | undefined;
   name: string;
   description: string;
   developUrl: string;
   homologUrl: string;
   productionUrl: string;
-  empresa_id: number;
+  companyId: number;
 }
 
 const ManageModule: React.FC = () => {
@@ -23,7 +23,7 @@ const ManageModule: React.FC = () => {
 
   const [id, setId] = useState<string | null>(moduleToEdit?.id || null);
   const [name, setName] = useState(moduleToEdit?.name || '');
-  const [applications_id, setApplicationsId] = useState<number | ''>(moduleToEdit?.applications_id || '');
+  const [applicationId, setApplicationsId] = useState<number | ''>(moduleToEdit?.applicationId || '');
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
@@ -34,8 +34,12 @@ const ManageModule: React.FC = () => {
   useEffect(() => {
     const fetchApplications = async () => {
       try {
-        const data: Application[] = await getApplications();
-        setApplications(data);
+        const data = await getApplications();
+        const formattedData = data.map(app => ({
+          ...app,
+          id: Number(app.id),
+        }));
+        setApplications(formattedData);
       } catch (error) {
         console.error('Error fetching applications', error);
         setMessage('Erro ao buscar dados das aplicações');
@@ -47,9 +51,9 @@ const ManageModule: React.FC = () => {
     };
     fetchApplications();
   }, []);
-
+  
   const handleSave = async () => {
-    if (!name || applications_id === '') {
+    if (!name || applicationId === '') {
       setMessage('Todos os campos são obrigatórios');
       setSeverity('error');
       setNotificationOpen(true);
@@ -60,10 +64,10 @@ const ManageModule: React.FC = () => {
 
     try {
       if (id) {
-        await updateModule(id, name, Number(applications_id));
+        await updateModule(id, name, Number(applicationId));
         setMessage('Módulo atualizado com sucesso');
       } else {
-        await createModule(name, Number(applications_id));
+        await createModule(name, Number(applicationId));
         setMessage('Módulo salvo com sucesso');
       }
       setSeverity('success');
@@ -76,11 +80,10 @@ const ManageModule: React.FC = () => {
     }
   };
 
-
   return (
-    <div>
+    <Box sx={{ padding: 3 }}>
       <Toolbar />
-      <FormContainer>
+      <FormContainer title={id ? "Editar Módulo" : "Criar Módulo"}>
         {severity === 'success' && message && (
           <SuccessMessage message={message} />
         )}
@@ -92,39 +95,45 @@ const ManageModule: React.FC = () => {
             <CircularProgress />
           </Box>
         ) : (
-          <>
-            <TextField
-              label="Nome"
-              id='input-name'
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <TextField
-              label="Aplicativo relacionado"
-              id='select-application'
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              select
-              value={applications_id}
-              onChange={(e) => setApplicationsId(Number(e.target.value))}
-            >
-              {applications.map((app) => (
-                <MenuItem key={app.id} value={app.id}>
-                  {app.name}
-                </MenuItem>
-              ))}
-            </TextField>
-            <FormButton loading={saving} onClick={handleSave}>
-              Salvar
-            </FormButton>
-          </>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Nome"
+                id='input-name'
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Aplicativo relacionado"
+                id='select-application'
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                select
+                value={applicationId}
+                onChange={(e) => setApplicationsId(Number(e.target.value))}
+              >
+                {applications.map((app) => (
+                  <MenuItem key={app.id} value={app.id}>
+                    {app.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12}>
+              <FormButton loading={saving} onClick={handleSave}>
+                Salvar
+              </FormButton>
+            </Grid>
+          </Grid>
         )}
       </FormContainer>
-    </div>
+    </Box>
   );
 };
 

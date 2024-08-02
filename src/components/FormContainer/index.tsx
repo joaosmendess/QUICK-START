@@ -62,11 +62,11 @@ const FormContainer: React.FC<FormContainerProps> = ({
           <Grid item xs={12} md={4}>
             <Box 
               sx={{
-                backgroundColor: '#1E88E5',// Cor de fundo diferenciada para a seção de dicas
+                background: 'repeating-radial-gradient(circle at 90%, var(--color-background), var(--color-background) 38px, var(--color-default-white) 20px, var(--color-default-white) 39px) !important',
                 padding: '16px',
                 borderRadius: '8px',
                 boxShadow: '0px 2px 10px rgba(0,0,0,0.05)',
-                color:"#FFF"
+                color: 'var(--color-default-gft)', // Usei a cor padrão como cor do texto para manter a visibilidade
               }}
             >
               {sideContent}

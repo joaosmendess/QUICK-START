@@ -7,7 +7,7 @@ import { Company } from '../types';
  * @returns {Promise<any>} - Dados da empresa.
  */
 export const getPublicCompany = async (hash: string) => {
-  const response = await api.get(`/public-company/${hash}`);
+  const response = await api.get(`/public/company/${hash}`);
   return response.data;
 };
 

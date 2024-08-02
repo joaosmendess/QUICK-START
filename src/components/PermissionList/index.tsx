@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '../../stitches.config';
-import { Box, CircularProgress, Toolbar, SelectChangeEvent } from '@mui/material';
+import { Box, CircularProgress, Toolbar,  } from '@mui/material';
 import { getPermissionGroups, deletePermissionGroupHasModule } from '../../services/auth';
 import ErrorMessage from '../Messages/ErrorMessage';
 import SuccessMessage from '../Messages/SuccessMessage';
-import HeaderTable from '../HeaderTable';
 import GenericTable from '../Table/GenericTable';
 import DeleteDialog from '../DeleteDialog';
 import LoadingDialog from '../LoadingDialog';
 import { PermissionGroup } from '../../types';
+import { useNavigate } from 'react-router-dom'; // Importa o hook useNavigate
 
 const PermissionListContainer = styled(Box, {
   display: 'flex',
@@ -24,6 +24,7 @@ const PermissionListContainer = styled(Box, {
 });
 
 const PermissionList: React.FC = () => {
+  const navigate = useNavigate(); // Use o hook useNavigate para redirecionamento
   const [permissionGroups, setPermissionGroups] = useState<PermissionGroup[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,8 +32,7 @@ const PermissionList: React.FC = () => {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [permissionToDelete, setPermissionToDelete] = useState<null | string>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('name');
+  const [searchTerm, ] = useState('');
 
   useEffect(() => {
     const fetchPermissions = async () => {
@@ -74,31 +74,23 @@ const PermissionList: React.FC = () => {
     }
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
+  const handleEdit = (permissionGroup: PermissionGroup) => {
+    navigate(`/gerenciar-permissao/${permissionGroup.id}`, { state: { permissionGroup } });
   };
 
-  const handleSortChange = (event: SelectChangeEvent<string>) => {
-    setSortBy(event.target.value);
-  };
 
   const filteredPermissions = permissionGroups.filter(pg =>
     pg.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const columns = ['name',];
+  const columns = ['name', 'edit'];
 
   return (
     <PermissionListContainer maxWidth='lg' >
       <Toolbar />
       {error && <ErrorMessage message={error} />}
       {success && <SuccessMessage message={success} />}
-      <HeaderTable
-        searchTerm={searchTerm}
-        handleSearchChange={handleSearchChange}
-        sortBy={sortBy}
-        handleSortChange={handleSortChange}
-      />
+   
       {loading ? (
         <CircularProgress />
       ) : (
@@ -107,7 +99,7 @@ const PermissionList: React.FC = () => {
           data={filteredPermissions}
           loading={loading}
           error={error}
-          handleEdit={() => {}}
+          handleEdit={handleEdit} // Adiciona a função handleEdit
           handleDelete={handleDelete}
         />
       )}

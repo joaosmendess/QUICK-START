@@ -14,7 +14,7 @@ const ManageUser: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
-  const [invitationEmail, setInvitaionEmail] = useState('');
+  const [invitationEmail, setInvitationEmail] = useState('');
   const [password, setPassword] = useState('');
   const [companyId, setCompanyId] = useState<number | ''>('');
   const [companies, setCompanies] = useState<Company[]>([]);
@@ -70,7 +70,7 @@ const ManageUser: React.FC = () => {
           const user = await getUserById(parseInt(id));
           setName(user.name);
           setUsername(user.username);
-          setInvitaionEmail(user.invitationEmail);
+          setInvitationEmail(user.invitationEmail);
           setStatus(user.status);
           setCompanyId(user.companyId);
           setSelectedPermissionGroup(user.permissionGroupId || '');
@@ -142,7 +142,7 @@ const ManageUser: React.FC = () => {
         setSuccessMessage('Usuário criado com sucesso!');
         setName('');
         setUsername('');
-        setInvitaionEmail('');
+        setInvitationEmail('');
         setStatus('Ativo');
         setPassword('');
         setCompanyId('');
@@ -162,7 +162,14 @@ const ManageUser: React.FC = () => {
         title={id ? "Editar Usuário" : "Criar Usuário"}
         description="Preencha os campos abaixo para gerenciar os dados do usuário."
         sideContent={
-          <Box>
+          <Box
+          sx={{
+            
+            padding: '16px',
+          
+            marginBottom: '16px', // Espaçamento inferior para separação visual
+          }}
+        >
             <Typography
               variant="body2"
               sx={{ mb: 1, textDecoration: name ? 'line-through' : 'none' }}
@@ -210,7 +217,7 @@ const ManageUser: React.FC = () => {
                 onChange={(e) => setName(e.target.value)}
                 required
                 fullWidth
-                margin="normal"
+
                 error={!!nameError}
                 helperText={nameError}
               />
@@ -225,7 +232,7 @@ const ManageUser: React.FC = () => {
                 onChange={(e) => setUsername(e.target.value)}
                 required
                 fullWidth
-                margin="normal"
+
                 error={!!usernameError}
                 helperText={usernameError}
               />
@@ -237,10 +244,10 @@ const ManageUser: React.FC = () => {
                 variant="outlined"
                 type="email"
                 value={invitationEmail}
-                onChange={(e) => setInvitaionEmail(e.target.value)}
+                onChange={(e) => setInvitationEmail(e.target.value)}
                 required
                 fullWidth
-                margin="normal"
+
                 error={!!emailError}
                 helperText={emailError}
               />
@@ -256,29 +263,14 @@ const ManageUser: React.FC = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   fullWidth
-                  margin="normal"
+  
                 />
               </Grid>
             )}
-            <Grid item xs={12} sm={6} md={4}>
-              <FormControl variant="outlined" fullWidth margin="normal">
-                <InputLabel id="select-status-label">Status</InputLabel>
-                <Select
-                  labelId="select-status-label"
-                  id="select-status"
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                  label="Status"
-                >
-                  <MenuItem value="Ativo">Ativo</MenuItem>
-                  <MenuItem value="Bloqueado">Bloqueado</MenuItem>
-                  <MenuItem value="Inativo">Inativo</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <FormControl variant="outlined" fullWidth margin="normal">
-                <InputLabel id="select-company-id-label">Empresa</InputLabel>
+         
+            <Grid item xs={12} sm={6} >
+              <FormControl variant="outlined" fullWidth >
+                <InputLabel id="select-company-id-label">Empresa*</InputLabel>
                 <Select
                   labelId="select-company-id-label"
                   id="select-company-id"
@@ -292,8 +284,24 @@ const ManageUser: React.FC = () => {
                 </Select>
               </FormControl>
             </Grid>
+            <Grid item xs={12} sm={6} >
+              <FormControl variant="outlined" fullWidth >
+                <InputLabel id="select-status-label">Status*</InputLabel>
+                <Select
+                  labelId="select-status-label"
+                  id="select-status"
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                  label="Status"
+                >
+                  <MenuItem value="Ativo">Ativo</MenuItem>
+                  <MenuItem value="Bloqueado">Bloqueado</MenuItem>
+                  <MenuItem value="Inativo">Inativo</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
             {id && (
-              <Grid item xs={12} sm={6} md={4}>
+              <Grid item xs={12} sm={6} >
                 <FormControl variant="outlined" fullWidth margin="normal">
                   <InputLabel id="select-permission-group-label">Grupo de Permissão</InputLabel>
                   <Select

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Select, MenuItem, TextField, Toolbar, Box, FormControl, InputLabel } from '@mui/material';
+import { Select, MenuItem, TextField, Toolbar, Box, FormControl, InputLabel, Grid } from '@mui/material';
 import { getCompany } from '../../../services/companyService';
 import { inviteUser } from '../../../services/inviteService';
 import { Company } from '../../../types';
@@ -48,46 +48,44 @@ const Invitation: React.FC = () => {
   };
 
   return (
-    <div>
+    <Box sx={{ padding: 3 }}>
       <Toolbar />
-      <FormContainer>
+      <FormContainer title="Enviar Convite">
         {error && <Error message={error} />}
         {successMessage && <Success message={successMessage} />}
         <form onSubmit={handleSubmit}>
-          <Box 
-            display="flex" 
-            flexDirection="column" 
-            width={{ xs: '100%', sm: '35rem' }}
-            maxWidth="100%"
-          >
-            <TextField
-              placeholder='E-mail para convite'
-              id='input-invitation-email'
-              variant='outlined'
-              label='E-mail'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              fullWidth
-              required
-              margin="normal"
-            />
-            <FormControl variant="outlined" fullWidth required margin="normal">
-              <InputLabel>Empresa</InputLabel>
-              <Select
-                value={company}
-                id='select-company-id'
-                onChange={(e) => setCompany(e.target.value as string)}
-                label='Empresa'
-              >
-                {companies.map((company) => (
-                  <MenuItem key={company.id} value={company.id}>
-                    {company.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-          <Box display="flex" justifyContent="center" width="100%">
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                placeholder='E-mail para convite'
+                id='input-invitation-email'
+                variant='outlined'
+                label='E-mail'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                fullWidth
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl variant="outlined" fullWidth required>
+                <InputLabel>Empresa</InputLabel>
+                <Select
+                  value={company}
+                  id='select-company-id'
+                  onChange={(e) => setCompany(e.target.value as string)}
+                  label='Empresa'
+                >
+                  {companies.map((company) => (
+                    <MenuItem key={company.id} value={company.id}>
+                      {company.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+          <Box display="flex" justifyContent="center" width="100%" mt={2}>
             <FormButton 
               loading={loading} 
               type="submit" 
@@ -99,7 +97,7 @@ const Invitation: React.FC = () => {
           </Box>
         </form>
       </FormContainer>
-    </div>
+    </Box>
   );
 };
 

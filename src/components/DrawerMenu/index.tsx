@@ -17,10 +17,10 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({ open, onClose, setPageTitle }) 
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [openMenu, setOpenMenu] = useState<Record<string, boolean>>({});
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
 
   const handleMenuClick = (label: string) => {
-    setOpenMenu((prev) => ({ ...prev, [label]: !prev[label] }));
+    setOpenMenu((prev) => (prev === label ? null : label));
   };
 
   const handleNavigation = (path: string, title: string) => {
@@ -35,16 +35,24 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({ open, onClose, setPageTitle }) 
   const renderMenuItems = (items: NavigationItem[]) =>
     items.map((item) => (
       <React.Fragment key={item.label}>
-        <ListItemButton id={item.id} onClick={() => item.path ? handleNavigation(item.path, item.label) : handleMenuClick(item.label)}>
+        <ListItemButton
+          id={item.id}
+          onClick={() => (item.path ? handleNavigation(item.path, item.label) : handleMenuClick(item.label))}
+        >
           <ListItemIcon>{item.icon}</ListItemIcon>
           <ListItemText primary={item.label} />
-          {item.subItems ? openMenu[item.label] ? <ExpandLess /> : <ExpandMore /> : null}
+          {item.subItems ? (openMenu === item.label ? <ExpandLess /> : <ExpandMore />) : null}
         </ListItemButton>
         {item.subItems && (
-          <Collapse in={openMenu[item.label]} timeout="auto" unmountOnExit>
+          <Collapse in={openMenu === item.label} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               {item.subItems.map((subItem) => (
-                <ListItemButton key={subItem.label} id={subItem.id} sx={{ pl: 4 }} onClick={() => handleNavigation(subItem.path, subItem.label)}>
+                <ListItemButton
+                  key={subItem.label}
+                  id={subItem.id}
+                  sx={{ pl: 4 }}
+                  onClick={() => handleNavigation(subItem.path, subItem.label)}
+                >
                   <ListItemText primary={subItem.label} />
                 </ListItemButton>
               ))}
@@ -80,10 +88,9 @@ const DrawerMenu: React.FC<DrawerMenuProps> = ({ open, onClose, setPageTitle }) 
             backgroundColor: '#808080',
           },
           '&::-webkit-scrollbar-corner': {
-            backgroundColor: '#202020', // Esquina do scrollbar para caso de overflow em duas direções
-          }
+            backgroundColor: '#202020',
+          },
         },
-        // Para Firefox
         '& *': {
           scrollbarWidth: 'thin',
           scrollbarColor: '#606060 #383838',

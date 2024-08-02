@@ -14,42 +14,32 @@ import {
   Typography,
   SelectChangeEvent,
 } from '@mui/material';
+import { useLocation } from 'react-router-dom';
 import TabPanel from '../../../../components/PermissionTab';
 import LoadingDialog from '../../../../components/LoadingDialog';
 import { Module, PermissionGroupHasModule } from '../../../../types';
-import { getModules, createPermissionGroupHasModule } from '../../../../services/moduleService';
+import { getModules, createPermissionGroupHasModule, updatePermissionGroupHasModule } from '../../../../services/moduleService';
 import Error from '../../../../components/Messages/ErrorMessage';
 import Success from '../../../../components/Messages/SuccessMessage';
 import FormContainer from '../../../../components/FormContainer';
 import FormButton from '../../../../components/FormButton';
 
-interface Permission {
-  id: number;
-  name: string;
-  get: boolean;
-  post: boolean;
-  put: boolean;
-  delete: boolean;
-  modules_id: number;
-  permissions_groups_id: number;
-  created_at: string;
-  updated_at: string;
-}
-
 const ManagePermissionGroup: React.FC = () => {
+  const { state } = useLocation(); // Recebe os dados via state para edição
+
   const [tabValue, setTabValue] = useState(0);
-  const [groupName, setGroupName] = useState('');
-  const [currentPermissions, setCurrentPermissions] = useState<Permission>({
-    id: 0,
-    name: '',
-    get: true,
-    post: false,
-    put: false,
-    delete: false,
-    modules_id: 1,
-    permissions_groups_id: 0,
-    created_at: '',
-    updated_at: '',
+  const [groupName, setGroupName] = useState(state?.permissionGroup?.name || '');
+  const [currentPermissions, setCurrentPermissions] = useState<PermissionGroupHasModule>({
+    id: state?.permissionGroup?.id || 0,
+    name: state?.permissionGroup?.name || '',
+    get: state?.permissionGroup?.get || 1,
+    post: state?.permissionGroup?.post || 0,
+    put: state?.permissionGroup?.put || 0,
+    delete: state?.permissionGroup?.delete || 0,
+    modulesId: state?.permissionGroup?.modulesId || 1,
+    permissionsGroupsId: state?.permissionGroup?.permissionsGroupsId || 0,
+    created_at: state?.permissionGroup?.created_at || '',
+    updated_at: state?.permissionGroup?.updated_at || '',
   });
   const [modules, setModules] = useState<Module[]>([]);
   const [initialLoading, setInitialLoading] = useState<boolean>(true);
@@ -96,21 +86,26 @@ const ManagePermissionGroup: React.FC = () => {
     setLoading(true);
     setError(null);
     setSuccess(null);
+
     try {
-      const newPermissionGroupHasModule: PermissionGroupHasModule = {
+      const permissionData: PermissionGroupHasModule = {
+        ...currentPermissions,
         name: groupName,
-        modulesId: currentPermissions.modules_id,
+        modulesId: currentPermissions.modulesId,
         get: currentPermissions.get ? 1 : 0,
         post: currentPermissions.post ? 1 : 0,
         put: currentPermissions.put ? 1 : 0,
         delete: currentPermissions.delete ? 1 : 0,
-        id: 0,
-        created_at: '',
-        updated_at: '',
-        permissionsGroupsId: 0,
       };
-      await createPermissionGroupHasModule(newPermissionGroupHasModule);
-      setSuccess('Permissões criadas com sucesso!');
+
+      if (currentPermissions.id) {
+        await updatePermissionGroupHasModule(permissionData);
+        setSuccess('Permissões atualizadas com sucesso!');
+      } else {
+        await createPermissionGroupHasModule(permissionData);
+        setSuccess('Permissões criadas com sucesso!');
+      }
+
       resetForm();
     } catch (error) {
       console.error('Erro ao salvar permissões', error);
@@ -123,16 +118,15 @@ const ManagePermissionGroup: React.FC = () => {
   const handlePermissionChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setCurrentPermissions((prevPermissions) => ({
       ...prevPermissions,
-      [event.target.name]: event.target.checked,
+      [event.target.name]: event.target.checked ? 1 : 0,
     }));
   }, []);
 
   const handleModuleChange = useCallback((event: SelectChangeEvent<number>) => {
-
     const moduleId = event.target.value as number;
     setCurrentPermissions({
       ...currentPermissions,
-      modules_id: moduleId,
+      modulesId: moduleId,
     });
   }, [currentPermissions]);
 
@@ -141,12 +135,12 @@ const ManagePermissionGroup: React.FC = () => {
     setCurrentPermissions({
       id: 0,
       name: '',
-      get: true,
-      post: false,
-      put: false,
-      delete: false,
-      modules_id: 1,
-      permissions_groups_id: 0,
+      get: 1,
+      post: 0,
+      put: 0,
+      delete: 0,
+      modulesId: 1,
+      permissionsGroupsId: 0,
       created_at: '',
       updated_at: '',
     });
@@ -157,23 +151,19 @@ const ManagePermissionGroup: React.FC = () => {
     <>
       <Toolbar />
       <FormContainer
-
         description="Configure as permissões para cada módulo do sistema."
         sideContent={
           <Box>
-            <Typography variant="h6" gutterBottom>
-              Dicas:
-            </Typography>
-            <Typography variant="body2" >
+            <Typography variant="body2">
               - Nome do grupo é obrigatório.
             </Typography>
-            <Typography variant="body2" >
+            <Typography variant="body2">
               - Certifique-se de selecionar os módulos apropriados para este grupo.
             </Typography>
-            <Typography variant="body2" >
+            <Typography variant="body2">
               - As permissões podem ser configuradas para cada módulo.
             </Typography>
-            <Typography variant="body2" >
+            <Typography variant="body2">
               - Clique em Salvar após configurar as permissões.
             </Typography>
           </Box>
@@ -195,9 +185,9 @@ const ManagePermissionGroup: React.FC = () => {
 
         <TabPanel value={tabValue} index={0}>
           <form onSubmit={handleSaveGroupName}>
-            <Box 
-              display="flex" 
-              flexDirection="column" 
+            <Box
+              display="flex"
+              flexDirection="column"
               width={{ xs: '100%', sm: '35rem' }}
               maxWidth="100%"
             >
@@ -230,9 +220,9 @@ const ManagePermissionGroup: React.FC = () => {
 
         <TabPanel value={tabValue} index={1}>
           <form onSubmit={handleSavePermissions}>
-            <Box 
-              display="flex" 
-              flexDirection="column" 
+            <Box
+              display="flex"
+              flexDirection="column"
               width={{ xs: '100%', sm: '35rem' }}
               maxWidth="100%"
             >
@@ -241,7 +231,7 @@ const ManagePermissionGroup: React.FC = () => {
                 <Select
                   label="Módulo"
                   id="select-module"
-                  value={currentPermissions.modules_id || ''}
+                  value={currentPermissions.modulesId || ''}
                   onChange={handleModuleChange}
                   required
                 >
@@ -258,11 +248,11 @@ const ManagePermissionGroup: React.FC = () => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={currentPermissions.get}
+                    checked={Boolean(currentPermissions.get)}
                     id="checkbox-get"
                     onChange={handlePermissionChange}
                     name="get"
-                    disabled={true}
+                    disabled={loading}
                   />
                 }
                 label="Ler"
@@ -270,7 +260,7 @@ const ManagePermissionGroup: React.FC = () => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={currentPermissions.post}
+                    checked={Boolean(currentPermissions.post)}
                     id="checkbox-post"
                     onChange={handlePermissionChange}
                     name="post"
@@ -282,7 +272,7 @@ const ManagePermissionGroup: React.FC = () => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={currentPermissions.put}
+                    checked={Boolean(currentPermissions.put)}
                     id="checkbox-put"
                     onChange={handlePermissionChange}
                     name="put"
@@ -294,7 +284,7 @@ const ManagePermissionGroup: React.FC = () => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={currentPermissions.delete}
+                    checked={Boolean(currentPermissions.delete)}
                     id="checkbox-delete"
                     onChange={handlePermissionChange}
                     name="delete"
@@ -310,7 +300,7 @@ const ManagePermissionGroup: React.FC = () => {
                 id="button-manage-permission-group"
                 loading={loading}
                 onClick={handleSavePermissions}
-                disabled={loading || !groupName || !currentPermissions.modules_id}
+                disabled={loading || !groupName || !currentPermissions.modulesId}
               >
                 Salvar
               </FormButton>

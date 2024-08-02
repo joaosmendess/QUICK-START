@@ -125,6 +125,8 @@ export interface PermissionGroupHasModule {
   updated_at: string;
 }
 
+
+
 export interface UserHasPermission {
   id: number;
  permissionsGroupsId: number;

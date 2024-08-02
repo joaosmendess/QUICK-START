@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { TextField, Typography, Box, Toolbar, LinearProgress } from '@mui/material';
+import { TextField, Typography, Box, Toolbar, LinearProgress, Grid } from '@mui/material';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { createApplication, getApplicationById, updateApplication } from '../../../services/applicationService';
@@ -135,13 +135,10 @@ const ManageApplication: React.FC = () => {
         sideContent={
           <Box 
             sx={{
-              
               marginBottom: '16px', // Espaçamento inferior para separação visual
             }}
           >
-            <Typography variant="h6" gutterBottom>
-              Dicas:
-            </Typography>
+         
             <Typography variant="body2">
               - O nome da aplicação é obrigatório e deve ser único.
             </Typography>
@@ -157,19 +154,61 @@ const ManageApplication: React.FC = () => {
           </Box>
         }
       >
-        <TextField
-          label="Nome"
-          id='input-name'
-          placeholder="Ex.: SGC"
-          variant="outlined"
-          fullWidth
-          required
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          error={!!errors.name}
-          sx={{ marginBottom: 2 }}
-        />
-        <Box sx={{ width: '100%', marginBottom: 2 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Nome"
+              id='input-name'
+              placeholder="Ex.: SGC"
+              variant="outlined"
+              fullWidth
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              error={!!errors.name}
+              sx={{ marginBottom: 2 }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="URL de desenvolvimento"
+              id='input-url-development'
+              variant="outlined"
+              fullWidth
+              required
+              value={developUrl}
+              onChange={(e) => setDevelopUrl(e.target.value)}
+              error={!!errors.developUrl}
+              sx={{ marginBottom: 2 }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="URL de homologação"
+              id='input-url-homologation'
+              variant="outlined"
+              fullWidth
+              required
+              value={homologUrl}
+              onChange={(e) => setHomologUrl(e.target.value)}
+              error={!!errors.homologUrl}
+              sx={{ marginBottom: 2 }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="URL de produção"
+              id='input-url-production'
+              variant="outlined"
+              fullWidth
+              required
+              value={productionUrl}
+              onChange={(e) => setProductionUrl(e.target.value)}
+              error={!!errors.productionUrl}
+              sx={{ marginBottom: 2 }}
+            />
+          </Grid>
+          <Box sx={{ width: '100%', marginLeft: 2  }}>
           <ReactQuill
             ref={quillRef}
             id='input-description'
@@ -204,50 +243,21 @@ const ManageApplication: React.FC = () => {
             </Typography>
           )}
         </Box>
-        <TextField
-          label="URL de desenvolvimento"
-          id='input-url-development'
-          variant="outlined"
-          fullWidth
-          required
-          value={developUrl}
-          onChange={(e) => setDevelopUrl(e.target.value)}
-          error={!!errors.developUrl}
-          sx={{ marginBottom: 2 }}
-        />
-        <TextField
-          label="URL de homologação"
-          id='input-url-homologation'
-          variant="outlined"
-          fullWidth
-          required
-          value={homologUrl}
-          onChange={(e) => setHomologUrl(e.target.value)}
-          error={!!errors.homologUrl}
-          sx={{ marginBottom: 2 }}
-        />
-        <TextField
-          label="URL de produção"
-          id='input-url-production'
-          variant="outlined"
-          fullWidth
-          required
-          value={productionUrl}
-          onChange={(e) => setProductionUrl(e.target.value)}
-          error={!!errors.productionUrl}
-          sx={{ marginBottom: 2 }}
-        />
-        <TextField
-          label="Logo"
-          id='input-logo'
-          variant="outlined"
-          fullWidth
-          required
-          value={logo}
-          onChange={(e) => setLogo(e.target.value)}
-          error={!!errors.logo}
-          sx={{ marginBottom: 2 }}
-        />
+          <Grid item xs={12} sm={12}>
+            <TextField
+              label="Logo"
+              id='input-logo'
+              variant="outlined"
+              fullWidth
+              required
+              value={logo}
+              onChange={(e) => setLogo(e.target.value)}
+              error={!!errors.logo}
+              sx={{ marginBottom: 2 }}
+            />
+          </Grid>
+        </Grid>
+ 
         <FormButton
           loading={loading}
           onClick={handleSubmit}

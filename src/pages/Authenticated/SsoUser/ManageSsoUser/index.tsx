@@ -154,9 +154,7 @@ const ManageSsoUser: React.FC = () => {
               marginBottom: '16px', // Espaçamento inferior para separação visual
             }}
           >
-            <Typography variant="h6" gutterBottom>
-              Dicas:
-            </Typography>
+           
             <Typography
               variant="body2"
               sx={{

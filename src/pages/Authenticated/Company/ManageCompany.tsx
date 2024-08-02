@@ -47,6 +47,8 @@ const ManageCompany: React.FC = () => {
     setLoading(true);
     try {
       const company: Company = await getCompanyById(Number(companyId));
+      console.log('Company fetched:', company); // Adicione esta linha
+
       setName(company.name);
       setCnpj(company.cnpj);
       setRedirectUrl(company.redirectUrl || '');
@@ -102,9 +104,10 @@ const ManageCompany: React.FC = () => {
   };
 
   const handleApplicationsChange = (event: SelectChangeEvent<number[]>) => {
-    setApplicationIds(event.target.value as number[]);
+    const selectedIds = event.target.value as number[];
+    console.log('Selected application IDs:', selectedIds); // Adicione esta linha
+    setApplicationIds(selectedIds);
   };
-
   return (
     <>
       <Toolbar />
@@ -120,9 +123,7 @@ const ManageCompany: React.FC = () => {
               marginBottom: '16px', // Espaçamento inferior para separação visual
             }}
           >
-            <Typography variant="h6" gutterBottom>
-              Dicas:
-            </Typography>
+            
             <Typography variant="body2">
               - Nome da empresa e CNPJ são obrigatórios.
             </Typography>
@@ -153,8 +154,9 @@ const ManageCompany: React.FC = () => {
         </Tabs>
         <Box mt={2} width="100%">
           {tabIndex === 0 && (
-            <Grid container spacing={3} justifyContent="center">
-              <Grid item xs={12}>
+            <Grid container spacing={2} justifyContent="center">
+            
+            <Grid item xs={12} sm={6} >
                 <TextField
                   label="Nome"
                   id='input-name'
@@ -166,7 +168,8 @@ const ManageCompany: React.FC = () => {
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={12}>
+              
+              <Grid item xs={12} sm={6} >
                 <TextField
                   label="CNPJ"
                   id='input-cnpj'
@@ -178,7 +181,8 @@ const ManageCompany: React.FC = () => {
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={12}>
+            
+              <Grid item xs={12} sm={6} >
                 <TextField
                   label="URL de Redirecionamento"
                   id='input-redirect-url'
@@ -190,7 +194,8 @@ const ManageCompany: React.FC = () => {
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={12}>
+              
+            <Grid item xs={12} sm={6} >
                 <FormControl fullWidth variant="outlined">
                   <InputLabel id="applications-label">Aplicações</InputLabel>
                   <Select
@@ -220,8 +225,9 @@ const ManageCompany: React.FC = () => {
             </Grid>
           )}
           {tabIndex === 1 && (
-            <Grid container spacing={3} justifyContent="center">
-              <Grid item xs={12} md={6}>
+            <Grid container spacing={2} justifyContent="center">
+        
+        <Grid item xs={12} sm={6} >
                 <TextField
                   label="Client ID"
                   id='input-client-id'
@@ -243,7 +249,8 @@ const ManageCompany: React.FC = () => {
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={12}>
+          
+              <Grid item xs={12} sm={6} >
                 <TextField
                   label="Tenant ID"
                   id='input-tenant-id'
@@ -254,7 +261,8 @@ const ManageCompany: React.FC = () => {
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={12}>
+             
+            <Grid item xs={12} sm={6} >
                 <TextField
                   label="Nome do SSO"
                   id='input-sso-name'
